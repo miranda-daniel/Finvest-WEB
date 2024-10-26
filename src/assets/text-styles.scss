@@ -1,0 +1,362 @@
+@use "./colors.scss" as colors;
+@use "./mixins.scss" as mixins;
+@use "./variables.scss" as variables;
+
+$font-weights: (
+  regularWeight400: 400,
+  regularWeight500: 500,
+  semiBoldWeight600: 600,
+  boldWeight700: 700,
+);
+
+$text-colors: (
+  primary10: colors.$primary10,
+  primary20: colors.$primary20,
+  primary30: colors.$primary30,
+  primary40: colors.$primary40,
+  primary50: colors.$primary50,
+  primary60: colors.$primary60,
+  primary70: colors.$primary70,
+
+  text10: colors.$text10,
+  text20: colors.$text20,
+  text30: colors.$text30,
+  text40: colors.$text40,
+  text50: colors.$text50,
+
+  surfaceLight10: colors.$surfaceLight10,
+  surfaceLight20: colors.$surfaceLight20,
+  surfaceLight30: colors.$surfaceLight30,
+  surfaceLight40: colors.$surfaceLight40,
+  surfaceLight50: colors.$surfaceLight50,
+
+  surfaceDark10: colors.$surfaceDark10,
+  surfaceDark20: colors.$surfaceDark20,
+  surfaceDark30: colors.$surfaceDark30,
+  surfaceDark40: colors.$surfaceDark40,
+  surfaceDark50: colors.$surfaceDark50,
+
+  warning10: colors.$warning10,
+  warning20: colors.$warning20,
+  warning30: colors.$warning30,
+  warning40: colors.$warning40,
+  warning50: colors.$warning50,
+
+  success10: colors.$success10,
+  success20: colors.$success20,
+  success30: colors.$success30,
+  success40: colors.$success40,
+  success50: colors.$success50,
+
+  danger10: colors.$danger10,
+  danger20: colors.$danger20,
+  danger30: colors.$danger30,
+  danger40: colors.$danger40,
+  danger50: colors.$danger50,
+);
+
+//--------------
+
+$text-heading-sizes: (
+  heading1: 56px,
+  heading2: 48px,
+  heading3: 40px,
+  heading4: 32px,
+  heading5: 24px,
+  heading6: 20px,
+);
+
+$text-heading-sizes-mobile: (
+  heading1: 40px,
+  heading2: 36px,
+  heading3: 32px,
+  heading4: 28px,
+  heading5: 24px,
+  heading6: 20px,
+);
+
+//--------------
+
+$text-body-regular-sizes: (
+  bodyRegularLarge: 20px,
+  bodyRegularMedium: 16px,
+  bodyRegularSmall: 14px,
+  bodyRegularTiny: 12px,
+  bodyRegularOverline: 10px,
+);
+
+$text-body-regular-sizes-mobile: (
+  bodyLarge: 20px,
+  bodyMedium: 16px,
+  bodySmall: 14px,
+  bodyOverline: 12px,
+  bodyTiny: 10px,
+);
+
+//--------------
+
+$text-body-bold-sizes: (
+  bodyBoldLarge: 20px,
+  bodyBoldMedium: 16px,
+  bodyBoldSmall: 14px,
+  bodyBoldTiny: 12px,
+  bodyBoldOverline: 10px,
+);
+
+//--------------
+
+$text-body-semi-bold-sizes: (
+  bodySemiBoldLarge: 20px,
+  bodySemiBoldMedium: 16px,
+  bodySemiBoldSmall: 14px,
+  bodySemiBoldTiny: 12px,
+  bodySemiBoldOverline: 10px,
+);
+
+//--------------
+
+$text-body-link-sizes: (
+  bodyLinkLarge: 20px,
+  bodyLinkMedium: 16px,
+  bodyLinkSmall: 14px,
+  bodyLinkTiny: 12px,
+  bodyLinkOverline: 10px,
+);
+
+//--------------
+
+$text-button-sizes: (
+  buttonLarge: 20px,
+  buttonMedium: 16px,
+  buttonSmall: 14px,
+);
+
+$text-font-family: (
+  primary: variables.$primary-font-family,
+  secondary: variables.$secundary-font-family,
+);
+
+// ---- HEADING TEXT ----
+
+@mixin text__heading1 {
+  font-family: map-get($text-font-family, secondary);
+  font-size: map-get($text-heading-sizes, heading1);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 64px;
+}
+
+@mixin text__heading2 {
+  font-family: map-get($text-font-family, secondary);
+  font-size: map-get($text-heading-sizes, heading2);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 56px;
+}
+
+@mixin text__heading3 {
+  font-family: map-get($text-font-family, secondary);
+  font-size: map-get($text-heading-sizes, heading3);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 48px;
+}
+
+@mixin text__heading4 {
+  font-family: map-get($text-font-family, secondary);
+  font-size: map-get($text-heading-sizes, heading4);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 40px;
+}
+
+@mixin text__heading5 {
+  font-family: map-get($text-font-family, secondary);
+  font-size: map-get($text-heading-sizes, heading5);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 32px;
+}
+
+@mixin text__heading6 {
+  font-family: map-get($text-font-family, secondary);
+  font-size: map-get($text-heading-sizes, heading6);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 24px;
+}
+
+// ---- BODY TEXT - REGULAR ----
+
+@mixin text__regular__large {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-regular-sizes, bodyRegularLarge);
+  font-weight: map-get($font-weights, regularWeight400);
+  line-height: 28px;
+}
+
+@mixin text__regular__medium {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-regular-sizes, bodyRegularMedium);
+  font-weight: map-get($font-weights, regularWeight400);
+  line-height: 24px;
+}
+
+@mixin text__regular__small {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-regular-sizes, bodyRegularSmall);
+  font-weight: map-get($font-weights, regularWeight400);
+  line-height: 20px;
+}
+
+@mixin text__regular__tiny {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-regular-sizes, bodyRegularTiny);
+  font-weight: map-get($font-weights, regularWeight400);
+  line-height: 16px;
+}
+
+@mixin text__regular__overline {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-regular-sizes, bodyRegularOverline);
+  font-weight: map-get($font-weights, regularWeight400);
+  line-height: 16px;
+}
+
+// ---- BODY TEXT - BOLD ----
+
+@mixin text__bold__large {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-bold-sizes, bodyBoldLarge);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 28px;
+}
+
+@mixin text__bold__medium {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-bold-sizes, bodyBoldMedium);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 24px;
+}
+
+@mixin text__bold__small {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-bold-sizes, bodyBoldSmall);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 20px;
+}
+
+@mixin text__bold__tiny {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-bold-sizes, bodyBoldTiny);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 16px;
+}
+
+@mixin text__bold__overline {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-bold-sizes, bodyBoldOverline);
+  font-weight: map-get($font-weights, boldWeight700);
+  line-height: 16px;
+}
+
+// ---- BODY TEXT - SEMI BOLD ----
+
+@mixin text__semi__bold__large {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-semi-bold-sizes, bodySemiBoldLarge);
+  font-weight: map-get($font-weights, semiBoldWeight600);
+  line-height: 28px;
+}
+
+@mixin text__semi__bold__medium {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-semi-bold-sizes, bodySemiBoldMedium);
+  font-weight: map-get($font-weights, semiBoldWeight600);
+  line-height: 24px;
+}
+
+@mixin text__semi__bold__small {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-semi-bold-sizes, bodySemiBoldSmall);
+  font-weight: map-get($font-weights, semiBoldWeight600);
+  line-height: 20px;
+}
+
+@mixin text__semi__bold__tiny {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-semi-bold-sizes, bodySemiBoldTiny);
+  font-weight: map-get($font-weights, semiBoldWeight600);
+  line-height: 16px;
+}
+
+@mixin text__semi__bold__overline {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-body-semi-bold-sizes, bodySemiBoldOverline);
+  font-weight: map-get($font-weights, semiBoldWeight600);
+  line-height: 16px;
+}
+
+// ---- BODY TEXT - LINK ----
+
+@mixin text__link__large {
+  font-family: map-get($text-font-family, primary);
+  text-decoration: underline;
+  font-size: map-get($text-body-link-sizes, bodyLinkLarge);
+  font-weight: map-get($font-weights, regularWeight500);
+  line-height: 28px;
+}
+
+@mixin text__link__medium {
+  font-family: map-get($text-font-family, primary);
+  text-decoration: underline;
+  font-size: map-get($text-body-link-sizes, bodyLinkMedium);
+  font-weight: map-get($font-weights, regularWeight500);
+  line-height: 24px;
+}
+
+@mixin text__link__small {
+  font-family: map-get($text-font-family, primary);
+  text-decoration: underline;
+  font-size: map-get($text-body-link-sizes, bodyLinkSmall);
+  font-weight: map-get($font-weights, regularWeight500);
+  line-height: 20px;
+}
+
+@mixin text__link__tiny {
+  font-family: map-get($text-font-family, primary);
+  text-decoration: underline;
+  font-size: map-get($text-body-link-sizes, bodyLinkTiny);
+  font-weight: map-get($font-weights, regularWeight500);
+  line-height: 16px;
+}
+
+@mixin text__link__overline {
+  font-family: map-get($text-font-family, primary);
+  text-decoration: underline;
+  font-size: map-get($text-body-link-sizes, bodyLinkOverline);
+  font-weight: map-get($font-weights, regularWeight500);
+  line-height: 16px;
+}
+
+// ---- BUTTON ----
+
+@mixin text__button__large {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-button-sizes, buttonLarge);
+  font-weight: map-get($font-weights, regularWeight600);
+}
+
+@mixin text__button__medium {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-button-sizes, buttonMedium);
+  font-weight: map-get($font-weights, regularWeight600);
+}
+
+@mixin text__button__small {
+  font-family: map-get($text-font-family, primary);
+  font-size: map-get($text-button-sizes, buttonSmall);
+  font-weight: map-get($font-weights, regularWeight600);
+}
+@mixin color-styles {
+  @each $color in map-keys($text-colors) {
+    &__#{$color} {
+      color: map-get($text-colors, $color);
+      @content;
+    }
+  }
+}

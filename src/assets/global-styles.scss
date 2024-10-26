@@ -1,0 +1,235 @@
+@use "./variables.scss" as variables;
+@use "./text-styles" as textStyles;
+
+@each $size in variables.$width {
+  .width-#{$size} {
+    width: #{$size}px;
+  }
+}
+
+@each $size in variables.$height {
+  .height-#{$size} {
+    height: #{$size}px;
+  }
+}
+
+@each $size in variables.$margin-top-sizes {
+  .margt-#{$size} {
+    margin-top: #{$size}px;
+  }
+}
+
+@each $size in variables.$margin-bottom-sizes {
+  .margb-#{$size} {
+    margin-bottom: #{$size}px;
+  }
+}
+
+@each $size in variables.$margin-right-sizes {
+  .margr-#{$size} {
+    margin-right: #{$size}px;
+  }
+}
+
+@each $size in variables.$margin-left-sizes {
+  .margl-#{$size} {
+    margin-left: #{$size}px;
+  }
+}
+
+@each $size in variables.$margin-block-sizes {
+  .marg-block-#{$size} {
+    margin-block: #{$size}px;
+  }
+}
+
+@each $size in variables.$margin-inline-sizes {
+  .marg-inline-#{$size} {
+    margin-inline: #{$size}px;
+  }
+}
+
+// ---- HEADING ----
+
+.text {
+  &__heading1 {
+    @include textStyles.color-styles {
+      @include textStyles.text__heading1;
+    }
+  }
+  &__heading2 {
+    @include textStyles.color-styles {
+      @include textStyles.text__heading2;
+    }
+  }
+  &__heading3 {
+    @include textStyles.color-styles {
+      @include textStyles.text__heading3;
+    }
+  }
+  &__heading4 {
+    @include textStyles.color-styles {
+      @include textStyles.text__heading4;
+    }
+  }
+
+  &__heading5 {
+    @include textStyles.color-styles {
+      @include textStyles.text__heading5;
+    }
+  }
+
+  &__heading6 {
+    @include textStyles.color-styles {
+      @include textStyles.text__heading6;
+    }
+  }
+
+  // ---- BODY TEXT: REGULAR ----
+
+  &__regular__large {
+    @include textStyles.color-styles {
+      @include textStyles.text__regular__large;
+    }
+  }
+
+  &__regular__medium {
+    @include textStyles.color-styles {
+      @include textStyles.text__regular__medium;
+    }
+  }
+
+  &__regular__small {
+    @include textStyles.color-styles {
+      @include textStyles.text__regular__small;
+    }
+  }
+
+  &__regular__tiny {
+    @include textStyles.color-styles {
+      @include textStyles.text__regular__tiny;
+    }
+  }
+
+  &__regular__overline {
+    @include textStyles.color-styles {
+      @include textStyles.text__regular__overline;
+    }
+  }
+
+  // ---- BODY TEXT: BOLD ----
+
+  &__bold__large {
+    @include textStyles.color-styles {
+      @include textStyles.text__bold__large;
+    }
+  }
+
+  &__bold__medium {
+    @include textStyles.color-styles {
+      @include textStyles.text__bold__medium;
+    }
+  }
+
+  &__bold__small {
+    @include textStyles.color-styles {
+      @include textStyles.text__bold__small;
+    }
+  }
+
+  &__bold__tiny {
+    @include textStyles.color-styles {
+      @include textStyles.text__bold__tiny;
+    }
+  }
+
+  &__bold__overline {
+    @include textStyles.color-styles {
+      @include textStyles.text__bold__overline;
+    }
+  }
+
+  // ---- BODY TEXT: SEMI BOLD ----
+
+  &__semi__bold__large {
+    @include textStyles.color-styles {
+      @include textStyles.text__semi__bold__large;
+    }
+  }
+
+  &__semi__bold__medium {
+    @include textStyles.color-styles {
+      @include textStyles.text__semi__bold__medium;
+    }
+  }
+
+  &__semi__bold__small {
+    @include textStyles.color-styles {
+      @include textStyles.text__semi__bold__small;
+    }
+  }
+
+  &__semi__bold__tiny {
+    @include textStyles.color-styles {
+      @include textStyles.text__semi__bold__tiny;
+    }
+  }
+
+  &__semi__bold__overline {
+    @include textStyles.color-styles {
+      @include textStyles.text__semi__bold__overline;
+    }
+  }
+
+  // ---- BODY TEXT: LINK ----
+
+  &__link__large {
+    @include textStyles.color-styles {
+      @include textStyles.text__link__large;
+    }
+  }
+
+  &__link__medium {
+    @include textStyles.color-styles {
+      @include textStyles.text__link__medium;
+    }
+  }
+
+  &__link__small {
+    @include textStyles.color-styles {
+      @include textStyles.text__link__small;
+    }
+  }
+
+  &__link__tiny {
+    @include textStyles.color-styles {
+      @include textStyles.text__link__tiny;
+    }
+  }
+
+  &__link__overline {
+    @include textStyles.color-styles {
+      @include textStyles.text__link__overline;
+    }
+  }
+
+  // ---- BUTTON ----
+
+  &__button__large {
+    @include textStyles.color-styles {
+      @include textStyles.text__button__large;
+    }
+  }
+
+  &__button__medium {
+    @include textStyles.color-styles {
+      @include textStyles.text__button__medium;
+    }
+  }
+
+  &__button__small {
+    @include textStyles.color-styles {
+      @include textStyles.text__button__small;
+    }
+  }
+}

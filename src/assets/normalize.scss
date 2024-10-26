@@ -1,0 +1,115 @@
+@use "./variables";
+@use "./mixins";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%; /* 1rem = 10px (large) */
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+
+  @include mixins.resolution(md) {
+    font-size: 57%;
+  }
+
+  @include mixins.resolution(sm) {
+    font-size: 54%;
+  }
+
+  @include mixins.resolution(xs) {
+    font-size: 50%;
+  }
+}
+
+body {
+  font-family: variables.$primary-font;
+  font-size: 1.6rem; /* Equivalente a 16px */
+  color: rgb(255, 255, 255);
+  background-color: #373535;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  display: block;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote::before,
+blockquote::after,
+q::before,
+q::after {
+  content: "";
+}
+
+code,
+pre {
+  font-family: "Courier New", monospace;
+  font-size: 1em;
+}
+
+address {
+  font-style: normal;
+}
+
+a,
+button {
+  cursor: pointer;
+  outline: none;
+  background: none;
+  border: none;
+  font-family: variables.$primary-font;
+  text-decoration: none;
+}
+
+a:focus,
+button:focus,
+button:active {
+  outline: none;
+}

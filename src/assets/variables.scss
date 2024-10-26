@@ -1,0 +1,35 @@
+@use "sass:list";
+
+$primary-font-family: "IBM Plex Sans" !default;
+$primary-font: $primary-font-family, sans-serif !default;
+
+$secundary-font-family: "IBM Plex Sans Condensed" !default;
+$secundary-font: $secundary-font-family, sans-serif !default;
+
+/* Breakpoint-related variables */
+$breakpoints: (
+  xxl: 2000px,
+  xl: 1400px,
+  lg: 1200px,
+  md: 992px,
+  sm: 768px,
+  xs: 576px,
+);
+
+// -----------------
+
+$pixels: ();
+
+@for $i from 1 through 1000 {
+  $pixels: list.append($pixels, $i);
+}
+
+$width: $pixels;
+$height: $pixels;
+
+$margin-top-sizes: $pixels;
+$margin-bottom-sizes: $pixels;
+$margin-right-sizes: $pixels;
+$margin-left-sizes: $pixels;
+$margin-block-sizes: $pixels;
+$margin-inline-sizes: $pixels;
