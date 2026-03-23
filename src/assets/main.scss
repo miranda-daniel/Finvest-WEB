@@ -1,8 +1,8 @@
-@import 'tailwindcss';
-
 @use './normalize';
 @use './colors';
 @use './global-styles';
 @use './mixins';
 @use './text-styles';
 @use './variables';
+
+@import 'tailwindcss';
