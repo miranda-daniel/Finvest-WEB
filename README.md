@@ -55,6 +55,10 @@ El servidor de desarrollo corre en `http://localhost:5173`.
 | `/login` | Público | Login |
 | `/dashboard` | Autenticado | Dashboard (redirige a `/login` si no hay sesión) |
 
+## Code Style
+
+All code comments must be written in **English**.
+
 ## GraphQL / Codegen
 
 El schema GraphQL vive en `schema.graphql` en la raíz. Durante el desarrollo inicial contiene un stub mínimo. Una vez que el backend esté disponible:
