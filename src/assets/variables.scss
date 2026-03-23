@@ -1,9 +1,9 @@
-@use "sass:list";
+@use 'sass:list';
 
-$primary-font-family: "IBM Plex Sans" !default;
+$primary-font-family: 'IBM Plex Sans' !default;
 $primary-font: $primary-font-family, sans-serif !default;
 
-$secundary-font-family: "IBM Plex Sans Condensed" !default;
+$secundary-font-family: 'IBM Plex Sans Condensed' !default;
 $secundary-font: $secundary-font-family, sans-serif !default;
 
 /* Breakpoint-related variables */

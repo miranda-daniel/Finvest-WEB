@@ -1,4 +1,4 @@
-@use "./variables.scss";
+@use './variables.scss';
 
 @mixin resolution($breakpoint) {
   @media only screen and (max-width: map-get(variables.$breakpoints, $breakpoint)) {

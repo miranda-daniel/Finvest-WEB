@@ -1,5 +1,5 @@
-@use "./variables.scss" as variables;
-@use "./text-styles" as textStyles;
+@use './variables.scss' as variables;
+@use './text-styles' as textStyles;
 
 @each $size in variables.$width {
   .width-#{$size} {

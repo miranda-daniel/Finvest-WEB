@@ -1,5 +1,5 @@
-@use "./variables";
-@use "./mixins";
+@use './variables';
+@use './mixins';
 
 *,
 *::before,
@@ -57,7 +57,7 @@ select {
 }
 
 button,
-[role="button"] {
+[role='button'] {
   cursor: pointer;
 }
 
@@ -85,12 +85,12 @@ blockquote::before,
 blockquote::after,
 q::before,
 q::after {
-  content: "";
+  content: '';
 }
 
 code,
 pre {
-  font-family: "Courier New", monospace;
+  font-family: 'Courier New', monospace;
   font-size: 1em;
 }
 
