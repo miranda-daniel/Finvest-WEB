@@ -1,59 +1,59 @@
 # Finvest WEB
 
-Frontend de Finvest. Conecta con un backend Node + Prisma + GraphQL (Apollo Server).
+Finvest frontend. Connects to a Node + Prisma + GraphQL (Apollo Server) backend.
 
 ## Stack
 
-| Capa | Tecnología | Versión |
+| Layer | Technology | Version |
 |---|---|---|
 | UI Framework | React | 19 |
 | Build | Vite | 6 |
-| Lenguaje | TypeScript | 5.8+ |
-| Estilos | Tailwind CSS | v4 |
-| Estilos custom | SCSS/Sass | latest |
+| Language | TypeScript | 5.8+ |
+| Styles | Tailwind CSS | v4 |
+| Custom styles | SCSS/Sass | latest |
 | Routing | TanStack Router | v1 (file-based) |
 | Data fetching | Apollo Client | v3 |
-| Estado cliente/auth | Zustand | v5 |
-| Validación | Zod | v3 |
-| Formularios | React Hook Form | v7 |
-| Tipos GraphQL | graphql-codegen | v5 |
+| Client/auth state | Zustand | v5 |
+| Validation | Zod | v3 |
+| Forms | React Hook Form | v7 |
+| GraphQL types | graphql-codegen | v5 |
 | Linting | ESLint | v9 |
-| Formateo | Prettier | v3 |
+| Formatting | Prettier | v3 |
 
-## Comandos
+## Commands
 
 ```bash
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Levantar en desarrollo
+# Start development server
 npm run dev
 
-# Build de producción
+# Production build
 npm run build
 
-# Preview del build
+# Preview the build
 npm run preview
 
 # Lint
 npm run lint
 
-# Formatear código
+# Format code
 npm run format
 
-# Generar tipos desde el schema GraphQL
+# Generate types from the GraphQL schema
 npm run codegen
 ```
 
-El servidor de desarrollo corre en `http://localhost:5173`.
+The development server runs at `http://localhost:5173`.
 
-## Rutas
+## Routes
 
-| Ruta | Acceso | Descripción |
+| Route | Access | Description |
 |---|---|---|
-| `/` | Público | Home |
-| `/login` | Público | Login |
-| `/dashboard` | Autenticado | Dashboard (redirige a `/login` si no hay sesión) |
+| `/` | Public | Home |
+| `/login` | Public | Login |
+| `/dashboard` | Authenticated | Dashboard (redirects to `/login` if no session) |
 
 ## Code Style
 
@@ -61,7 +61,7 @@ All code comments must be written in **English**.
 
 ## GraphQL / Codegen
 
-El schema GraphQL vive en `schema.graphql` en la raíz. Durante el desarrollo inicial contiene un stub mínimo. Una vez que el backend esté disponible:
+The GraphQL schema lives in `schema.graphql` at the root. During initial development it contains a minimal stub. Once the backend is available:
 
-1. Reemplazar `schema.graphql` con el schema real, o apuntar `codegen.ts` a la URL del backend
-2. Ejecutar `npm run codegen` para regenerar los tipos en `src/graphql/generated/`
+1. Replace `schema.graphql` with the real schema, or point `codegen.ts` to the backend URL
+2. Run `npm run codegen` to regenerate types in `src/graphql/generated/`
