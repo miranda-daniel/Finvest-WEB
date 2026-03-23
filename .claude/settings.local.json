@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git rm:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(node -e \"const pkg = require\\(''./node_modules/@tanstack/router-plugin/package.json''\\); console.log\\(pkg.version, pkg.exports ? Object.keys\\(pkg.exports\\).slice\\(0,10\\) : ''no exports''\\)\")",
+      "Bash(node_modules/.bin/tsc -b --dry)",
+      "Bash(node -e \"const p=require\\(''./node_modules/@tanstack/router-plugin/package.json''\\); console.log\\(''version:'', p.version\\); console.log\\(''exports keys:'', Object.keys\\(p.exports||{}\\).filter\\(k=>k.includes\\(''vite''\\)\\)\\)\")",
+      "Bash(node -e \":*)"
+    ]
+  }
+}
