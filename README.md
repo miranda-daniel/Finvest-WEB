@@ -1,6 +1,6 @@
 # Finvest WEB
 
-Finvest frontend. Connects to a Node + Prisma + GraphQL (Apollo Server) backend.
+Finvest frontend. Connects to the Finvest API backend via GraphQL (Apollo Client).
 
 ## Stack
 
@@ -20,14 +20,30 @@ Finvest frontend. Connects to a Node + Prisma + GraphQL (Apollo Server) backend.
 | Linting | ESLint | v9 |
 | Formatting | Prettier | v3 |
 
+## Getting started
+
+### Prerequisites
+
+- Node 20.13 / npm 10.5
+- Finvest API running on `http://localhost:3001`
+
+### Install and run
+
+```bash
+npm install
+npm run dev
+```
+
+The development server runs at `http://localhost:5173`.
+
 ## Commands
 
 ```bash
-# Install dependencies
-npm install
-
 # Start development server
 npm run dev
+
+# Generate/update TypeScript types from the GraphQL schema (requires API running)
+npm run codegen
 
 # Production build
 npm run build
@@ -40,12 +56,15 @@ npm run lint
 
 # Format code
 npm run format
-
-# Generate types from the GraphQL schema
-npm run codegen
 ```
 
-The development server runs at `http://localhost:5173`.
+## GraphQL / Codegen
+
+Types are auto-generated from the backend schema. Run `npm run codegen` whenever the API adds or changes GraphQL endpoints.
+
+**Requires the Finvest API to be running** at `http://localhost:3001/graphql`.
+
+Generated files live in `src/graphql/generated/` — do not edit them manually.
 
 ## Routes
 
@@ -58,10 +77,3 @@ The development server runs at `http://localhost:5173`.
 ## Code Style
 
 All code comments must be written in **English**.
-
-## GraphQL / Codegen
-
-The GraphQL schema lives in `schema.graphql` at the root. During initial development it contains a minimal stub. Once the backend is available:
-
-1. Replace `schema.graphql` with the real schema, or point `codegen.ts` to the backend URL
-2. Run `npm run codegen` to regenerate types in `src/graphql/generated/`

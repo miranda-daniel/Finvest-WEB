@@ -6,6 +6,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [tanstackRouter({ routesDirectory: './src/routes' }), react(), tailwindcss()],
+  server: { port: 5100 },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
