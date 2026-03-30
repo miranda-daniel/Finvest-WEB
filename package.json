@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.14.1",
-    "@hookform/resolvers": "^3.10.0",
+    "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-router": "^1.168.3",
     "graphql": "^16.13.1",
     "react": "^19.2.4",
