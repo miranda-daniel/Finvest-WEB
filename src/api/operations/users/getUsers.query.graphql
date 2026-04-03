@@ -1,0 +1,19 @@
+# GetUsers — fetches all users for display.
+#
+# Naming rule (from src/api/CLAUDE.md):
+#   filename:       getUsers.query.graphql
+#   operation name: GetUsers
+# They must match so graphql-codegen produces a predictable document name: GetUsersDocument.
+#
+# After running `npm run codegen` (requires API on localhost:3001),
+# this file generates src/api/generated/graphql.ts with:
+#   - GetUsersQuery type
+#   - GetUsersDocument (typed document node used in useUsers.ts)
+query GetUsers {
+  users {
+    id
+    email
+    firstName
+    lastName
+  }
+}
