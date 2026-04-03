@@ -1,0 +1,17 @@
+# GetPortfolios — fetches the portfolios of the authenticated user.
+#
+# Requires a valid JWT in the Authorization header (handled automatically
+# by Apollo Client's authLink reading the token from Zustand).
+#
+# The API resolver (src/apollo/resolvers/Query.ts) rejects this query
+# with UNAUTHENTICATED if no token is present.
+#
+# Run `npm run codegen` (with the API running) to regenerate types after
+# any schema change.
+query GetPortfolios {
+  portfolios {
+    id
+    name
+    createdAt
+  }
+}
