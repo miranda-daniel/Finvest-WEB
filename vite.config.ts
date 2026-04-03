@@ -8,10 +8,11 @@ export default defineConfig({
   plugins: [tanstackRouter({ routesDirectory: './src/routes' }), react(), tailwindcss()],
   server: {
     port: 5100,
-    // Forward /graphql requests to the API during development.
-    // In production, the reverse proxy (nginx, etc.) handles this.
     proxy: {
+      // Forward /graphql and /session requests to the API during development.
+      // In production, the reverse proxy (nginx, etc.) handles this.
       '/graphql': 'http://localhost:3001',
+      '/session': 'http://localhost:3001',
     },
   },
   resolve: {
