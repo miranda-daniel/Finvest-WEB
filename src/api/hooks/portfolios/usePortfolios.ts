@@ -1,34 +1,6 @@
 import { useQuery } from '@apollo/client'
-import { gql } from '@apollo/client'
-
-// TODO: Replace this manual document + types with the generated ones once the API
-// exposes the `portfolios` field on the Query type and codegen succeeds.
-// Expected generated imports (run `npm run codegen` after the API schema is updated):
-//   import { GetPortfoliosDocument } from '@/api/generated/graphql'
-//   import type { GetPortfoliosQuery } from '@/api/generated/graphql'
-
-// Temporary manual document — mirrors getPortfolios.query.graphql exactly.
-const GetPortfoliosDocument = gql`
-  query GetPortfolios {
-    portfolios {
-      id
-      name
-      createdAt
-    }
-  }
-`
-
-// Temporary manual type — mirrors the shape the API will return.
-// Replace with the generated GetPortfoliosQuery once codegen succeeds.
-interface Portfolio {
-  id: number
-  name: string
-  createdAt: string
-}
-
-interface GetPortfoliosQuery {
-  portfolios: Portfolio[]
-}
+import { GetPortfoliosDocument } from '@/api/generated/graphql'
+import type { GetPortfoliosQuery } from '@/api/generated/graphql'
 
 // usePortfolios — fetches the authenticated user's portfolios via GraphQL.
 //
