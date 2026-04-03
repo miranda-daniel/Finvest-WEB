@@ -6,7 +6,14 @@ import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [tanstackRouter({ routesDirectory: './src/routes' }), react(), tailwindcss()],
-  server: { port: 5100 },
+  server: {
+    port: 5100,
+    // Forward /graphql requests to the API during development.
+    // In production, the reverse proxy (nginx, etc.) handles this.
+    proxy: {
+      '/graphql': 'http://localhost:3001',
+    },
+  },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
