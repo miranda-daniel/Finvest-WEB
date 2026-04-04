@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { useLogin } from '@/api/hooks/auth/useLogin'
 
 const signInSchema = z.object({
-  email: z.email({ message: 'Enter a valid email address.' }),
+  email: z.string().email({ message: 'Enter a valid email address.' }),
   password: z.string().min(1, { message: 'Password is required.' }),
 })
 
