@@ -23,6 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-src/graphql/generated/
+src/api/generated/
 
 .worktrees/

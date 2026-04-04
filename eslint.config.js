@@ -6,7 +6,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import prettierConfig from 'eslint-config-prettier'
 
 export default tseslint.config(
-  { ignores: ['dist', 'src/routeTree.gen.ts', 'src/graphql/generated/'] },
+  { ignores: ['dist', 'src/routeTree.gen.ts', 'src/api/generated/'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
