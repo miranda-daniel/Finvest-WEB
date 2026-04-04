@@ -1,5 +1,25 @@
 # Claude Code Guidelines — Finvest WEB
 
+## About me
+
+I'm a developer building a personal investment management app called **Finvest**.
+I manage my own stock portfolio (equities, ETFs) and want a custom tool to track holdings,
+operations, and performance. All amounts are in USD — including non-US stocks, which are
+tracked via their ADR listings on US exchanges.
+
+## Finvest — Project Overview
+
+A full-stack personal finance app for managing stock investments.
+
+## GitHub Access Restriction
+
+Only interact with these two GitHub repositories via `gh` CLI or any GitHub tool:
+
+- `miranda-daniel/Finvest-WEB`
+- `miranda-daniel/Finvest-API`
+
+Never access, clone, or interact with any other GitHub repository.
+
 ## Code Comments
 
 All code comments (inline comments, block comments, JSDoc) must be written in **English**.
@@ -51,6 +71,19 @@ Never commit automatically. Leave all changes in the working area and let the us
 
 - Use Apollo hooks (`useQuery`, `useMutation`) — never fetch data in `useEffect`
 - Components never import Apollo directly — always go through custom hooks in `src/api/hooks/`
+
+### Caching strategy
+
+The caching solution depends on the transport:
+
+| Request type | Library | Cache |
+|---|---|---|
+| GraphQL (`POST /graphql`) | Apollo Client | `InMemoryCache` (already configured in `src/graphql/client.ts`) |
+| REST (e.g. `POST /api/sessions`) | TanStack Query | `QueryClient` cache |
+
+**GraphQL requests** — Apollo's `InMemoryCache` handles caching automatically. No extra setup needed per query.
+
+**REST requests** — TanStack Query is not yet installed. Add it when the first REST endpoint that benefits from caching is implemented. Auth endpoints (login/logout) do not need caching — do not add TanStack Query just for those.
 
 ### State Management
 

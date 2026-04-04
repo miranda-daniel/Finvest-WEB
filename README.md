@@ -7,14 +7,14 @@ Finvest frontend. Connects to the Finvest API backend via GraphQL (Apollo Client
 | Layer | Technology | Version |
 |---|---|---|
 | UI Framework | React | 19 |
-| Build | Vite | 6 |
-| Language | TypeScript | 5.8+ |
+| Build | Vite | 8 |
+| Language | TypeScript | 6 |
 | Styles | Tailwind CSS | v4 |
 | Custom styles | SCSS/Sass | latest |
 | Routing | TanStack Router | v1 (file-based) |
-| Data fetching | Apollo Client | v3 |
+| Data fetching | Apollo Client | v4 |
 | Client/auth state | Zustand | v5 |
-| Validation | Zod | v3 |
+| Validation | Zod | v4 |
 | Forms | React Hook Form | v7 |
 | GraphQL types | graphql-codegen | v5 |
 | Linting | ESLint | v9 |
@@ -34,7 +34,7 @@ npm install
 npm run dev
 ```
 
-The development server runs at `http://localhost:5173`.
+The development server runs at `http://localhost:5100`.
 
 ## Commands
 
@@ -64,7 +64,7 @@ Types are auto-generated from the backend schema. Run `npm run codegen` whenever
 
 **Requires the Finvest API to be running** at `http://localhost:3001/graphql`.
 
-Generated files live in `src/graphql/generated/` — do not edit them manually.
+Generated files live in `src/api/generated/` — do not edit them manually.
 
 ## Routes
 
