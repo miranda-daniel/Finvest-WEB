@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useRouter } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/auth.store'
+import { apolloClient } from '@/graphql/client'
 
 // Shape of the credentials the user submits on the Sign In form.
 interface LoginCredentials {
@@ -57,6 +58,8 @@ export function useLogin() {
 
       const data: LoginResponse = await response.json()
       login(data.token, data.user)
+      // Clear any cached data from a previous session before navigating.
+      await apolloClient.clearStore()
       router.navigate({ to: '/dashboard' })
     } catch {
       setError('Could not connect to the server. Please try again.')
