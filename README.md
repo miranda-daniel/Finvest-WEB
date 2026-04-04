@@ -12,9 +12,10 @@ Finvest frontend. Connects to the Finvest API backend via GraphQL (Apollo Client
 | Styles | Tailwind CSS | v4 |
 | Custom styles | SCSS/Sass | latest |
 | Routing | TanStack Router | v1 (file-based) |
-| Data fetching | Apollo Client | v4 |
+| GraphQL requests | Apollo Client | v4 |
+| REST requests | TanStack Query + Axios | v5 + v1 |
 | Client/auth state | Zustand | v5 |
-| Validation | Zod | v4 |
+| Validation | Zod | v3 |
 | Forms | React Hook Form | v7 |
 | GraphQL types | graphql-codegen | v5 |
 | Linting | ESLint | v9 |
