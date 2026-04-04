@@ -18,7 +18,9 @@ declare module '@tanstack/react-router' {
 
 createRoot(document.getElementById('app')!).render(
   <StrictMode>
+    {/* QueryClientProvider — enables TanStack Query hooks (useQuery, useMutation) for REST requests */}
     <QueryClientProvider client={queryClient}>
+      {/* ApolloProvider — enables Apollo hooks (useQuery, useMutation) for GraphQL requests */}
       <ApolloProvider client={apolloClient}>
         <RouterProvider router={router} />
       </ApolloProvider>

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/auth.store'
 import { apolloClient } from '@/graphql/client'
-import { apiClient } from '@/api/client'
+import { apiClient, getApiError } from '@/api/client'
 
 // Shape of the credentials the user submits on the Sign In form.
 interface LoginCredentials {
@@ -39,7 +39,11 @@ export function useLogin() {
   const login = useAuthStore((s) => s.login)
   const router = useRouter()
 
-  const { mutate: submit, isPending: loading, error } = useMutation({
+  const {
+    mutate: submit,
+    isPending: loading,
+    error,
+  } = useMutation({
     mutationFn: (credentials: LoginCredentials) =>
       apiClient.post<LoginResponse>('/session/login', credentials),
     onSuccess: async ({ data }) => {
@@ -49,10 +53,7 @@ export function useLogin() {
     },
   })
 
-  const errorMessage = error
-    ? (error as { response?: { data?: { description?: string } } }).response?.data?.description ??
-      'Invalid email or password.'
-    : null
+  const errorMessage = error ? getApiError(error, 'Invalid email or password.') : null
 
   return { submit, loading, error: errorMessage }
 }

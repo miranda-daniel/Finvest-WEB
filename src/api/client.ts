@@ -7,10 +7,15 @@
 //   - interceptors: add token refresh, error normalization, etc. here when needed
 //
 // GraphQL requests go through Apollo Client (src/graphql/client.ts), not this.
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 
 export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
 })
+
+// Helper to extract the error message from an Axios response
+export function getApiError(error: unknown, fallback = 'Something went wrong.'): string {
+  return (isAxiosError(error) ? error.response?.data?.description : null) ?? fallback
+}
