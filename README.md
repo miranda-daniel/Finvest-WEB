@@ -4,22 +4,25 @@ Finvest frontend. Connects to the Finvest API backend via GraphQL (Apollo Client
 
 ## Stack
 
-| Layer | Technology | Version |
-|---|---|---|
-| UI Framework | React | 19 |
-| Build | Vite | 8 |
-| Language | TypeScript | 6 |
-| Styles | Tailwind CSS | v4 |
-| Custom styles | SCSS/Sass | latest |
-| Routing | TanStack Router | v1 (file-based) |
-| GraphQL requests | Apollo Client | v4 |
-| REST requests | TanStack Query + Axios | v5 + v1 |
-| Client/auth state | Zustand | v5 |
-| Validation | Zod | v3 |
-| Forms | React Hook Form | v7 |
-| GraphQL types | graphql-codegen | v5 |
-| Linting | ESLint | v9 |
-| Formatting | Prettier | v3 |
+| Layer             | Technology             | Version         |
+| ----------------- | ---------------------- | --------------- |
+| UI Framework      | React                  | 19              |
+| Build             | Vite                   | 8               |
+| Language          | TypeScript             | 6               |
+| Styles            | Tailwind CSS           | v4              |
+| Component library | shadcn/ui              | canary          |
+| Icons             | Lucide React           | latest          |
+| Notifications     | Sonner                 | v2              |
+| Routing           | TanStack Router        | v1 (file-based) |
+| GraphQL requests  | Apollo Client          | v4              |
+| REST requests     | TanStack Query + Axios | v5 + v1         |
+| Client/auth state | Zustand                | v5              |
+| Validation        | Zod                    | v4              |
+| Forms             | React Hook Form        | v7              |
+| Date formatting   | date-fns               | v4              |
+| GraphQL types     | graphql-codegen        | v5              |
+| Linting           | ESLint                 | v9              |
+| Formatting        | Prettier               | v3              |
 
 ## Getting started
 
@@ -27,6 +30,18 @@ Finvest frontend. Connects to the Finvest API backend via GraphQL (Apollo Client
 
 - Node 20.13 / npm 10.5
 - Finvest API running on `http://localhost:3001`
+
+### Environment variables
+
+Copy `.env.example` to `.env.local` and fill in the values:
+
+```bash
+cp .env.example .env.local
+```
+
+| Variable       | Description          | Default                 |
+| -------------- | -------------------- | ----------------------- |
+| `VITE_API_URL` | Finvest API base URL | `http://localhost:3001` |
 
 ### Install and run
 
@@ -66,15 +81,3 @@ Types are auto-generated from the backend schema. Run `npm run codegen` whenever
 **Requires the Finvest API to be running** at `http://localhost:3001/graphql`.
 
 Generated files live in `src/api/generated/` — do not edit them manually.
-
-## Routes
-
-| Route | Access | Description |
-|---|---|---|
-| `/` | Public | Home |
-| `/login` | Public | Login |
-| `/dashboard` | Authenticated | Dashboard (redirects to `/login` if no session) |
-
-## Code Style
-
-All code comments must be written in **English**.
