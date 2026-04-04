@@ -83,7 +83,7 @@ The caching solution depends on the transport:
 
 **GraphQL requests** — Apollo's `InMemoryCache` handles caching automatically. No extra setup needed per query.
 
-**REST requests** — TanStack Query is not yet installed. Add it when the first REST endpoint that benefits from caching is implemented. Auth endpoints (login/logout) do not need caching — do not add TanStack Query just for those.
+**REST requests** — TanStack Query (`@tanstack/react-query`) + Axios (`axios`) are installed and configured. Use `useMutation` for write operations (login, create, update, delete) and `useQuery` for read operations. The shared Axios instance is at `src/api/client.ts` — always import from there, never instantiate Axios directly.
 
 ### State Management
 
