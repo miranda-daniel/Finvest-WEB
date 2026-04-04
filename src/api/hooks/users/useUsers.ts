@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { GetUsersDocument } from '@/api/generated/graphql'
 import type { GetUsersQuery } from '@/api/generated/graphql'
 
@@ -26,7 +26,7 @@ export function useUsers() {
   const { data, loading, error } = useQuery<GetUsersQuery>(GetUsersDocument)
 
   return {
-    users: data?.users ?? [],
+    users: data?.users ?? ([] as GetUsersQuery['users']),
     loading,
     error,
   }
