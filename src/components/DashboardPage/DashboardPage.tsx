@@ -1,3 +1,4 @@
+import { useRouter } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/auth.store'
 import { usePortfolios } from '@/api/hooks/portfolios/usePortfolios'
 
@@ -7,15 +8,14 @@ import { usePortfolios } from '@/api/hooks/portfolios/usePortfolios'
 // Fetches the user's portfolios via GraphQL using usePortfolios().
 // The JWT is injected automatically by Apollo Client's authLink.
 export function DashboardPage() {
+  const router = useRouter()
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
   const { portfolios, loading, error } = usePortfolios()
 
   function handleLogout() {
     logout()
-    // TanStack Router's _authenticated beforeLoad() will redirect to /login
-    // on the next navigation. Force a redirect now for immediate effect.
-    window.location.href = '/login'
+    router.navigate({ to: '/login' })
   }
 
   return (

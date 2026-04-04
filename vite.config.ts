@@ -11,8 +11,8 @@ export default defineConfig({
     proxy: {
       // Forward /graphql and /session requests to the API during development.
       // In production, the reverse proxy (nginx, etc.) handles this.
-      '/graphql': 'http://localhost:3001',
-      '/session': 'http://localhost:3001',
+      '/graphql': process.env.VITE_API_URL ?? 'http://localhost:3001',
+      '/session': process.env.VITE_API_URL ?? 'http://localhost:3001',
     },
   },
   resolve: {

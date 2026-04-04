@@ -2,6 +2,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useLogin } from '@/api/hooks/auth/useLogin'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const signInSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address.' }),
@@ -26,24 +29,24 @@ export function SignInForm() {
   })
 
   return (
-    <form onSubmit={handleSubmit((data) => submit(data))} noValidate>
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" {...register('email')} />
-        {errors.email && <p>{errors.email.message}</p>}
+    <form onSubmit={handleSubmit((data) => submit(data))} noValidate className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" placeholder="you@example.com" aria-invalid={!!errors.email} {...register('email')} />
+        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
       </div>
 
-      <div>
-        <label htmlFor="password">Password</label>
-        <input id="password" type="password" {...register('password')} />
-        {errors.password && <p>{errors.password.message}</p>}
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="password">Password</Label>
+        <Input id="password" type="password" placeholder="••••••••" aria-invalid={!!errors.password} {...register('password')} />
+        {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
       </div>
 
-      {error && <p>{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <button type="submit" disabled={loading}>
+      <Button type="submit" disabled={loading} className="w-full mt-2">
         {loading ? 'Signing in...' : 'Sign in'}
-      </button>
+      </Button>
     </form>
   )
 }

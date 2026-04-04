@@ -54,6 +54,17 @@ Never commit automatically. Leave all changes in the working area and let the us
 
 ## File Structure
 
+### Naming conventions
+
+| File type | Convention | Example |
+|---|---|---|
+| React components | `PascalCase` | `SignInForm.tsx` |
+| Hooks, stores, utils | `camelCase` | `useLogin.ts`, `auth.store.ts` |
+| Route files | `kebab-case` | `sign-up.tsx` → `/sign-up` |
+| Style files | `kebab-case` | `text-styles.scss` |
+
+Route files use kebab-case because the filename becomes the URL segment. Component files use PascalCase so the filename matches the exported component name.
+
 ### Components
 
 - Location: `src/components/`
@@ -114,3 +125,79 @@ export function useLogin() {
 
 - Local state: `useState`
 - Global state: Zustand
+
+## Design System
+
+Finvest uses a **dark-first** design. There is no light mode. All components are built around the dark theme.
+
+A full UI mockup is at [`docs/design/portfolio-dashboard-mockup.jsx`](docs/design/portfolio-dashboard-mockup.jsx) — use it as the visual reference for layout, spacing, and component patterns.
+
+### Theme
+
+The font is **Geist Variable** (configured in `@theme` in `index.css`). shadcn CSS variables are set to dark values in `:root` — there is no `.dark` class toggle.
+
+Never use raw hex codes for surfaces or semantic colors. Use the Tailwind tokens defined in `@theme` in `index.css`:
+
+| Token | Usage |
+|---|---|
+| `bg-surface-base` | App background (`#0a0b10`) |
+| `bg-surface-raised` | Chart / table inner panels (`#0d1017`) |
+| `bg-surface-overlay` | Tooltips, popovers (`#0f131b`) |
+| `text-gain` / `bg-gain` | Positive P&L, gains |
+| `text-loss` / `bg-loss` | Negative P&L, losses |
+| `text-dividend` | Dividend operations |
+| `text-fee` | Fee operations |
+
+### Card pattern
+
+All cards follow this Tailwind class pattern:
+
+```
+rounded-3xl border border-white/10 bg-white/5 backdrop-blur shadow-2xl shadow-black/20
+```
+
+- Inner panels / chart containers: `rounded-2xl border border-white/5 bg-[#0d1017]`
+- Stat cards (summary metrics): `bg-gradient-to-b from-white/10 to-white/5`
+- Badges / pills: `rounded-xl`
+- Pill labels (e.g. breadcrumb tags): `rounded-full border border-white/10 bg-white/5`
+
+### Typography
+
+| Role | Class |
+|---|---|
+| Page title | `text-3xl font-semibold tracking-tight` |
+| Section title | `text-lg font-semibold` |
+| Body / value text | `text-slate-100` (default foreground) |
+| Secondary text | `text-slate-300` |
+| Muted labels | `text-slate-400` |
+
+### Semantic colors
+
+These colors carry fixed meaning across the app — always use them consistently:
+
+| Meaning | Color |
+|---|---|
+| Gain / positive P&L | `text-emerald-400` / `bg-emerald-400/15 text-emerald-300` |
+| Loss / negative P&L | `text-rose-400` / `bg-rose-400/15 text-rose-300` |
+| Dividend | `bg-sky-400/15 text-sky-300` |
+| Fee | `bg-amber-400/15 text-amber-300` |
+| Daily gainers bar | `#14b8a6` (teal-500) |
+| Daily losers bar | `#f43f5e` (rose-500) |
+
+### Buttons
+
+- Primary action: `bg-white text-slate-950 hover:bg-slate-200 rounded-2xl`
+- Secondary / outline: `border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 rounded-2xl`
+- Ghost (table header sort): `hover:bg-transparent hover:text-white text-slate-300`
+- Range selector (active): `bg-white text-slate-950 rounded-xl h-8`
+- Range selector (inactive): `border-white/10 bg-white/5 text-slate-300 rounded-xl h-8`
+
+### Charts and tables
+
+- Charts: **Recharts** (`AreaChart`, `LineChart`, `BarChart`, `PieChart`)
+- Tables: **TanStack Table** (`@tanstack/react-table`)
+- Chart grid lines: `stroke="rgba(255,255,255,0.08)"` with `strokeDasharray="4 6"`
+- Axis ticks: `fill="rgba(148,163,184,0.95)"` (slate-400), `fontSize: 11`
+- Chart tooltip container: `rounded-2xl border border-white/10 bg-[#0f131b]/95 backdrop-blur`
+- Pie chart colors: use the `pieColors` array from the mockup (blue/cyan/orange/purple palette)
+- Allocation bar tracks: `bg-white/10 rounded-full`, fill: `bg-white`
