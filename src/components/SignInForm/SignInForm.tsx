@@ -26,7 +26,7 @@ export function SignInForm() {
   })
 
   return (
-    <form onSubmit={handleSubmit(submit)} noValidate>
+    <form onSubmit={handleSubmit((data) => submit(data))} noValidate>
       <div>
         <label htmlFor="email">Email</label>
         <input id="email" type="email" {...register('email')} />
