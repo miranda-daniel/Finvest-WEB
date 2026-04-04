@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { useUsers } from '@/api/hooks/users/useUsers'
 
@@ -38,6 +38,9 @@ function HomePage() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-4">Finvest</h1>
+      <Link to="/login" className="inline-block mb-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        Sign in
+      </Link>
       <h2 className="text-lg font-semibold mb-2">Users ({users.length})</h2>
       <ul className="space-y-1">
         {users.map((user) => (
