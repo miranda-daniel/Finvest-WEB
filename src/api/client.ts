@@ -13,6 +13,7 @@ import axios, { isAxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/stores/auth.store'
 
 export const apiClient = axios.create({
+  withCredentials: true, // required for HTTP-only cookies to be sent cross-origin
   headers: {
     'Content-Type': 'application/json',
   },
