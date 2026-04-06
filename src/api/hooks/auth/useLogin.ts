@@ -11,9 +11,9 @@ interface LoginCredentials {
 }
 
 // Shape of the response returned by POST /session/login.
-// Mirrors SessionUser + token from the API (src/types/session.ts).
+// Mirrors Session from the API (src/types/session.ts).
 interface LoginResponse {
-  token: string
+  jwtToken: string
   user: {
     id: number
     email: string
@@ -26,10 +26,12 @@ interface LoginResponse {
 //
 // Flow:
 //   1. Calls POST /session/login (REST — auth endpoints use REST per architecture rules)
-//   2. On success: stores token + user in Zustand (persisted to localStorage)
+//   2. On success: stores JWT in memory + user in Zustand (user persisted to localStorage)
 //   3. On success: clears Apollo cache to avoid stale data from a previous session
 //   4. On success: navigates to /dashboard
 //   5. On failure: Axios rejects on 4xx/5xx — error is available via the mutation state
+//
+// The refresh token is set as an HTTP-only cookie by the backend automatically.
 //
 // Returns:
 //   submit  — function to call with { email, password }
@@ -47,7 +49,7 @@ export function useLogin() {
     mutationFn: (credentials: LoginCredentials) =>
       apiClient.post<LoginResponse>('/session/login', credentials),
     onSuccess: async ({ data }) => {
-      login(data.token, data.user)
+      login(data.jwtToken, data.user)
       await apolloClient.clearStore()
       router.navigate({ to: '/dashboard' })
     },
