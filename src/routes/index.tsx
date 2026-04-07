@@ -1,10 +1,10 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect } from 'react'
-import { useUsers } from '@/api/hooks/users/useUsers'
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { useUsers } from '@/api/hooks/users/useUsers';
 
 export const Route = createFileRoute('/')({
   component: HomePage,
-})
+});
 
 // HomePage — root page of the app.
 //
@@ -20,20 +20,20 @@ export const Route = createFileRoute('/')({
 //   9. Response travels back: API → Vite proxy → Apollo Client → InMemoryCache
 //  10. useQuery returns data → useUsers returns { users, loading, error }
 //  11. Component re-renders with the user list
-function HomePage() {
-  const { users, loading, error } = useUsers()
+const HomePage = () => {
+  const { users, loading, error } = useUsers();
 
   // Log to console when data arrives so the full round-trip is visible in DevTools.
   // Open the browser console (F12) and look for "[HomePage] Users fetched from API:"
   useEffect(() => {
     if (users.length > 0) {
-      console.log('[HomePage] Users fetched from API:', users)
+      console.log('[HomePage] Users fetched from API:', users);
     }
-  }, [users])
+  }, [users]);
 
-  if (loading) return <p className="p-8 text-gray-500">Loading users...</p>
+  if (loading) return <p className="p-8 text-gray-500">Loading users...</p>;
 
-  if (error) return <p className="p-8 text-red-500">Error: {error.message}</p>
+  if (error) return <p className="p-8 text-red-500">Error: {error.message}</p>;
 
   return (
     <div className="p-8">
@@ -53,5 +53,5 @@ function HomePage() {
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};

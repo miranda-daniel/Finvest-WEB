@@ -1,6 +1,6 @@
-import { useQuery } from '@apollo/client/react'
-import { GetPortfoliosDocument } from '@/api/generated/graphql'
-import type { GetPortfoliosQuery } from '@/api/generated/graphql'
+import { useQuery } from '@apollo/client/react';
+import { GetPortfoliosDocument } from '@/api/generated/graphql';
+import type { GetPortfoliosQuery } from '@/api/generated/graphql';
 
 // usePortfolios — fetches the authenticated user's portfolios via GraphQL.
 //
@@ -17,12 +17,12 @@ import type { GetPortfoliosQuery } from '@/api/generated/graphql'
 //   portfolios — Portfolio[] (empty array while loading or on error)
 //   loading    — true while the request is in flight
 //   error      — ApolloError if the request failed, undefined otherwise
-export function usePortfolios() {
-  const { data, loading, error } = useQuery<GetPortfoliosQuery>(GetPortfoliosDocument)
+export const usePortfolios = () => {
+  const { data, loading, error } = useQuery<GetPortfoliosQuery>(GetPortfoliosDocument);
 
   return {
     portfolios: data?.portfolios ?? [],
     loading,
     error,
-  }
-}
+  };
+};

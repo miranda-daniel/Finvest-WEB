@@ -34,6 +34,7 @@ Never commit automatically. Leave all changes in the working area and let the us
 
 - Use strict TypeScript - no `any` types
 - Prefer interfaces over type aliases for objects
+- Always use arrow functions (`const foo = () => {}`) — never `function` declarations
 
 ### React
 

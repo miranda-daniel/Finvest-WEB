@@ -4,21 +4,21 @@
 // Interceptors are registered in src/api/interceptors/ and applied here.
 //
 // GraphQL requests go through Apollo Client (src/graphql/client.ts), not this.
-import axios, { isAxiosError } from 'axios'
-import { applyRequestInterceptor } from '@/api/interceptors/request.interceptor'
-import { applyResponseInterceptor } from '@/api/interceptors/response.interceptor'
+import axios, { isAxiosError } from 'axios';
+import { applyRequestInterceptor } from '@/api/interceptors/request.interceptor';
+import { applyResponseInterceptor } from '@/api/interceptors/response.interceptor';
 
 export const apiClient = axios.create({
   withCredentials: true, // required for HTTP-only cookies to be sent cross-origin
   headers: {
     'Content-Type': 'application/json',
   },
-})
+});
 
-applyRequestInterceptor(apiClient)
-applyResponseInterceptor(apiClient)
+applyRequestInterceptor(apiClient);
+applyResponseInterceptor(apiClient);
 
 // Helper to extract the error message from an Axios response
-export function getApiError(error: unknown, fallback = 'Something went wrong.'): string {
-  return (isAxiosError(error) ? error.response?.data?.description : null) ?? fallback
-}
+export const getApiError = (error: unknown, fallback = 'Something went wrong.'): string => {
+  return (isAxiosError(error) ? error.response?.data?.description : null) ?? fallback;
+};

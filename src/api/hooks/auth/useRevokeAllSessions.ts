@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { apiClient, getApiError } from '@/api/client'
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiClient, getApiError } from '@/api/client';
 
 // useRevokeAllSessions — revokes all active sessions for the current user.
 //
@@ -8,18 +8,22 @@ import { apiClient, getApiError } from '@/api/client'
 //
 // Note: revoking all sessions also invalidates the current session, so the caller
 // should trigger logout after a successful revocation.
-export function useRevokeAllSessions() {
-  const queryClient = useQueryClient()
+export const useRevokeAllSessions = () => {
+  const queryClient = useQueryClient();
 
-  const { mutate: revokeAll, isPending: loading, error } = useMutation({
+  const {
+    mutate: revokeAll,
+    isPending: loading,
+    error,
+  } = useMutation({
     mutationFn: () => apiClient.post('/session/revoke-all'),
     onSuccess: () => {
       // Invalidate sessions cache so the list refreshes if the user stays on the page.
-      queryClient.invalidateQueries({ queryKey: ['active-sessions'] })
+      queryClient.invalidateQueries({ queryKey: ['active-sessions'] });
     },
-  })
+  });
 
-  const errorMessage = error ? getApiError(error, 'Failed to revoke sessions.') : null
+  const errorMessage = error ? getApiError(error, 'Failed to revoke sessions.') : null;
 
-  return { revokeAll, loading, error: errorMessage }
-}
+  return { revokeAll, loading, error: errorMessage };
+};

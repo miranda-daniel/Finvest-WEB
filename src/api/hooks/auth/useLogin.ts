@@ -1,25 +1,25 @@
-import { useMutation } from '@tanstack/react-query'
-import { useRouter } from '@tanstack/react-router'
-import { useAuthStore } from '@/stores/auth.store'
-import { apolloClient } from '@/graphql/client'
-import { apiClient, getApiError } from '@/api/client'
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from '@tanstack/react-router';
+import { useAuthStore } from '@/stores/auth.store';
+import { apolloClient } from '@/graphql/client';
+import { apiClient, getApiError } from '@/api/client';
 
 // Shape of the credentials the user submits on the Sign In form.
 interface LoginCredentials {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 // Shape of the response returned by POST /session/login.
 // Mirrors Session from the API (src/types/session.ts).
 interface LoginResponse {
-  jwtToken: string
+  jwtToken: string;
   user: {
-    id: number
-    email: string
-    firstName: string
-    lastName: string
-  }
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
 }
 
 // useLogin — handles the Sign In form submission.
@@ -37,9 +37,9 @@ interface LoginResponse {
 //   submit  — function to call with { email, password }
 //   loading — true while the request is in flight
 //   error   — error message string if the request failed, null otherwise
-export function useLogin() {
-  const login = useAuthStore((s) => s.login)
-  const router = useRouter()
+export const useLogin = () => {
+  const login = useAuthStore((s) => s.login);
+  const router = useRouter();
 
   const {
     mutate: submit,
@@ -49,13 +49,14 @@ export function useLogin() {
     mutationFn: (credentials: LoginCredentials) =>
       apiClient.post<LoginResponse>('/session/login', credentials),
     onSuccess: async ({ data }) => {
-      login(data.jwtToken, data.user)
-      await apolloClient.clearStore()
-      router.navigate({ to: '/dashboard' })
+      login(data.jwtToken, data.user);
+      // Clear Apollo cache so GraphQL queries from a previous session don't bleed into this one.
+      await apolloClient.clearStore();
+      router.navigate({ to: '/dashboard' });
     },
-  })
+  });
 
-  const errorMessage = error ? getApiError(error, 'Invalid email or password.') : null
+  const errorMessage = error ? getApiError(error, 'Invalid email or password.') : null;
 
-  return { submit, loading, error: errorMessage }
-}
+  return { submit, loading, error: errorMessage };
+};

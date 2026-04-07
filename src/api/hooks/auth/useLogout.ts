@@ -1,8 +1,8 @@
-import { useMutation } from '@tanstack/react-query'
-import { useRouter } from '@tanstack/react-router'
-import { useAuthStore } from '@/stores/auth.store'
-import { apolloClient } from '@/graphql/client'
-import { apiClient } from '@/api/client'
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from '@tanstack/react-router';
+import { useAuthStore } from '@/stores/auth.store';
+import { apolloClient } from '@/graphql/client';
+import { apiClient } from '@/api/client';
 
 // useLogout — handles logout flow.
 //
@@ -17,20 +17,20 @@ import { apiClient } from '@/api/client'
 //
 // onSettled is used instead of onSuccess so that auth state is always
 // cleared regardless of whether the logout request succeeded.
-export function useLogout() {
-  const clearAuth = useAuthStore((s) => s.clearAuth)
-  const router = useRouter()
+export const useLogout = () => {
+  const clearAuth = useAuthStore((s) => s.clearAuth);
+  const router = useRouter();
 
   const { mutate: logout, isPending: loading } = useMutation({
     mutationFn: () => apiClient.post('/session/logout'),
     onSettled: async () => {
       // Clear auth state regardless of whether the logout request succeeded.
       // The user should always be taken to /login on logout intent.
-      clearAuth()
-      await apolloClient.clearStore()
-      router.navigate({ to: '/login' })
+      clearAuth();
+      await apolloClient.clearStore();
+      router.navigate({ to: '/login' });
     },
-  })
+  });
 
-  return { logout, loading }
-}
+  return { logout, loading };
+};

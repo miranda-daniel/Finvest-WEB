@@ -1,6 +1,6 @@
-import { useQuery } from '@apollo/client/react'
-import { GetUsersDocument } from '@/api/generated/graphql'
-import type { GetUsersQuery } from '@/api/generated/graphql'
+import { useQuery } from '@apollo/client/react';
+import { GetUsersDocument } from '@/api/generated/graphql';
+import type { GetUsersQuery } from '@/api/generated/graphql';
 
 // useUsers — fetches the full user list from the API via GraphQL.
 //
@@ -22,12 +22,12 @@ import type { GetUsersQuery } from '@/api/generated/graphql'
 //   users   — User[] (empty array while loading or on error)
 //   loading — true while the request is in flight
 //   error   — ApolloError if the request failed, undefined otherwise
-export function useUsers() {
-  const { data, loading, error } = useQuery<GetUsersQuery>(GetUsersDocument)
+export const useUsers = () => {
+  const { data, loading, error } = useQuery<GetUsersQuery>(GetUsersDocument);
 
   return {
     users: data?.users ?? ([] as GetUsersQuery['users']),
     loading,
     error,
-  }
-}
+  };
+};

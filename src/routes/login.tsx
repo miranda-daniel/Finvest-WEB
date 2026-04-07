@@ -1,12 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { SignInForm } from '@/components/SignInForm'
-import { Card, CardContent } from '@/components/ui/card'
+import { createFileRoute } from '@tanstack/react-router';
+import { SignInForm } from '@/components/SignInForm';
+import { Card, CardContent } from '@/components/ui/card';
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
-})
+});
 
-function LoginPage() {
+const LoginPage = () => {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface-base">
       {/* Ambient glow */}
@@ -28,5 +28,5 @@ function LoginPage() {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};

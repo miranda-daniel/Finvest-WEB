@@ -1,19 +1,21 @@
-import { UAParser } from 'ua-parser-js'
-import { useAuthStore } from '@/stores/auth.store'
-import { usePortfolios } from '@/api/hooks/portfolios/usePortfolios'
-import { useLogout } from '@/api/hooks/auth/useLogout'
-import { useActiveSessions } from '@/api/hooks/auth/useActiveSessions'
-import { useRevokeAllSessions } from '@/api/hooks/auth/useRevokeAllSessions'
+import { UAParser } from 'ua-parser-js';
+import { useAuthStore } from '@/stores/auth.store';
+import { usePortfolios } from '@/api/hooks/portfolios/usePortfolios';
+import { useLogout } from '@/api/hooks/auth/useLogout';
+import { useActiveSessions } from '@/api/hooks/auth/useActiveSessions';
+import { useRevokeAllSessions } from '@/api/hooks/auth/useRevokeAllSessions';
 
 // Parses a User-Agent string into a human-readable device description.
 // Returns "Unknown device" if the UA string is null or unparseable.
-function parseUserAgent(ua: string | null): string {
-  if (!ua) return 'Unknown device'
-  const parser = new UAParser(ua)
-  const os = parser.getOS().name ?? 'Unknown OS'
-  const browser = parser.getBrowser().name ?? 'Unknown browser'
-  return `${browser} on ${os}`
-}
+const parseUserAgent = (ua: string | null): string => {
+  if (!ua) return 'Unknown device';
+
+  const parser = new UAParser(ua);
+  const os = parser.getOS().name ?? 'Unknown OS';
+  const browser = parser.getBrowser().name ?? 'Unknown browser';
+
+  return `${browser} on ${os}`;
+};
 
 // DashboardPage — the main authenticated page.
 //
@@ -21,20 +23,20 @@ function parseUserAgent(ua: string | null): string {
 // Fetches the user's portfolios via GraphQL using usePortfolios().
 // Fetches the user's active sessions via REST using useActiveSessions().
 // Provides a "Revoke all devices" button that revokes all sessions then logs out.
-export function DashboardPage() {
-  const user = useAuthStore((s) => s.user)
-  const { logout } = useLogout()
-  const { portfolios, loading: portfoliosLoading, error: portfoliosError } = usePortfolios()
-  const { sessions, loading: sessionsLoading, error: sessionsError } = useActiveSessions()
-  const { revokeAll, loading: revoking } = useRevokeAllSessions()
+export const DashboardPage = () => {
+  const user = useAuthStore((s) => s.user);
+  const { logout } = useLogout();
+  const { portfolios, loading: portfoliosLoading, error: portfoliosError } = usePortfolios();
+  const { sessions, loading: sessionsLoading, error: sessionsError } = useActiveSessions();
+  const { revokeAll, loading: revoking } = useRevokeAllSessions();
 
   // Revoke all sessions then immediately log out, because the current session
   // is also revoked and can no longer be used.
   const handleRevokeAll = () => {
     revokeAll(undefined, {
       onSuccess: () => logout(),
-    })
-  }
+    });
+  };
 
   return (
     <div className="p-8">
@@ -75,10 +77,7 @@ export function DashboardPage() {
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-semibold">Active Sessions</h2>
-          <button
-            onClick={handleRevokeAll}
-            disabled={revoking || sessionsLoading}
-          >
+          <button onClick={handleRevokeAll} disabled={revoking || sessionsLoading}>
             {revoking ? 'Revoking...' : 'Revoke all devices'}
           </button>
         </div>
@@ -106,5 +105,5 @@ export function DashboardPage() {
         )}
       </section>
     </div>
-  )
-}
+  );
+};
