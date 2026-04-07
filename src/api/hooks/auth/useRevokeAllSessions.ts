@@ -23,7 +23,7 @@ export const useRevokeAllSessions = () => {
     },
   });
 
-  const errorMessage = error ? getApiError(error, 'Failed to revoke sessions.') : null;
+  const errorMessage = getApiError(error, 'Failed to revoke sessions.');
 
   return { revokeAll, loading, error: errorMessage };
 };

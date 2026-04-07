@@ -1,3 +1,7 @@
+// Authentication layout route — wraps all routes under src/routes/_authenticated/.
+// Any route placed in that folder is automatically protected: beforeLoad runs first,
+// checks for a valid JWT, and redirects to /login if the user is not authenticated.
+// To protect a new route, just create it inside _authenticated/ — no extra auth logic needed.
 import { createFileRoute, redirect, Outlet } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth.store';
 import { apiClient } from '@/api/client';

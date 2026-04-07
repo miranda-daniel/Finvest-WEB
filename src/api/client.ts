@@ -18,7 +18,9 @@ export const apiClient = axios.create({
 applyRequestInterceptor(apiClient);
 applyResponseInterceptor(apiClient);
 
-// Helper to extract the error message from an Axios response
-export const getApiError = (error: unknown, fallback = 'Something went wrong.'): string => {
+// Helper to extract the error message from an Axios response.
+// Returns null if error is null/undefined — allows calling without a ternary guard.
+export const getApiError = (error: unknown, fallback = 'Something went wrong.'): string | null => {
+  if (!error) return null;
   return (isAxiosError(error) ? error.response?.data?.description : null) ?? fallback;
 };

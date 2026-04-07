@@ -35,6 +35,7 @@ Never commit automatically. Leave all changes in the working area and let the us
 - Use strict TypeScript - no `any` types
 - Prefer interfaces over type aliases for objects
 - Always use arrow functions (`const foo = () => {}`) — never `function` declarations
+- **Exception:** route files (`src/routes/`) use `function` declarations for page components so the `Route` export stays at the top of the file (function declarations hoist, arrow functions don't)
 
 ### React
 

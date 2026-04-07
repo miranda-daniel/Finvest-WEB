@@ -20,7 +20,7 @@ export const Route = createFileRoute('/')({
 //   9. Response travels back: API → Vite proxy → Apollo Client → InMemoryCache
 //  10. useQuery returns data → useUsers returns { users, loading, error }
 //  11. Component re-renders with the user list
-const HomePage = () => {
+function HomePage() {
   const { users, loading, error } = useUsers();
 
   // Log to console when data arrives so the full round-trip is visible in DevTools.
@@ -54,4 +54,4 @@ const HomePage = () => {
       </ul>
     </div>
   );
-};
+}

@@ -6,7 +6,7 @@ export const Route = createFileRoute('/login')({
   component: LoginPage,
 });
 
-const LoginPage = () => {
+function LoginPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface-base">
       {/* Ambient glow */}
@@ -29,4 +29,4 @@ const LoginPage = () => {
       </div>
     </div>
   );
-};
+}

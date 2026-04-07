@@ -4,7 +4,7 @@ export const Route = createFileRoute('/$')({
   component: NotFoundPage,
 });
 
-const NotFoundPage = () => {
+function NotFoundPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-surface-base text-slate-100">
       <div className="text-center">
@@ -20,4 +20,4 @@ const NotFoundPage = () => {
       </Link>
     </div>
   );
-};
+}

@@ -20,7 +20,7 @@ export const useActiveSessions = () => {
     queryFn: () => apiClient.get<ActiveSession[]>('/session').then((r) => r.data),
   });
 
-  const errorMessage = error ? getApiError(error, 'Failed to load sessions.') : null;
+  const errorMessage = getApiError(error, 'Failed to load sessions.');
 
   return {
     sessions: data ?? [],

@@ -56,7 +56,7 @@ export const useLogin = () => {
     },
   });
 
-  const errorMessage = error ? getApiError(error, 'Invalid email or password.') : null;
+  const errorMessage = getApiError(error, 'Invalid email or password.');
 
   return { submit, loading, error: errorMessage };
 };
