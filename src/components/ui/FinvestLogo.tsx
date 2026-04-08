@@ -1,6 +1,8 @@
 // Finvest SVG logo — icon + wordmark.
 // Accepts a `size` prop (icon height in px, defaults to 28).
-// The wordmark font-size scales proportionally.
+// Clicking the logo navigates to /dashboard.
+
+import { Link } from '@tanstack/react-router';
 
 interface FinvestLogoProps {
   size?: number;
@@ -8,9 +10,10 @@ interface FinvestLogoProps {
 
 export const FinvestLogo = ({ size = 28 }: FinvestLogoProps) => {
   const textSize = Math.round(size * 0.6);
+  const gap = Math.round(size * 0.32);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: Math.round(size * 0.32) }}>
+    <Link to="/dashboard" className="flex items-center" style={{ gap }}>
       <svg
         width={size}
         height={size}
@@ -58,16 +61,11 @@ export const FinvestLogo = ({ size = 28 }: FinvestLogoProps) => {
       </svg>
 
       <span
-        style={{
-          fontSize: textSize,
-          fontWeight: 600,
-          letterSpacing: '-0.03em',
-          color: '#f1f5f9',
-          lineHeight: 1,
-        }}
+        className="font-semibold tracking-tight text-slate-100"
+        style={{ fontSize: textSize, lineHeight: 1 }}
       >
         Finvest
       </span>
-    </div>
+    </Link>
   );
 };

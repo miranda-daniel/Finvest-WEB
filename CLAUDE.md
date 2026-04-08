@@ -138,6 +138,8 @@ A full UI mockup is at [`docs/design/portfolio-dashboard-mockup.jsx`](docs/desig
 
 The font is **Geist Variable** (configured in `@theme` in `index.css`). shadcn CSS variables are set to dark values in `:root` — there is no `.dark` class toggle.
 
+**Always use Tailwind CSS classes for styling new components.** Never use inline `style={{}}` objects — they bypass the design system, are harder to read, and inconsistent with the rest of the codebase. The only exception is for dynamic values that cannot be expressed as static Tailwind classes (e.g. a calculated pixel width from a JS variable).
+
 Never use raw hex codes for surfaces or semantic colors. Use the Tailwind tokens defined in `@theme` in `index.css`:
 
 | Token | Usage |
@@ -168,10 +170,12 @@ rounded-3xl border border-white/10 bg-white/5 backdrop-blur shadow-2xl shadow-bl
 | Role | Class |
 |---|---|
 | Page title | `text-3xl font-semibold tracking-tight` |
-| Section title | `text-lg font-semibold` |
+| Section title | `text-lg font-semibold text-slate-100` |
+| Section subtitle | `text-sm text-slate-400` (description line below a section title) |
 | Body / value text | `text-slate-100` (default foreground) |
 | Secondary text | `text-slate-300` |
 | Muted labels | `text-slate-400` |
+| Tiny meta / field labels | `text-xs text-slate-400 uppercase tracking-wide` |
 
 ### Semantic colors
 
