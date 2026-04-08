@@ -39,7 +39,7 @@ export const DashboardPage = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="pt-20 px-8 pb-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>

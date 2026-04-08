@@ -5,6 +5,7 @@
 import { createFileRoute, redirect, Outlet } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth.store';
 import { apiClient } from '@/api/client';
+import { Navbar } from '@/components/Navbar';
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async () => {
@@ -22,5 +23,10 @@ export const Route = createFileRoute('/_authenticated')({
       }
     }
   },
-  component: () => <Outlet />,
+  component: () => (
+    <>
+      <Navbar />
+      <Outlet />
+    </>
+  ),
 });
