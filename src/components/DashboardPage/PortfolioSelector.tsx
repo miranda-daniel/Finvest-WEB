@@ -67,7 +67,7 @@ export const PortfolioSelector = ({ portfolios, loading }: PortfolioSelectorProp
               className="flex cursor-pointer items-center gap-2.5 rounded-[9px] px-3 py-2 text-sm text-slate-300 outline-none transition-colors hover:bg-white/4 focus:bg-white/4 data-highlighted:bg-white/4"
               onClick={() => setSelectedPortfolio(null)}
             >
-              <span className="size-[7px] shrink-0 rounded-full" style={{ backgroundColor: ALL_COLOR }} />
+              <span className="size-1.75 shrink-0 rounded-full" style={{ backgroundColor: ALL_COLOR }} />
               <span className={selectedPortfolioId === null ? 'font-medium text-slate-100' : ''}>
                 All Portfolios
               </span>
@@ -89,7 +89,7 @@ export const PortfolioSelector = ({ portfolios, loading }: PortfolioSelectorProp
                   className="flex cursor-pointer items-center gap-2.5 rounded-[9px] px-3 py-2 text-sm text-slate-300 outline-none transition-colors hover:bg-white/4 focus:bg-white/4 data-highlighted:bg-white/4"
                   onClick={() => setSelectedPortfolio(portfolio.id)}
                 >
-                  <span className="size-[7px] shrink-0 rounded-full" style={{ backgroundColor: color }} />
+                  <span className="size-1.75 shrink-0 rounded-full" style={{ backgroundColor: color }} />
                   <span className={isSelected ? 'font-medium text-slate-100' : ''}>
                     {portfolio.name}
                   </span>
