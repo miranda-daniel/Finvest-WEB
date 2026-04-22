@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
 interface DashboardStore {
-  selectedPortfolioId: string | null; // null = "All Portfolios"
-  setSelectedPortfolio: (id: string | null) => void;
+  selectedPortfolioId: number | null; // null = "All Portfolios"
+  setSelectedPortfolio: (id: number | null) => void;
 }
 
 export const useDashboardStore = create<DashboardStore>()((set) => ({

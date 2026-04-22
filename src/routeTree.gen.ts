@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignUpRouteImport } from './routes/sign-up'
+import { Route as MockupRouteImport } from './routes/mockup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SplatRouteImport } from './routes/$'
@@ -20,6 +21,11 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
   path: '/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MockupRoute = MockupRouteImport.update({
+  id: '/mockup',
+  path: '/mockup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -56,6 +62,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/login': typeof LoginRoute
+  '/mockup': typeof MockupRoute
   '/sign-up': typeof SignUpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/login': typeof LoginRoute
+  '/mockup': typeof MockupRoute
   '/sign-up': typeof SignUpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -74,21 +82,37 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/mockup': typeof MockupRoute
   '/sign-up': typeof SignUpRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$' | '/login' | '/sign-up' | '/dashboard' | '/settings'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/login'
+    | '/mockup'
+    | '/sign-up'
+    | '/dashboard'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/login' | '/sign-up' | '/dashboard' | '/settings'
+  to:
+    | '/'
+    | '/$'
+    | '/login'
+    | '/mockup'
+    | '/sign-up'
+    | '/dashboard'
+    | '/settings'
   id:
     | '__root__'
     | '/'
     | '/$'
     | '/_authenticated'
     | '/login'
+    | '/mockup'
     | '/sign-up'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
@@ -99,6 +123,7 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  MockupRoute: typeof MockupRoute
   SignUpRoute: typeof SignUpRoute
 }
 
@@ -109,6 +134,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-up'
       fullPath: '/sign-up'
       preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mockup': {
+      id: '/mockup'
+      path: '/mockup'
+      fullPath: '/mockup'
+      preLoaderRoute: typeof MockupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -175,6 +207,7 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  MockupRoute: MockupRoute,
   SignUpRoute: SignUpRoute,
 }
 export const routeTree = rootRouteImport

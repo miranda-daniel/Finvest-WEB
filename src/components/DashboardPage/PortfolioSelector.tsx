@@ -3,7 +3,7 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { useDashboardStore } from '@/stores/dashboard.store';
 
 interface Portfolio {
-  id: string;
+  id: number;
   name: string;
 }
 
