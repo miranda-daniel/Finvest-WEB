@@ -1,0 +1,8 @@
+mutation SetFavoritePortfolio($portfolioId: Int) {
+  setFavoritePortfolio(portfolioId: $portfolioId) {
+    id
+    name
+    createdAt
+    isFavorite
+  }
+}

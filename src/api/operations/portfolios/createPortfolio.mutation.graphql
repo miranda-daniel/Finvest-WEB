@@ -1,0 +1,8 @@
+mutation CreatePortfolio($name: String!, $isFavorite: Boolean) {
+  createPortfolio(name: $name, isFavorite: $isFavorite) {
+    id
+    name
+    createdAt
+    isFavorite
+  }
+}

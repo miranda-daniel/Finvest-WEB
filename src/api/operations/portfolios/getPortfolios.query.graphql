@@ -13,5 +13,6 @@ query GetPortfolios {
     id
     name
     createdAt
+    isFavorite
   }
 }
