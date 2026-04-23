@@ -43,10 +43,15 @@ call Apollo or `fetch` directly.
 │                   Apollo Client                          │
 │              src/graphql/client.ts                       │
 │                                                          │
-│   Link chain:   authLink  →  httpLink                    │
+│   Link chain:   authLink  →  refreshLink  →  httpLink    │
 │                                                          │
 │   authLink: reads JWT from Zustand, adds header          │
 │     Authorization: Bearer <token>                        │
+│                                                          │
+│   refreshLink: intercepts TOKEN_EXPIRED errors           │
+│     → calls POST /session/refresh-token                  │
+│     → stores new JWT, retries original request           │
+│     → on failure: clears auth, redirects to /login       │
 │                                                          │
 │   httpLink: sends POST to /graphql                       │
 └─────────────────────────┬───────────────────────────────┘
@@ -157,7 +162,7 @@ main.tsx
   </ApolloProvider>
 ```
 
-The link chain has two steps:
+The link chain has three steps:
 
 ```
 authLink
@@ -165,6 +170,14 @@ authLink
   Reads useAuthStore.getState().token (Zustand, outside React lifecycle).
   Adds Authorization: Bearer <token> header.
   No token → adds empty string header (public queries still work).
+
+refreshLink
+  Intercepts TOKEN_EXPIRED GraphQL errors.
+  Calls POST /session/refresh-token (HTTP-only cookie sent automatically).
+  On success: stores new JWT via useAuthStore.getState().setToken(), retries the
+    original request. Concurrent requests during refresh are queued and retried
+    together once the new token arrives.
+  On failure: clears auth state, redirects to /login.
 
 httpLink
   Sends the operation to POST /graphql.
@@ -187,14 +200,15 @@ auth.store.ts
   user: { id, email }    → basic profile, persisted to localStorage
 
   login(token, user)     → called by useLogin hook after successful REST auth
-  logout()               → clears token + user; triggers redirect to /login
+  setToken(token)        → called by refreshLink after a successful token refresh
+  clearAuth()            → clears token + user; called on logout or failed refresh
 ```
 
 It is used in three ways:
 
 | Where | How | Why |
 |---|---|---|
-| `src/graphql/client.ts` | `useAuthStore.getState()` | Read token synchronously, outside React |
+| `src/graphql/client.ts` | `useAuthStore.getState()` | Read token / call setToken / clearAuth synchronously, outside React |
 | `src/routes/_authenticated.tsx` | `useAuthStore.getState()` | Read token in `beforeLoad()`, outside React |
 | Components / hooks | `useAuthStore((s) => s.user)` | Subscribe to state changes reactively |
 
@@ -292,7 +306,7 @@ Codegen scans those files and generates a typed document node per operation.
 | File | Purpose |
 |---|---|
 | `src/main.tsx` | Entry point. Mounts ApolloProvider + RouterProvider. |
-| `src/graphql/client.ts` | Apollo Client instance with authLink + httpLink chain. |
+| `src/graphql/client.ts` | Apollo Client instance with authLink + refreshLink + httpLink chain. |
 | `src/stores/auth.store.ts` | Zustand store. Auth state + localStorage persistence. |
 | `src/routes/__root.tsx` | Root layout. |
 | `src/routes/_authenticated.tsx` | Auth guard for all protected routes. |
