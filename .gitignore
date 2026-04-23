@@ -30,3 +30,4 @@ src/api/generated/
 *.tsbuildinfo
 
 .superpowers/
+docs/superpowers/
