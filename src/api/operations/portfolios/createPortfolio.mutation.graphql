@@ -1,8 +1,15 @@
-mutation CreatePortfolio($name: String!, $isFavorite: Boolean) {
-  createPortfolio(name: $name, isFavorite: $isFavorite) {
-    id
-    name
-    createdAt
-    isFavorite
+# CreatePortfolio — creates a new portfolio for the authenticated user.
+#
+# Requires a valid JWT in the Authorization header (handled automatically
+# by Apollo Client's authLink reading the token from Zustand).
+#
+# The API resolver (src/apollo/resolvers/Mutation.ts) rejects this mutation
+# with UNAUTHENTICATED if no token is present.
+#
+# Run `npm run codegen` (with the API running) to regenerate types after
+# any schema change.
+mutation CreatePortfolio($name: String!, $description: String, $isFavorite: Boolean) {
+  createPortfolio(name: $name, description: $description, isFavorite: $isFavorite) {
+    ...PortfolioFields
   }
 }

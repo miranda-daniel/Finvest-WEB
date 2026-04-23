@@ -10,9 +10,6 @@
 # any schema change.
 query GetPortfolios {
   portfolios {
-    id
-    name
-    createdAt
-    isFavorite
+    ...PortfolioFields
   }
 }

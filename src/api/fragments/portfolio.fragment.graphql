@@ -1,0 +1,7 @@
+fragment PortfolioFields on Portfolio {
+  id
+  name
+  description
+  createdAt
+  isFavorite
+}

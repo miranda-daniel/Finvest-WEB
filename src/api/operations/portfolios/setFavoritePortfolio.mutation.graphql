@@ -1,8 +1,17 @@
+# SetFavoritePortfolio — sets or clears the authenticated user's favorite portfolio.
+#
+# Pass portfolioId: null to remove the favorite (no portfolio will be auto-selected on login).
+#
+# Requires a valid JWT in the Authorization header (handled automatically
+# by Apollo Client's authLink reading the token from Zustand).
+#
+# The API resolver (src/apollo/resolvers/Mutation.ts) rejects this mutation
+# with UNAUTHENTICATED if no token is present.
+#
+# Run `npm run codegen` (with the API running) to regenerate types after
+# any schema change.
 mutation SetFavoritePortfolio($portfolioId: Int) {
   setFavoritePortfolio(portfolioId: $portfolioId) {
-    id
-    name
-    createdAt
-    isFavorite
+    ...PortfolioFields
   }
 }
