@@ -167,15 +167,16 @@ rounded-3xl border border-white/10 bg-white/5 backdrop-blur shadow-2xl shadow-bl
 
 ### Typography
 
-| Role | Class |
+Use the utility classes defined in `src/index.css` — never write raw Tailwind typography classes directly:
+
+| Class | Role |
 |---|---|
-| Page title | `text-3xl font-semibold tracking-tight` |
-| Section title | `text-lg font-semibold text-slate-100` |
-| Section subtitle | `text-sm text-slate-400` (description line below a section title) |
-| Body / value text | `text-slate-100` (default foreground) |
-| Secondary text | `text-slate-300` |
-| Muted labels | `text-slate-400` |
-| Tiny meta / field labels | `text-xs text-slate-400 uppercase tracking-wide` |
+| `.text-heading-1` | Page title (`text-3xl font-semibold tracking-tight text-slate-100`) |
+| `.text-heading-2` | Section title (`text-lg font-semibold text-slate-100`) |
+| `.text-heading-3` | Sub-section title (`text-base font-semibold text-slate-100`) |
+| `.text-body` | Body / value text (`text-sm text-slate-300`) |
+| `.text-subtle` | Secondary / muted text (`text-sm text-slate-400`) |
+| `.text-label` | Field labels, tiny meta (`text-xs font-medium text-slate-400`) |
 
 ### Semantic colors
 
@@ -190,13 +191,28 @@ These colors carry fixed meaning across the app — always use them consistently
 | Daily gainers bar | `#14b8a6` (teal-500) |
 | Daily losers bar | `#f43f5e` (rose-500) |
 
+### UI Components
+
+For common UI primitives (buttons, inputs, checkboxes, selects, switches, dialogs, badges, tabs, tooltips, etc.), always use the shadcn/ui component from `src/components/ui/` if one exists. If the component doesn't exist yet, add it via `npx shadcn@latest add <component>` before building a custom one.
+
+Only build a custom component when:
+- No shadcn equivalent exists, or
+- The use case is so specific that adapting a shadcn component would require more complexity than writing from scratch.
+
 ### Buttons
 
-- Primary action: `bg-white text-slate-950 hover:bg-slate-200 rounded-2xl`
-- Secondary / outline: `border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 rounded-2xl`
-- Ghost (table header sort): `hover:bg-transparent hover:text-white text-slate-300`
-- Range selector (active): `bg-white text-slate-950 rounded-xl h-8`
-- Range selector (inactive): `border-white/10 bg-white/5 text-slate-300 rounded-xl h-8`
+Always use the `<Button>` component from `src/components/ui/button.tsx` for interactive buttons. Native `<button>` elements are only acceptable when the button has highly custom styling that maps to none of the available variants (e.g. the star toggle in `PortfolioCard`, avatar circles, menu items with fully custom layout).
+
+Available variants:
+
+| Variant | Usage |
+|---|---|
+| `primary` (default) | Main CTA — white background, dark text |
+| `secondary` | Secondary action — subtle border and tinted background |
+| `ghost` | Tertiary / inline action — no background until hover |
+| `danger` | Destructive action — rose tint |
+
+Available sizes: `default`, `sm`, `lg`, `icon`, `icon-sm`.
 
 ### Charts and tables
 

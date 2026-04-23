@@ -1,4 +1,5 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@plugin "tailwindcss-animate";
 
 /*
  * CSS Architecture — three layers
@@ -28,13 +29,13 @@
  */
 
 @theme {
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
 
   /* Surfaces */
-  --color-surface-base: #0a0b10;     /* app background */
-  --color-surface-raised: #0d1017;   /* chart / table inner panels */
-  --color-surface-overlay: #0f131b;  /* tooltips, popovers */
+  --color-surface-base: #0a0b10; /* app background */
+  --color-surface-raised: #0d1017; /* chart / table inner panels */
+  --color-surface-overlay: #0f131b; /* tooltips, popovers */
 
   /* Semantic — P&L and operation types */
   --color-gain: var(--color-emerald-400);
@@ -100,6 +101,47 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
+}
+
+/* Typography scale — use these classes on the appropriate semantic element (h1, h2, etc.).
+ * Color defaults to slate-100. Override with a text-* class when needed. */
+@layer components {
+  .text-heading-1 {
+    @apply text-3xl font-semibold tracking-tight text-slate-100;
+  }
+  .text-heading-2 {
+    @apply text-lg font-semibold text-slate-100;
+  }
+  .text-heading-3 {
+    @apply text-base font-semibold text-slate-100;
+  }
+  .text-body {
+    @apply text-sm text-slate-300;
+  }
+  .text-subtle {
+    @apply text-sm text-slate-400;
+  }
+  .text-label {
+    @apply text-xs font-medium text-slate-400;
+  }
+}
+
+/* Modal — base styles shared across all Dialog instances.
+ * Override individual properties with extra classes when a modal needs a different size. */
+@layer components {
+  .modal-content {
+    @apply max-w-sm rounded-2xl border-white/10 bg-surface-overlay p-6;
+  }
+  .modal-title {
+    @apply text-sm font-semibold text-slate-100;
+  }
+}
+
+/* Animation utilities */
+@layer components {
+  .animate-fade-in {
+    @apply animate-in fade-in-0 duration-200 ease-in;
+  }
 }
 
 /* Override Chrome autofill white background on dark inputs */
