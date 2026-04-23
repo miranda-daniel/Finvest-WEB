@@ -20,6 +20,7 @@ Finvest frontend. Connects to the Finvest API backend via GraphQL (Apollo Client
 | Validation        | Zod                    | v4              |
 | Forms             | React Hook Form        | v7              |
 | Date formatting   | date-fns               | v4              |
+| Compiler          | React Compiler         | v1 (beta)       |
 | GraphQL types     | graphql-codegen        | v5              |
 | Linting           | ESLint                 | v9              |
 | Formatting        | Prettier               | v3              |
