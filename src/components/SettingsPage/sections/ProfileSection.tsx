@@ -12,7 +12,7 @@ interface ReadOnlyFieldProps {
 
 const ReadOnlyField = ({ label, value }: ReadOnlyFieldProps) => (
   <div className="flex flex-col gap-1">
-    <span className="text-xs text-slate-400 uppercase tracking-wide">{label}</span>
+    <span className="text-label">{label}</span>
     <span className="text-[14px] text-slate-200">{value}</span>
   </div>
 );
@@ -24,8 +24,8 @@ export const ProfileSection = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-slate-100 mb-1">Profile</h2>
-      <p className="text-sm text-slate-400 mb-6">Your personal information.</p>
+      <h2 className="text-heading-2 mb-1">Profile</h2>
+      <p className="text-subtle mb-6">Your personal information.</p>
 
       <div className="flex flex-col gap-5 max-w-sm">
         <ReadOnlyField label="First name" value={user.firstName} />

@@ -60,7 +60,7 @@ export const SignInForm = () => {
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <Button type="submit" disabled={loading} className="w-full mt-2">
+      <Button type="submit" disabled={loading} className="mt-2 w-full">
         {loading ? 'Signing in...' : 'Sign in'}
       </Button>
     </form>

@@ -32,7 +32,7 @@ export const ActiveSessionsSection = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-lg font-semibold text-slate-100">Active Sessions</h2>
+        <h2 className="text-heading-2">Active Sessions</h2>
         <button
           onClick={handleRevokeAll}
           disabled={revoking || sessionsLoading}
@@ -41,7 +41,7 @@ export const ActiveSessionsSection = () => {
           {revoking ? 'Revoking...' : 'Revoke all devices'}
         </button>
       </div>
-      <p className="text-sm text-slate-400 mb-6">Devices currently logged into your account.</p>
+      <p className="text-subtle mb-6">Devices currently logged into your account.</p>
 
       {sessionsLoading && <p className="text-[13px] text-slate-400">Loading sessions...</p>}
 

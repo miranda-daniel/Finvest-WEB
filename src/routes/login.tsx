@@ -17,8 +17,8 @@ function LoginPage() {
           <div className="mb-3 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300 backdrop-blur">
             Finvest
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-100">Sign in</h1>
-          <p className="mt-2 text-sm text-slate-400">Welcome back to your portfolio.</p>
+          <h1 className="text-heading-1">Sign in</h1>
+          <p className="mt-2 text-subtle">Welcome back to your portfolio.</p>
         </div>
 
         <Card>

@@ -8,8 +8,8 @@ function NotFoundPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-surface-base text-slate-100">
       <div className="text-center">
-        <p className="text-sm text-slate-400">404</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Page not found</h1>
+        <p className="text-subtle">404</p>
+        <h1 className="mt-2 text-heading-1">Page not found</h1>
         <p className="mt-3 text-slate-400">The page you&apos;re looking for doesn&apos;t exist.</p>
       </div>
       <Link

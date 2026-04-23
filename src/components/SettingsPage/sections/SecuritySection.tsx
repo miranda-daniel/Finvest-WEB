@@ -3,6 +3,7 @@
 // Change password form.
 // The submit button is disabled — the API endpoint does not yet exist.
 
+import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -28,7 +29,7 @@ interface FormFieldProps {
 
 const FormField = ({ label, error, inputProps }: FormFieldProps) => (
   <div className="flex flex-col gap-1">
-    <label className="text-xs text-slate-400 uppercase tracking-wide">{label}</label>
+    <label className="text-label">{label}</label>
     <input
       {...inputProps}
       className={`h-9 rounded-lg border bg-white/[0.05] px-3 text-[13px] text-slate-200 outline-none focus:ring-1 transition-colors ${
@@ -57,8 +58,8 @@ export const SecuritySection = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-slate-100 mb-1">Security</h2>
-      <p className="text-sm text-slate-400 mb-6">Change your account password.</p>
+      <h2 className="text-heading-2 mb-1">Security</h2>
+      <p className="text-subtle mb-6">Change your account password.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 max-w-sm">
         <FormField
@@ -78,14 +79,14 @@ export const SecuritySection = () => {
         />
 
         <div className="pt-1">
-          <button
+          <Button
             type="submit"
+            variant="secondary"
             disabled
             title="Coming soon — API endpoint not yet implemented"
-            className="rounded-2xl border border-white/10 bg-white/5 px-5 py-2 text-sm text-slate-300 cursor-not-allowed opacity-60"
           >
             Change password
-          </button>
+          </Button>
         </div>
       </form>
     </div>
