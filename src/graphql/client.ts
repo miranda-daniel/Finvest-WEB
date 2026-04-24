@@ -16,9 +16,9 @@
 //                the new JWT and retries the original operation. On failure, clears auth
 //                state and redirects to /login.
 //
-//   httpLink:    sends the GraphQL operation as POST /graphql.
-//                In development, Vite proxies /graphql → http://localhost:3001/graphql.
-//                In production, the reverse proxy (nginx, etc.) handles the routing.
+//   httpLink:    sends the GraphQL operation as POST /api/graphql.
+//                In development, Vite proxies /api/* → http://localhost:3001.
+//                In production, the ALB or reverse proxy handles the routing.
 //
 // InMemoryCache: stores query results in memory. If the same query is made twice
 //                with the same variables, Apollo returns the cached result without
@@ -31,7 +31,7 @@ import { Observable } from '@apollo/client';
 import { useAuthStore } from '@/stores/auth.store';
 
 const httpLink = new HttpLink({
-  uri: '/graphql',
+  uri: '/api/graphql',
   credentials: 'include',
 });
 
@@ -54,7 +54,7 @@ const resolvePending = () => {
 };
 
 const fetchNewToken = async (): Promise<string> => {
-  const response = await fetch('/session/refresh-token', {
+  const response = await fetch('/api/session/refresh-token', {
     method: 'POST',
     credentials: 'include',
   });
