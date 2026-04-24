@@ -49,7 +49,7 @@ export const SecuritySection = () => {
     resolver: zodResolver(changePasswordSchema),
   });
 
-  const { submit, loading, error, isSuccess } = useChangePassword(() => reset());
+  const { submit, loading, error } = useChangePassword(() => reset());
 
   const onSubmit = (values: ChangePasswordFormValues) => {
     submit({ currentPassword: values.currentPassword, newPassword: values.newPassword });
@@ -77,11 +77,7 @@ export const SecuritySection = () => {
           inputProps={{ autoComplete: 'new-password', ...register('confirmPassword') }}
         />
 
-        {error && <p className="text-[12px] text-rose-400">{error.message}</p>}
-
-        {isSuccess && (
-          <p className="text-[12px] text-emerald-400">Password changed successfully.</p>
-        )}
+        {error && <p className="text-[12px] text-rose-400">{error}</p>}
 
         <div className="pt-1">
           <Button type="submit" variant="secondary" disabled={loading}>
