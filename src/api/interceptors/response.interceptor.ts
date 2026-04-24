@@ -3,29 +3,13 @@
 // Flow:
 //   1. Request fails with 401
 //   2. If the failing request is already a retry or the refresh endpoint itself → reject (no loop)
-//   3. If a refresh is already in flight → queue this request, retry once refresh resolves
-//   4. Otherwise → call POST /session/refresh-token (HTTP-only cookie sent automatically)
-//      - Success: store new JWT in memory, process queue, retry original request
+//   3. Otherwise → call silentRefresh(), which serializes all concurrent refresh attempts
+//      into a single HTTP request (see src/api/silentRefresh.ts)
+//      - Success: retry original request with new token
 //      - Failure: clear auth state, redirect to /login
 import { isAxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/stores/auth.store';
-
-let isRefreshing = false;
-let failedQueue: Array<{
-  resolve: (token: string) => void;
-  reject: (error: unknown) => void;
-}> = [];
-
-const processQueue = (error: unknown, token: string | null = null) => {
-  failedQueue.forEach(({ resolve, reject }) => {
-    if (error) {
-      reject(error);
-    } else {
-      resolve(token!);
-    }
-  });
-  failedQueue = [];
-};
+import { silentRefresh } from '@/api/silentRefresh';
 
 export const applyResponseInterceptor = (client: AxiosInstance) => {
   client.interceptors.response.use(
@@ -42,37 +26,17 @@ export const applyResponseInterceptor = (client: AxiosInstance) => {
         return Promise.reject(error);
       }
 
-      if (isRefreshing) {
-        return new Promise<string>((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers['Authorization'] = `Bearer ${token}`;
-            return client(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
-      }
-
       originalRequest._retry = true;
-      isRefreshing = true;
 
       try {
-        const { data } = await client.post<{ jwtToken: string }>('/session/refresh-token');
-        const { jwtToken } = data;
+        const newJwtToken = await silentRefresh();
+        originalRequest.headers['Authorization'] = `Bearer ${newJwtToken}`;
 
-        useAuthStore.getState().setToken(jwtToken);
-        processQueue(null, jwtToken);
-
-        originalRequest.headers['Authorization'] = `Bearer ${jwtToken}`;
         return client(originalRequest);
       } catch (refreshError) {
-        processQueue(refreshError, null);
         useAuthStore.getState().clearAuth();
         window.location.href = '/login';
-
         return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
       }
     },
   );
