@@ -20,6 +20,7 @@ export const Route = createFileRoute('/_guest')({
     try {
       const { data } = await apiClient.post<{ jwtToken: string }>('/session/refresh-token');
       store.setToken(data.jwtToken);
+
       throw redirect({ to: '/dashboard' });
     } catch (err) {
       if (isRedirect(err)) throw err;

@@ -17,7 +17,7 @@ export const DropdownMenu = ({ firstName, lastName, email, onClose }: DropdownMe
   const { logout } = useLogout();
 
   return (
-    <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-52.5 rounded-[10px] border border-white/9 bg-surface-overlay p-1 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+    <div className="animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 absolute right-0 top-[calc(100%+8px)] z-50 w-52.5 rounded-[10px] border border-white/9 bg-surface-overlay p-1 shadow-[0_8px_32px_rgba(0,0,0,0.5)] duration-150">
       {/* Header: name + email */}
       <div className="mb-1 border-b border-white/6 px-3 pb-2 pt-2.5">
         <p className="text-[13px] font-medium text-slate-200">

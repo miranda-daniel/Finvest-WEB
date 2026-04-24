@@ -54,7 +54,7 @@ export const CreatePortfolioModal = ({ open, onClose }: CreatePortfolioModalProp
           <DialogTitle className="modal-title">New Portfolio</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-4 flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="mt-4 flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="portfolio-name" className="text-label">Name</label>
             <Input
