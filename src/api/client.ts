@@ -9,6 +9,7 @@ import { applyRequestInterceptor } from '@/api/interceptors/request.interceptor'
 import { applyResponseInterceptor } from '@/api/interceptors/response.interceptor';
 
 export const apiClient = axios.create({
+  baseURL: '/api',
   withCredentials: true, // required for HTTP-only cookies to be sent cross-origin
   headers: {
     'Content-Type': 'application/json',

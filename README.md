@@ -29,7 +29,7 @@ Finvest frontend. Connects to the Finvest API backend via GraphQL (Apollo Client
 
 ### Prerequisites
 
-- Node 20.13 / npm 10.5
+- Node 24 LTS
 - Finvest API running on `http://localhost:3001`
 
 ### Environment variables

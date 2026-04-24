@@ -1,12 +1,9 @@
-// src/components/SettingsPage/sections/SecuritySection.tsx
-//
-// Change password form.
-// The submit button is disabled — the API endpoint does not yet exist.
-
 import { Button } from '@/components/ui/button';
+import { PasswordInput } from '@/components/ui/password-input';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useChangePassword } from '@/api/hooks/users/useChangePassword';
 
 const changePasswordSchema = z
   .object({
@@ -24,18 +21,18 @@ type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
 interface FormFieldProps {
   label: string;
   error?: string;
-  inputProps: React.InputHTMLAttributes<HTMLInputElement>;
+  inputProps: Omit<React.ComponentProps<'input'>, 'type'>;
 }
 
 const FormField = ({ label, error, inputProps }: FormFieldProps) => (
   <div className="flex flex-col gap-1">
     <label className="text-label">{label}</label>
-    <input
+    <PasswordInput
       {...inputProps}
-      className={`h-9 rounded-lg border bg-white/[0.05] px-3 text-[13px] text-slate-200 outline-none focus:ring-1 transition-colors ${
+      className={`h-9 rounded-lg border px-3 text-[13px] ${
         error
-          ? 'border-rose-500/60 focus:ring-rose-500/40'
-          : 'border-white/10 focus:ring-white/20'
+          ? 'border-rose-500/60 focus-visible:ring-rose-500/40'
+          : 'border-white/10'
       }`}
     />
     {error && <span className="text-[11px] text-rose-400">{error}</span>}
@@ -46,14 +43,16 @@ export const SecuritySection = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordSchema),
   });
 
-  // Submit handler is a no-op — the endpoint is not yet implemented.
-  const onSubmit = (_values: ChangePasswordFormValues) => {
-    // intentional no-op: API endpoint not yet available
+  const { submit, loading, error, isSuccess } = useChangePassword(() => reset());
+
+  const onSubmit = (values: ChangePasswordFormValues) => {
+    submit({ currentPassword: values.currentPassword, newPassword: values.newPassword });
   };
 
   return (
@@ -65,27 +64,28 @@ export const SecuritySection = () => {
         <FormField
           label="Current password"
           error={errors.currentPassword?.message}
-          inputProps={{ type: 'password', ...register('currentPassword') }}
+          inputProps={{ autoComplete: 'current-password', ...register('currentPassword') }}
         />
         <FormField
           label="New password"
           error={errors.newPassword?.message}
-          inputProps={{ type: 'password', ...register('newPassword') }}
+          inputProps={{ autoComplete: 'new-password', ...register('newPassword') }}
         />
         <FormField
           label="Confirm new password"
           error={errors.confirmPassword?.message}
-          inputProps={{ type: 'password', ...register('confirmPassword') }}
+          inputProps={{ autoComplete: 'new-password', ...register('confirmPassword') }}
         />
 
+        {error && <p className="text-[12px] text-rose-400">{error.message}</p>}
+
+        {isSuccess && (
+          <p className="text-[12px] text-emerald-400">Password changed successfully.</p>
+        )}
+
         <div className="pt-1">
-          <Button
-            type="submit"
-            variant="secondary"
-            disabled
-            title="Coming soon — API endpoint not yet implemented"
-          >
-            Change password
+          <Button type="submit" variant="secondary" disabled={loading}>
+            {loading ? 'Saving…' : 'Change password'}
           </Button>
         </div>
       </form>

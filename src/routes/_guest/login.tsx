@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { SignInForm } from '@/components/SignInForm';
 import { Card, CardContent } from '@/components/ui/card';
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/_guest/login')({
   component: LoginPage,
 });
 
