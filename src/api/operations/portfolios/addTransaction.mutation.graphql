@@ -1,0 +1,30 @@
+mutation AddTransaction(
+  $portfolioId: Int!
+  $side: OperationSide!
+  $symbol: String!
+  $name: String!
+  $instrumentClass: String!
+  $date: String!
+  $price: Float!
+  $quantity: Float!
+) {
+  addTransaction(
+    portfolioId: $portfolioId
+    side: $side
+    symbol: $symbol
+    name: $name
+    instrumentClass: $instrumentClass
+    date: $date
+    price: $price
+    quantity: $quantity
+  ) {
+    id
+    quantity
+    avgCost
+    instrument {
+      symbol
+      name
+      instrumentClass
+    }
+  }
+}
