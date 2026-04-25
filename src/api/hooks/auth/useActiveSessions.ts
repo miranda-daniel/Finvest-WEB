@@ -21,6 +21,7 @@ export const useActiveSessions = () => {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['active-sessions', userId],
     queryFn: () => apiClient.get<ActiveSession[]>('/auth/sessions').then((r) => r.data),
+    enabled: !!userId,
   });
 
   const errorMessage = getApiError(error, 'Failed to load sessions.');

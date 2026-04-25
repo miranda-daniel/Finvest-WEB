@@ -236,3 +236,7 @@ Available sizes: `default`, `sm`, `lg`, `icon`, `icon-sm`.
 - Chart tooltip container: `rounded-2xl border border-white/10 bg-[#0f131b]/95 backdrop-blur`
 - Pie chart colors: use the `pieColors` array from the mockup (blue/cyan/orange/purple palette)
 - Allocation bar tracks: `bg-white/10 rounded-full`, fill: `bg-white`
+
+## Dependencies — Known Constraints
+
+- **`rxjs`** must remain in `dependencies`. It is not imported directly by app code, but `@apollo/client` uses it internally at runtime. Removing it breaks the dev server and production build.

@@ -25,3 +25,10 @@ export const getApiError = (error: unknown, fallback = 'Something went wrong.'):
   if (!error) return null;
   return (isAxiosError(error) ? error.response?.data?.description : null) ?? fallback;
 };
+
+// Helper to extract the error message from an Apollo/GraphQL error.
+// Returns null if error is null/undefined — allows calling without a ternary guard.
+export const getGraphQLError = (error: unknown, fallback = 'Something went wrong. Please try again.'): string | null => {
+  if (!error) return null;
+  return (error instanceof Error ? error.message : null) ?? fallback;
+};

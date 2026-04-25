@@ -1,5 +1,4 @@
 import { StarIcon } from 'lucide-react';
-import { useSetFavoritePortfolio } from '@/api/hooks/portfolios/useSetFavoritePortfolio';
 
 interface Portfolio {
   id: number;
@@ -12,6 +11,8 @@ interface PortfolioCardProps {
   color: string;
   activePortfolioId: number | null;
   onSelect: (id: number) => void;
+  onSetFavorite: (portfolioId: number | null) => void;
+  favoriteLoading: boolean;
 }
 
 export const PortfolioCard = ({
@@ -19,15 +20,16 @@ export const PortfolioCard = ({
   color,
   activePortfolioId,
   onSelect,
+  onSetFavorite,
+  favoriteLoading,
 }: PortfolioCardProps) => {
-  const { setFavorite, loading } = useSetFavoritePortfolio();
-
   const isSelected = activePortfolioId === portfolio.id;
 
   const handleStarClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (loading) return;
-    setFavorite(portfolio.isFavorite ? null : portfolio.id);
+
+    if (favoriteLoading) return;
+    onSetFavorite(portfolio.isFavorite ? null : portfolio.id);
   };
 
   return (

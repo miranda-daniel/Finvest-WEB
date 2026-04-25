@@ -29,9 +29,11 @@ export const PortfolioSelector = ({ portfolios, loading, activePortfolioId }: Po
 
   const selectedName = selectedPortfolio?.name ?? 'All Portfolios';
 
-  const selectedColor = selectedPortfolio
-    ? PORTFOLIO_DOT_COLORS[selectedPortfolio.id % PORTFOLIO_DOT_COLORS.length]
-    : ALL_PORTFOLIOS_COLOR;
+  const selectedIndex = portfolios.findIndex((p) => p.id === activePortfolioId);
+  const selectedColor =
+    selectedPortfolio && selectedIndex !== -1
+      ? PORTFOLIO_DOT_COLORS[selectedIndex % PORTFOLIO_DOT_COLORS.length]
+      : ALL_PORTFOLIOS_COLOR;
 
   return (
     <Menu.Root>
@@ -63,8 +65,8 @@ export const PortfolioSelector = ({ portfolios, loading, activePortfolioId }: Po
             <div className="mx-1 my-1 h-px bg-white/6" />
 
             {/* Individual portfolios */}
-            {portfolios.map((portfolio) => {
-              const color = PORTFOLIO_DOT_COLORS[portfolio.id % PORTFOLIO_DOT_COLORS.length];
+            {portfolios.map((portfolio, index) => {
+              const color = PORTFOLIO_DOT_COLORS[index % PORTFOLIO_DOT_COLORS.length];
               const isSelected = activePortfolioId === portfolio.id;
 
               return (

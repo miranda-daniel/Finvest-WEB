@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth.store';
 import { usePortfolios } from '@/api/hooks/portfolios/usePortfolios';
+import { useSetFavoritePortfolio } from '@/api/hooks/portfolios/useSetFavoritePortfolio';
 import { useDashboardStore } from '@/stores/dashboard.store';
 import { Button } from '@/components/ui/button';
 import { PortfolioSelector } from './PortfolioSelector';
@@ -16,6 +17,8 @@ export const DashboardPage = () => {
 
   const selectedPortfolioId = useDashboardStore((s) => s.selectedPortfolioId);
   const setSelectedPortfolio = useDashboardStore((s) => s.setSelectedPortfolio);
+
+  const { setFavorite, loading: favoriteLoading } = useSetFavoritePortfolio();
 
   const [openCreatePortfolioModal, setOpenCreatePortfolioModal] = useState(false);
 
@@ -46,13 +49,15 @@ export const DashboardPage = () => {
 
   const renderPortfolioCards = () => (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {portfolios.map((portfolio) => (
+      {portfolios.map((portfolio, index) => (
         <PortfolioCard
           key={portfolio.id}
           portfolio={portfolio}
           activePortfolioId={activePortfolioId}
           onSelect={setSelectedPortfolio}
-          color={PORTFOLIO_DOT_COLORS[portfolio.id % PORTFOLIO_DOT_COLORS.length]}
+          onSetFavorite={setFavorite}
+          favoriteLoading={favoriteLoading}
+          color={PORTFOLIO_DOT_COLORS[index % PORTFOLIO_DOT_COLORS.length]}
         />
       ))}
     </div>

@@ -36,16 +36,12 @@ export const ActiveSessionsSection = () => {
 
   const now = new Date();
 
-  const handleRevokeAll = () => {
-    revokeAll();
-  };
-
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-heading-2">Active Sessions</h2>
         <button
-          onClick={handleRevokeAll}
+          onClick={() => revokeAll()}
           disabled={revoking || sessionsLoading}
           className="text-sm text-rose-400 hover:text-rose-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
@@ -67,7 +63,10 @@ export const ActiveSessionsSection = () => {
           {sessions.map((session) => {
             const { browser, os, deviceType } = parseUserAgent(session.userAgent);
             const expires = new Date(session.expires);
-            const daysLeft = Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            const daysLeft = Math.max(
+              0,
+              Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+            );
             const DeviceIcon = deviceIcon(deviceType);
 
             return (
@@ -97,7 +96,9 @@ export const ActiveSessionsSection = () => {
                       })}
                     </span>
                     <span className="text-[11px] text-slate-600">·</span>
-                    <span className="text-[11px] text-slate-500">Expires in {daysLeft}d</span>
+                    <span className="text-[11px] text-slate-500">
+                      {daysLeft === 0 ? 'Expired' : `Expires in ${daysLeft}d`}
+                    </span>
                   </div>
                 </div>
               </li>
