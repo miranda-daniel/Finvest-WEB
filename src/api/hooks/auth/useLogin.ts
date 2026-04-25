@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth.store';
 import { apolloClient } from '@/graphql/client';
@@ -40,6 +40,7 @@ interface LoginResponse {
 export const useLogin = () => {
   const login = useAuthStore((s) => s.login);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     mutate: submit,
@@ -50,8 +51,10 @@ export const useLogin = () => {
       apiClient.post<LoginResponse>('/session/login', credentials),
     onSuccess: async ({ data }) => {
       login(data.jwtToken, data.user);
-      // Clear Apollo cache so GraphQL queries from a previous session don't bleed into this one.
+
+      // Clear both caches so data from a previous session doesn't bleed into this one.
       await apolloClient.clearStore();
+      queryClient.clear();
       router.navigate({ to: '/dashboard' });
     },
   });

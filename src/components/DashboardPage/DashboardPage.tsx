@@ -46,13 +46,13 @@ export const DashboardPage = () => {
 
   const renderPortfolioCards = () => (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {portfolios.map((portfolio, index) => (
+      {portfolios.map((portfolio) => (
         <PortfolioCard
           key={portfolio.id}
           portfolio={portfolio}
           activePortfolioId={activePortfolioId}
           onSelect={setSelectedPortfolio}
-          color={PORTFOLIO_DOT_COLORS[index % PORTFOLIO_DOT_COLORS.length]}
+          color={PORTFOLIO_DOT_COLORS[portfolio.id % PORTFOLIO_DOT_COLORS.length]}
         />
       ))}
     </div>
