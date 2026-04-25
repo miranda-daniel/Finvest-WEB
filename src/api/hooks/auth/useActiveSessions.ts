@@ -12,12 +12,12 @@ interface ActiveSession {
 
 // useActiveSessions — fetches the list of active sessions for the current user.
 //
-// Calls GET /session (requires valid JWT — injected by the Axios interceptor).
+// Calls GET /auth/sessions (requires valid JWT — injected by the Axios interceptor).
 // Returns sessions, loading state, error message, and a refetch function.
 export const useActiveSessions = () => {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['active-sessions'],
-    queryFn: () => apiClient.get<ActiveSession[]>('/session').then((r) => r.data),
+    queryFn: () => apiClient.get<ActiveSession[]>('/auth/sessions').then((r) => r.data),
   });
 
   const errorMessage = getApiError(error, 'Failed to load sessions.');

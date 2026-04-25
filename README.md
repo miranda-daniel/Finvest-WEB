@@ -71,9 +71,22 @@ npm run preview
 # Lint
 npm run lint
 
+# Lint and auto-fix
+npm run lint-fix
+
+# Type check
+npm run typecheck
+
 # Format code
 npm run format
 ```
+
+## CI
+
+GitHub Actions runs on every PR to `main` and on post-merge pushes to `main`:
+
+1. Lint (`npm run lint`)
+2. Type check (`npm run typecheck`)
 
 ## GraphQL / Codegen
 

@@ -44,8 +44,7 @@
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
-      "npm run lint-fix",
-      "npm run typecheck"
+      "npm run lint-fix"
     ]
   },
   "dependencies": {
@@ -54,6 +53,7 @@
     "@fontsource-variable/geist": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.96.2",
+    "@tanstack/react-query-devtools": "^5.100.1",
     "@tanstack/react-router": "^1.168.3",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.15.2",

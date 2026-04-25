@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ApolloProvider } from '@apollo/client/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { Toaster } from 'sonner';
 import { routeTree } from './routeTree.gen';
@@ -27,6 +28,7 @@ createRoot(document.getElementById('app')!).render(
         {/* Toaster — renders toast notifications app-wide, use toast() from 'sonner' anywhere */}
         <Toaster theme="dark" position="bottom-right" richColors />
       </ApolloProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>,
 );

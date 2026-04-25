@@ -16,7 +16,7 @@ export const useRevokeAllSessions = () => {
     isPending: loading,
     error,
   } = useMutation({
-    mutationFn: () => apiClient.post('/session/revoke-all'),
+    mutationFn: () => apiClient.post('/auth/sessions/revoke-all'),
     onSuccess: () => {
       // Invalidate sessions cache so the list refreshes if the user stays on the page.
       queryClient.invalidateQueries({ queryKey: ['active-sessions'] });
