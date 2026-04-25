@@ -11,10 +11,11 @@
 //                the Authorization header before the request is sent.
 //                No token → sends an empty header (public queries still work).
 //
-//   refreshLink: intercepts TOKEN_EXPIRED GraphQL errors. Calls POST /session/refresh-token
-//                (HTTP-only cookie sent automatically by the browser). On success, stores
-//                the new JWT and retries the original operation. On failure, clears auth
-//                state and redirects to /login.
+//   refreshLink: intercepts TOKEN_EXPIRED GraphQL errors. Calls silentRefresh(), which
+//                serializes all concurrent refresh attempts into a single HTTP request
+//                (see src/api/silentRefresh.ts). On success, retries the original
+//                operation with the new token. On failure, clears auth state and
+//                redirects to /login.
 //
 //   httpLink:    sends the GraphQL operation as POST /api/graphql.
 //                In development, Vite proxies /api/* → http://localhost:3001.
@@ -29,6 +30,7 @@ import { ErrorLink, type ErrorLink as ErrorLinkType } from '@apollo/client/link/
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { Observable } from '@apollo/client';
 import { useAuthStore } from '@/stores/auth.store';
+import { silentRefresh } from '@/api/silentRefresh';
 
 const httpLink = new HttpLink({
   uri: '/api/graphql',
@@ -44,26 +46,6 @@ const authLink = new ApolloLink((operation, forward) => {
   });
   return forward(operation);
 });
-
-let isRefreshing = false;
-let pendingRequests: Array<() => void> = [];
-
-const resolvePending = () => {
-  pendingRequests.forEach((resolve) => resolve());
-  pendingRequests = [];
-};
-
-const fetchNewToken = async (): Promise<string> => {
-  const response = await fetch('/api/session/refresh-token', {
-    method: 'POST',
-    credentials: 'include',
-  });
-
-  if (!response.ok) throw new Error('Refresh failed');
-
-  const data = (await response.json()) as { jwtToken: string };
-  return data.jwtToken;
-};
 
 const retryOperation = (
   operation: ErrorLinkType.ErrorHandlerOptions['operation'],
@@ -83,32 +65,14 @@ const refreshLink = new ErrorLink(({ error, operation, forward }) => {
 
   if (!isTokenExpired) return;
 
-  if (isRefreshing) {
-    return new Observable((observer) => {
-      pendingRequests.push(() => {
-        const token = useAuthStore.getState().token;
-        if (!token) {
-          observer.error(new Error('No token after refresh'));
-          return;
-        }
-        retryOperation(operation, forward, token).subscribe(observer);
-      });
-    });
-  }
-
-  isRefreshing = true;
-
+  // silentRefresh() serializes concurrent calls — multiple TOKEN_EXPIRED errors
+  // firing at the same time will all wait on the same in-flight request.
   return new Observable((observer) => {
-    fetchNewToken()
-      .then((jwtToken) => {
-        useAuthStore.getState().setToken(jwtToken);
-        isRefreshing = false;
-        resolvePending();
+    silentRefresh()
+      .then((jwtToken: string) => {
         retryOperation(operation, forward, jwtToken).subscribe(observer);
       })
       .catch((err: unknown) => {
-        isRefreshing = false;
-        pendingRequests = [];
         useAuthStore.getState().clearAuth();
         window.location.href = '/login';
         observer.error(err);

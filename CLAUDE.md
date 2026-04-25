@@ -28,6 +28,15 @@ All code comments (inline comments, block comments, JSDoc) must be written in **
 
 Never commit automatically. Leave all changes in the working area and let the user decide when to commit.
 
+Always work on a feature branch — never commit directly to `main`.
+
+1. Create a branch from `main`: `git checkout -b feat/my-feature`
+2. Commit your changes on that branch
+3. Push the branch and open a Pull Request to `main`
+4. CI must pass before merging
+
+Branch naming follows the same types as commit messages: `feat/`, `fix/`, `refactor/`, `chore/`, etc.
+
 ## Code Style
 
 ### TypeScript

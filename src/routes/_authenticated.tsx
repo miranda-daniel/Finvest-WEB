@@ -4,7 +4,7 @@
 // To protect a new route, just create it inside _authenticated/ — no extra auth logic needed.
 import { createFileRoute, redirect, Outlet } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth.store';
-import { apiClient } from '@/api/client';
+import { silentRefresh } from '@/api/silentRefresh';
 import { Navbar } from '@/components/Navbar';
 
 export const Route = createFileRoute('/_authenticated')({
@@ -16,8 +16,7 @@ export const Route = createFileRoute('/_authenticated')({
       // using the HTTP-only cookie. If the cookie is missing or expired,
       // the request will fail and we redirect to /login.
       try {
-        const { data } = await apiClient.post<{ jwtToken: string }>('/session/refresh-token');
-        store.setToken(data.jwtToken);
+        await silentRefresh();
       } catch {
         throw redirect({ to: '/login' });
       }

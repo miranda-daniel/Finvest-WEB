@@ -4,7 +4,7 @@
 // which redirects unauthenticated users to /login.
 import { createFileRoute, redirect, isRedirect, Outlet } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth.store';
-import { apiClient } from '@/api/client';
+import { silentRefresh } from '@/api/silentRefresh';
 
 export const Route = createFileRoute('/_guest')({
   beforeLoad: async () => {
@@ -18,9 +18,7 @@ export const Route = createFileRoute('/_guest')({
     // If silent refresh succeeds, the user is still logged in → redirect to dashboard.
     // If it fails, the user is truly unauthenticated → allow access to the guest page.
     try {
-      const { data } = await apiClient.post<{ jwtToken: string }>('/session/refresh-token');
-      store.setToken(data.jwtToken);
-
+      await silentRefresh();
       throw redirect({ to: '/dashboard' });
     } catch (err) {
       if (isRedirect(err)) throw err;

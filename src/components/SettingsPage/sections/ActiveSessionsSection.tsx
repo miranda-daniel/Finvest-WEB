@@ -1,27 +1,42 @@
-// src/components/SettingsPage/sections/ActiveSessionsSection.tsx
-//
-// Lists active sessions and provides a "Revoke all devices" button.
-// On revoke success, logs the user out (the current session is also revoked).
-
 import { UAParser } from 'ua-parser-js';
 import { useActiveSessions } from '@/api/hooks/auth/useActiveSessions';
 import { useRevokeAllSessions } from '@/api/hooks/auth/useRevokeAllSessions';
 import { useLogout } from '@/api/hooks/auth/useLogout';
 
-// Parses a User-Agent string into a human-readable device description.
-// Returns "Unknown device" if the UA string is null or unparseable.
-const parseUserAgent = (ua: string | null): string => {
-  if (!ua) return 'Unknown device';
+interface ParsedUA {
+  browser: string;
+  os: string;
+  deviceType: 'Desktop' | 'Mobile' | 'Tablet' | 'Unknown';
+}
+
+const parseUserAgent = (ua: string | null): ParsedUA => {
+  if (!ua) return { browser: 'Unknown browser', os: 'Unknown OS', deviceType: 'Unknown' };
+
   const parser = new UAParser(ua);
-  const os = parser.getOS().name ?? 'Unknown OS';
   const browser = parser.getBrowser().name ?? 'Unknown browser';
-  return `${browser} on ${os}`;
+  const os = parser.getOS().name ?? 'Unknown OS';
+  const rawType = parser.getDevice().type;
+
+  const deviceType: ParsedUA['deviceType'] =
+    rawType === 'mobile' ? 'Mobile' :
+    rawType === 'tablet' ? 'Tablet' :
+    !rawType ? 'Desktop' : 'Unknown';
+
+  return { browser, os, deviceType };
+};
+
+const deviceIcon = (type: ParsedUA['deviceType']): string => {
+  if (type === 'Mobile') return '📱';
+  if (type === 'Tablet') return '📱';
+  return '🖥';
 };
 
 export const ActiveSessionsSection = () => {
   const { sessions, loading: sessionsLoading, error: sessionsError } = useActiveSessions();
   const { revokeAll, loading: revoking } = useRevokeAllSessions();
   const { logout } = useLogout();
+
+  const now = new Date();
 
   const handleRevokeAll = () => {
     revokeAll(undefined, {
@@ -53,15 +68,44 @@ export const ActiveSessionsSection = () => {
 
       {sessions.length > 0 && (
         <ul className="flex flex-col gap-2 max-w-lg">
-          {sessions.map((session) => (
-            <li key={session.id} className="rounded-xl border border-white/6 bg-white/3 px-4 py-3">
-              <p className="text-[13px] text-slate-200">{parseUserAgent(session.userAgent)}</p>
-              <p className="text-[11px] text-slate-500 mt-0.5">IP: {session.createdByIp}</p>
-              <p className="text-[11px] text-slate-500">
-                Since: {new Date(session.createdAt).toLocaleDateString()}
-              </p>
-            </li>
-          ))}
+          {sessions.map((session) => {
+            const { browser, os, deviceType } = parseUserAgent(session.userAgent);
+            const expires = new Date(session.expires);
+            const daysLeft = Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+            return (
+              <li
+                key={session.id}
+                className="rounded-xl border border-white/6 bg-white/3 px-4 py-3.5 flex gap-3.5 items-start"
+              >
+                <span className="text-lg mt-0.5 select-none">{deviceIcon(deviceType)}</span>
+                <div className="flex flex-col gap-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[13px] font-medium text-slate-200">{browser}</span>
+                    <span className="text-[11px] text-slate-500">·</span>
+                    <span className="text-[12px] text-slate-400">{os}</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded-md bg-white/5 text-slate-500">
+                      {deviceType}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="text-[11px] text-slate-500">IP: {session.createdByIp}</span>
+                    <span className="text-[11px] text-slate-600">·</span>
+                    <span className="text-[11px] text-slate-500">
+                      Since{' '}
+                      {new Date(session.createdAt).toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                    <span className="text-[11px] text-slate-600">·</span>
+                    <span className="text-[11px] text-slate-500">Expires in {daysLeft}d</span>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
