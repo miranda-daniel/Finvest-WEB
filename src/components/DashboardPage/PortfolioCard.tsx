@@ -1,4 +1,5 @@
 import { StarIcon } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
 import { useSetFavoritePortfolio } from '@/api/hooks/portfolios/useSetFavoritePortfolio';
 
 interface Portfolio {
@@ -11,15 +12,14 @@ interface PortfolioCardProps {
   portfolio: Portfolio;
   color: string;
   activePortfolioId: number | null;
-  onSelect: (id: number) => void;
 }
 
 export const PortfolioCard = ({
   portfolio,
   color,
   activePortfolioId,
-  onSelect,
 }: PortfolioCardProps) => {
+  const navigate = useNavigate();
   const { setFavorite, loading } = useSetFavoritePortfolio();
 
   const isSelected = activePortfolioId === portfolio.id;
@@ -32,7 +32,7 @@ export const PortfolioCard = ({
 
   return (
     <div
-      onClick={() => onSelect(portfolio.id)}
+      onClick={() => void navigate({ to: '/portfolios/$portfolioId', params: { portfolioId: String(portfolio.id) } })}
       className={`relative cursor-pointer rounded-2xl border p-5 transition-colors ${
         isSelected
           ? 'border-blue-400/40 bg-blue-400/6'

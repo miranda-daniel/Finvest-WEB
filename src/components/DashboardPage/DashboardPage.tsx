@@ -51,7 +51,6 @@ export const DashboardPage = () => {
           key={portfolio.id}
           portfolio={portfolio}
           activePortfolioId={activePortfolioId}
-          onSelect={setSelectedPortfolio}
           color={PORTFOLIO_DOT_COLORS[index % PORTFOLIO_DOT_COLORS.length]}
         />
       ))}
