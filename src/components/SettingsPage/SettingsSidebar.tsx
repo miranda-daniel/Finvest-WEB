@@ -27,6 +27,7 @@ export const SettingsSidebar = ({ activeHash, onNavigate }: SettingsSidebarProps
         {items.map((item) => {
           const isActive = activeHash === item.hash;
           const Icon = item.icon;
+
           return (
             <button
               key={item.hash}

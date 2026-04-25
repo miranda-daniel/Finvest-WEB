@@ -10,6 +10,7 @@
 import { isAxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/stores/auth.store';
 import { silentRefresh } from '@/api/silentRefresh';
+import { router } from '@/router';
 
 export const applyResponseInterceptor = (client: AxiosInstance) => {
   client.interceptors.response.use(
@@ -35,7 +36,7 @@ export const applyResponseInterceptor = (client: AxiosInstance) => {
         return client(originalRequest);
       } catch (refreshError) {
         useAuthStore.getState().clearAuth();
-        window.location.href = '/login';
+        void router.navigate({ to: '/login' });
         return Promise.reject(refreshError);
       }
     },
