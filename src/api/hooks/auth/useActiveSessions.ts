@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useAuthStore } from '@/stores/auth.store';
 import { apiClient, getApiError } from '@/api/client';
 
 // Shape of a session returned by GET /session.
@@ -15,8 +16,10 @@ interface ActiveSession {
 // Calls GET /auth/sessions (requires valid JWT — injected by the Axios interceptor).
 // Returns sessions, loading state, error message, and a refetch function.
 export const useActiveSessions = () => {
+  const userId = useAuthStore((s) => s.user?.id);
+
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['active-sessions'],
+    queryKey: ['active-sessions', userId],
     queryFn: () => apiClient.get<ActiveSession[]>('/auth/sessions').then((r) => r.data),
   });
 

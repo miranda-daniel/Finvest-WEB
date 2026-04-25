@@ -200,6 +200,10 @@ These colors carry fixed meaning across the app — always use them consistently
 | Daily gainers bar | `#14b8a6` (teal-500) |
 | Daily losers bar | `#f43f5e` (rose-500) |
 
+### Icons
+
+Always use **Lucide React** (`lucide-react`) for icons. Never use emojis as icons. Never use other icon libraries.
+
 ### UI Components
 
 For common UI primitives (buttons, inputs, checkboxes, selects, switches, dialogs, badges, tabs, tooltips, etc.), always use the shadcn/ui component from `src/components/ui/` if one exists. If the component doesn't exist yet, add it via `npx shadcn@latest add <component>` before building a custom one.

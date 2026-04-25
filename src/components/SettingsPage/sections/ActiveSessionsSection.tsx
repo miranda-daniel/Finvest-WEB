@@ -1,7 +1,7 @@
 import { UAParser } from 'ua-parser-js';
+import { SmartphoneIcon, MonitorIcon, LucideIcon } from 'lucide-react';
 import { useActiveSessions } from '@/api/hooks/auth/useActiveSessions';
 import { useRevokeAllSessions } from '@/api/hooks/auth/useRevokeAllSessions';
-import { useLogout } from '@/api/hooks/auth/useLogout';
 
 interface ParsedUA {
   browser: string;
@@ -25,23 +25,19 @@ const parseUserAgent = (ua: string | null): ParsedUA => {
   return { browser, os, deviceType };
 };
 
-const deviceIcon = (type: ParsedUA['deviceType']): string => {
-  if (type === 'Mobile') return '📱';
-  if (type === 'Tablet') return '📱';
-  return '🖥';
+const deviceIcon = (type: ParsedUA['deviceType']): LucideIcon => {
+  if (type === 'Mobile' || type === 'Tablet') return SmartphoneIcon;
+  return MonitorIcon;
 };
 
 export const ActiveSessionsSection = () => {
   const { sessions, loading: sessionsLoading, error: sessionsError } = useActiveSessions();
   const { revokeAll, loading: revoking } = useRevokeAllSessions();
-  const { logout } = useLogout();
 
   const now = new Date();
 
   const handleRevokeAll = () => {
-    revokeAll(undefined, {
-      onSuccess: () => logout(),
-    });
+    revokeAll();
   };
 
   return (
@@ -72,13 +68,14 @@ export const ActiveSessionsSection = () => {
             const { browser, os, deviceType } = parseUserAgent(session.userAgent);
             const expires = new Date(session.expires);
             const daysLeft = Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            const DeviceIcon = deviceIcon(deviceType);
 
             return (
               <li
                 key={session.id}
                 className="rounded-xl border border-white/6 bg-white/3 px-4 py-3.5 flex gap-3.5 items-start"
               >
-                <span className="text-lg mt-0.5 select-none">{deviceIcon(deviceType)}</span>
+                <DeviceIcon size={16} className="mt-0.5 shrink-0 text-slate-400" />
                 <div className="flex flex-col gap-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[13px] font-medium text-slate-200">{browser}</span>
