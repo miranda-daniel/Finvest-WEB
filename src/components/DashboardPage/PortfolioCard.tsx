@@ -22,14 +22,19 @@ export const PortfolioCard = ({ portfolio, color, activePortfolioId }: Portfolio
 
   const handleStarClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+
     if (loading) return;
+
     setFavorite(portfolio.isFavorite ? null : portfolio.id);
   };
 
   return (
     <div
       onClick={() =>
-        void navigate({ to: '/portfolios/$portfolioId', params: { portfolioId: String(portfolio.id) } })
+        void navigate({
+          to: '/portfolios/$portfolioId',
+          params: { portfolioId: String(portfolio.id) },
+        })
       }
       className={`relative cursor-pointer rounded-2xl border p-5 transition-colors ${
         isSelected

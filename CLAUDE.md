@@ -45,12 +45,15 @@ Branch naming follows the same types as commit messages: `feat/`, `fix/`, `refac
 - Prefer interfaces over type aliases for objects
 - Always use arrow functions (`const foo = () => {}`) — never `function` declarations
 - **Exception:** route files (`src/routes/`) use `function` declarations for page components so the `Route` export stays at the top of the file (function declarations hoist, arrow functions don't)
+- Never use raw string literals as discriminated values. When a variable, prop, or state can only take a fixed set of string values (e.g. tabs, sections, modes, sides), define a `enum` and use its members everywhere — in `useState` defaults, conditionals, arrays, and `switch` cases. If a matching enum already exists (e.g. a GraphQL-generated one like `OperationSide`), use that instead of defining a new one.
 
 ### React
 
 - Use functional components with hooks
 - Keep components focused and single-purpose
 - Props interfaces should be defined above the component
+- When subscribing to React Hook Form field values inside a component, always use `useWatch({ control, name })` instead of `watch()`. The `watch()` function cannot be memoized safely and causes the React Compiler to skip optimization of the entire component.
+- Break down complex `return` blocks into small `render*` helper functions defined inside the component (e.g. `renderHeader()`, `renderSkeletonRows()`, `renderActions()`). The top-level `return` should read like a table of contents, not a wall of JSX. When a section grows large or needs to be reused elsewhere, extract it into its own React component instead.
 
 ### Async Operations
 
@@ -248,6 +251,14 @@ Available sizes: `default`, `sm`, `lg`, `icon`, `icon-sm`.
 - Chart tooltip container: `rounded-2xl border border-white/10 bg-[#0f131b]/95 backdrop-blur`
 - Pie chart colors: use the `pieColors` array from the mockup (blue/cyan/orange/purple palette)
 - Allocation bar tracks: `bg-white/10 rounded-full`, fill: `bg-white`
+
+## Deferred Improvements
+
+These are intentionally not implemented yet. Add them when the trigger condition is met.
+
+| What | When to add | Notes |
+|---|---|---|
+| Sentry | Before going to production | Frontend error monitoring — catches React render failures, unhandled promise rejections, and errors in hooks that never reach the API. Free tier is enough for personal use. Integration is `@sentry/react` with an `ErrorBoundary` wrapper in `main.tsx`. |
 
 ## Dependencies — Known Constraints
 
