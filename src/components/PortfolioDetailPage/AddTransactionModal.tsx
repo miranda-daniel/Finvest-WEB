@@ -169,7 +169,7 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
       <Label>Quantity</Label>
       <Input
         type="number"
-        step="0.1"
+        step="0.000001"
         min="0"
         className="mt-1.5"
         {...register('quantity', { valueAsNumber: true })}
@@ -212,6 +212,7 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
             <h2 className="text-heading-2">Add Transaction</h2>
             <button
               onClick={onClose}
+              aria-label="Close"
               className="text-slate-500 hover:text-slate-300 transition-colors"
             >
               <XIcon className="size-5" />

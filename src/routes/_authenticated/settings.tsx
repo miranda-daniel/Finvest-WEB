@@ -8,11 +8,9 @@ import { useEffect, useState } from 'react';
 import { SettingsPage } from '@/components/SettingsPage';
 import { SettingsHash } from '@/components/SettingsPage/settingsHash';
 
-const VALID_HASHES = Object.values(SettingsHash) as string[];
-
 const resolveHash = (): SettingsHash => {
-  const raw = window.location.hash.replace('#', '');
-  return VALID_HASHES.includes(raw) ? (raw as SettingsHash) : SettingsHash.Profile;
+  const raw = window.location.hash.replace('#', '') as SettingsHash;
+  return Object.values(SettingsHash).includes(raw) ? raw : SettingsHash.Profile;
 };
 
 export const Route = createFileRoute('/_authenticated/settings')({
