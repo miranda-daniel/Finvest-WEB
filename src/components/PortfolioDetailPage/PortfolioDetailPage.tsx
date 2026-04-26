@@ -9,18 +9,8 @@ import {
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { usePortfolioDetail } from '@/api/hooks/portfolios/usePortfolioDetail';
+import { Holding } from '@/api/generated/graphql';
 import { AddTransactionModal } from './AddTransactionModal';
-
-interface Holding {
-  id: number;
-  quantity: number;
-  avgCost: number;
-  instrument: {
-    symbol: string;
-    name: string;
-    instrumentClass: string;
-  };
-}
 
 const columnHelper = createColumnHelper<Holding>();
 
@@ -61,7 +51,7 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
   const [showAddTransaction, setShowAddTransaction] = useState(false);
 
   const table = useReactTable({
-    data: (portfolio?.holdings ?? []) as Holding[],
+    data: portfolio?.holdings ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -91,8 +81,8 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
   const renderSkeletonRows = () =>
     [...Array(3)].map((_, i) => (
       <tr key={i} className="border-b border-white/5">
-        {columns.map((_, j) => (
-          <td key={j} className="px-5 py-4">
+        {columns.map((col) => (
+          <td key={col.id} className="px-5 py-4">
             <div className="h-4 animate-pulse rounded bg-white/10" />
           </td>
         ))}

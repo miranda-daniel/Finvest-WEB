@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import { IconCheck } from '@/components/ui/icons';
 import { useForm, useWatch } from 'react-hook-form';
@@ -54,7 +55,7 @@ interface FormFieldProps {
 
 const FormField = ({ label, error, inputProps }: FormFieldProps) => (
   <div className="flex flex-col gap-1">
-    <label className="text-label">{label}</label>
+    <Label>{label}</Label>
     <PasswordInput
       {...inputProps}
       className={`h-9 rounded-lg border px-3 text-[13px] ${
