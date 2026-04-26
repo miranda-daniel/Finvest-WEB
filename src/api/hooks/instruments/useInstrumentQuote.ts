@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { apiClient, getApiError } from '@/api/client';
+import logger from '@/lib/logger';
 
 interface QuoteResponse {
   symbol: string;
@@ -20,7 +21,7 @@ export const useInstrumentQuote = () => {
 
       return data.price;
     } catch (err) {
-      console.error('Failed to fetch quote:', getApiError(err));
+      logger.error('Failed to fetch quote', getApiError(err));
       return null;
     }
   };
