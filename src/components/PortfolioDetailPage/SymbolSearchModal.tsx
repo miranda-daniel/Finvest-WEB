@@ -15,12 +15,21 @@ interface SymbolSearchModalProps {
   onClose: () => void;
 }
 
+// Instrument type strings as returned by the search API
+const INSTRUMENT_TYPE = {
+  CommonStock: 'Common Stock',
+  ADR: 'American Depositary Receipt',
+  ETF: 'ETF',
+  DigitalCurrency: 'Digital Currency',
+  Bond: 'Bond',
+} as const;
+
 const TYPE_LABEL: Record<string, string> = {
-  'Common Stock': 'stock',
-  'American Depositary Receipt': 'stock',
-  ETF: 'etf',
-  'Digital Currency': 'crypto',
-  Bond: 'bond',
+  [INSTRUMENT_TYPE.CommonStock]: 'stock',
+  [INSTRUMENT_TYPE.ADR]: 'stock',
+  [INSTRUMENT_TYPE.ETF]: 'etf',
+  [INSTRUMENT_TYPE.DigitalCurrency]: 'crypto',
+  [INSTRUMENT_TYPE.Bond]: 'bond',
 };
 
 const normalizeType = (type: string) => TYPE_LABEL[type] ?? type.toLowerCase();
@@ -56,13 +65,14 @@ enum FilterTab {
   Cryptos = 'cryptos',
 }
 
-const STOCK_TYPES = new Set(['Common Stock', 'American Depositary Receipt']);
+const STOCK_TYPES = new Set<string>([INSTRUMENT_TYPE.CommonStock, INSTRUMENT_TYPE.ADR]);
 
 const applyFilter = (results: InstrumentSearchResult[], tab: FilterTab) => {
   if (tab === FilterTab.Stocks)
     return results.filter((r) => STOCK_TYPES.has(r.type) && r.exchange !== 'OTC');
 
-  if (tab === FilterTab.Cryptos) return results.filter((r) => r.type === 'Digital Currency');
+  if (tab === FilterTab.Cryptos)
+    return results.filter((r) => r.type === INSTRUMENT_TYPE.DigitalCurrency);
   return results;
 };
 

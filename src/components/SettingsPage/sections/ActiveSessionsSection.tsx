@@ -3,30 +3,37 @@ import { SmartphoneIcon, MonitorIcon, LucideIcon } from 'lucide-react';
 import { useActiveSessions } from '@/api/hooks/auth/useActiveSessions';
 import { useRevokeAllSessions } from '@/api/hooks/auth/useRevokeAllSessions';
 
+enum DeviceType {
+  Desktop = 'Desktop',
+  Mobile = 'Mobile',
+  Tablet = 'Tablet',
+  Unknown = 'Unknown',
+}
+
 interface ParsedUA {
   browser: string;
   os: string;
-  deviceType: 'Desktop' | 'Mobile' | 'Tablet' | 'Unknown';
+  deviceType: DeviceType;
 }
 
 const parseUserAgent = (ua: string | null): ParsedUA => {
-  if (!ua) return { browser: 'Unknown browser', os: 'Unknown OS', deviceType: 'Unknown' };
+  if (!ua) return { browser: 'Unknown browser', os: 'Unknown OS', deviceType: DeviceType.Unknown };
 
   const parser = new UAParser(ua);
   const browser = parser.getBrowser().name ?? 'Unknown browser';
   const os = parser.getOS().name ?? 'Unknown OS';
   const rawType = parser.getDevice().type;
 
-  const deviceType: ParsedUA['deviceType'] =
-    rawType === 'mobile' ? 'Mobile' :
-    rawType === 'tablet' ? 'Tablet' :
-    !rawType ? 'Desktop' : 'Unknown';
+  const deviceType =
+    rawType === 'mobile' ? DeviceType.Mobile :
+    rawType === 'tablet' ? DeviceType.Tablet :
+    !rawType ? DeviceType.Desktop : DeviceType.Unknown;
 
   return { browser, os, deviceType };
 };
 
-const deviceIcon = (type: ParsedUA['deviceType']): LucideIcon => {
-  if (type === 'Mobile' || type === 'Tablet') return SmartphoneIcon;
+const deviceIcon = (type: DeviceType): LucideIcon => {
+  if (type === DeviceType.Mobile || type === DeviceType.Tablet) return SmartphoneIcon;
   return MonitorIcon;
 };
 

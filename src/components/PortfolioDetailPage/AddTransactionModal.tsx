@@ -20,8 +20,8 @@ const schema = z.object({
   name: z.string().min(1),
   instrumentClass: z.string().min(1),
   date: z.string().min(1, 'Date is required'),
-  price: z.number({ error: 'Enter a valid price' }).positive('Price must be > 0'),
-  quantity: z.number({ error: 'Enter a valid quantity' }).positive('Quantity must be > 0'),
+  price: z.number({ error: 'Enter a valid price' }).positive({ error: 'Price must be > 0' }),
+  quantity: z.number({ error: 'Enter a valid quantity' }).positive({ error: 'Quantity must be > 0' }),
 });
 
 type FormValues = z.infer<typeof schema>;
