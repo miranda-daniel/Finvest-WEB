@@ -71,6 +71,7 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
       <div className="flex items-center gap-4">
         <button
           onClick={() => void navigate({ to: '/dashboard' })}
+          aria-label="Go back"
           className="text-slate-500 hover:text-slate-300 transition-colors"
         >
           <ArrowLeftIcon className="size-5" />

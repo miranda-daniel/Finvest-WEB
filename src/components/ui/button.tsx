@@ -8,8 +8,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // White background — main CTA
-        primary: 'bg-slate-300 text-slate-950 hover:bg-slate-200',
+        // Light grey background — main CTA
+        primary: 'bg-slate-100 text-slate-950 hover:bg-slate-300',
         // Subtle border + background — secondary/cancel actions
         secondary: 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10',
         // Transparent — icon buttons and dialog close

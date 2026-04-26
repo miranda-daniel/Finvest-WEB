@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SearchIcon, XIcon } from 'lucide-react';
 import 'flag-icons/css/flag-icons.min.css';
 import {
@@ -7,6 +7,8 @@ import {
 } from '@/api/hooks/instruments/useInstrumentSearch';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { useDebounce } from '@/lib/useDebounce';
+import { THIRD_PARTY } from '@/config';
 
 interface SymbolSearchModalProps {
   onSelect: (result: InstrumentSearchResult) => void;
@@ -40,7 +42,7 @@ const SymbolLogo = ({ symbol }: SymbolLogoProps) => {
 
   return (
     <img
-      src={`https://financialmodelingprep.com/image-stock/${symbol}.png`}
+      src={`${THIRD_PARTY.stockLogoBaseUrl}/${symbol}.png`}
       alt={symbol}
       className="size-8 shrink-0 rounded-full object-contain"
       onError={() => setFailed(true)}
@@ -64,15 +66,52 @@ const applyFilter = (results: InstrumentSearchResult[], tab: FilterTab) => {
   return results;
 };
 
+interface ResultRowProps {
+  result: InstrumentSearchResult;
+  onSelect: (result: InstrumentSearchResult) => void;
+  onClose: () => void;
+}
+
+const ResultRow = ({ result, onSelect, onClose }: ResultRowProps) => (
+  <button
+    onClick={() => {
+      onSelect(result);
+      onClose();
+    }}
+    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/5"
+  >
+    <SymbolLogo symbol={result.symbol} />
+
+    <div className="flex flex-1 flex-col gap-0.5 min-w-0">
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-semibold text-slate-100">{result.symbol}</span>
+        <span className="truncate text-xs text-slate-400">{result.name}</span>
+      </div>
+    </div>
+
+    <div className="flex shrink-0 items-center gap-2">
+      <span className="text-label">{normalizeType(result.type)}</span>
+      <span className="text-xs font-medium text-slate-400">{result.exchange}</span>
+
+      {result.country?.length === 2 ? (
+        <span className={`fi fi-${result.country.toLowerCase()}`} title={result.country} />
+      ) : (
+        <span
+          className="inline-block w-4 ml-0.5 mr-1 text-center text-xs text-slate-600"
+          title="Unknown"
+        >
+          N/A
+        </span>
+      )}
+    </div>
+  </button>
+);
+
 export const SymbolSearchModal = ({ onSelect, onClose }: SymbolSearchModalProps) => {
   const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [activeTab, setActiveTab] = useState<FilterTab>(FilterTab.Stocks);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedQuery(query), 400);
-    return () => clearTimeout(timer);
-  }, [query]);
+  const debouncedQuery = useDebounce(query, 400);
 
   const { results, loading } = useInstrumentSearch(debouncedQuery);
   const filtered = applyFilter(results, activeTab);
@@ -110,42 +149,6 @@ export const SymbolSearchModal = ({ onSelect, onClose }: SymbolSearchModalProps)
     </div>
   );
 
-  const renderResultRow = (result: InstrumentSearchResult) => (
-    <button
-      key={`${result.symbol}-${result.exchange}`}
-      onClick={() => {
-        onSelect(result);
-        onClose();
-      }}
-      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/5"
-    >
-      <SymbolLogo symbol={result.symbol} />
-
-      <div className="flex flex-1 flex-col gap-0.5 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-100">{result.symbol}</span>
-          <span className="truncate text-xs text-slate-400">{result.name}</span>
-        </div>
-      </div>
-
-      <div className="flex shrink-0 items-center gap-2">
-        <span className="text-label">{normalizeType(result.type)}</span>
-        <span className="text-xs font-medium text-slate-400">{result.exchange}</span>
-
-        {result.country?.length === 2 ? (
-          <span className={`fi fi-${result.country.toLowerCase()}`} title={result.country} />
-        ) : (
-          <span
-            className="inline-block w-4 ml-0.5 mr-1 text-center text-xs text-slate-600"
-            title="Unknown"
-          >
-            N/A
-          </span>
-        )}
-      </div>
-    </button>
-  );
-
   const renderResults = () => (
     <div className="flex flex-col gap-0.5 max-h-96 overflow-y-auto">
       {loading && <p className="text-subtle py-4 text-center">Searching...</p>}
@@ -154,7 +157,14 @@ export const SymbolSearchModal = ({ onSelect, onClose }: SymbolSearchModalProps)
         <p className="text-subtle py-4 text-center">No results found.</p>
       )}
 
-      {filtered.map(renderResultRow)}
+      {filtered.map((result) => (
+        <ResultRow
+          key={`${result.symbol}-${result.exchange}`}
+          result={result}
+          onSelect={onSelect}
+          onClose={onClose}
+        />
+      ))}
     </div>
   );
 
@@ -173,6 +183,7 @@ export const SymbolSearchModal = ({ onSelect, onClose }: SymbolSearchModalProps)
           <h2 className="text-heading-2">Symbol search</h2>
           <button
             onClick={onClose}
+            aria-label="Close"
             className="text-slate-500 hover:text-slate-300 transition-colors"
           >
             <XIcon className="size-5" />
