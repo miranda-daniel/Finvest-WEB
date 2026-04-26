@@ -6,12 +6,13 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { SettingsPage } from '@/components/SettingsPage';
+import { SettingsHash } from '@/components/SettingsPage/settingsHash';
 
-const VALID_HASHES = ['profile', 'active-sessions', 'security'];
+const VALID_HASHES = Object.values(SettingsHash) as string[];
 
-const resolveHash = (): string => {
+const resolveHash = (): SettingsHash => {
   const raw = window.location.hash.replace('#', '');
-  return VALID_HASHES.includes(raw) ? raw : 'profile';
+  return VALID_HASHES.includes(raw) ? (raw as SettingsHash) : SettingsHash.Profile;
 };
 
 export const Route = createFileRoute('/_authenticated/settings')({
@@ -19,7 +20,7 @@ export const Route = createFileRoute('/_authenticated/settings')({
 });
 
 function SettingsRoute() {
-  const [activeHash, setActiveHash] = useState<string>(resolveHash);
+  const [activeHash, setActiveHash] = useState<SettingsHash>(resolveHash);
 
   useEffect(() => {
     const handleHashChange = () => setActiveHash(resolveHash());
@@ -27,7 +28,7 @@ function SettingsRoute() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const handleNavigate = (hash: string) => {
+  const handleNavigate = (hash: SettingsHash) => {
     window.location.hash = hash;
   };
 

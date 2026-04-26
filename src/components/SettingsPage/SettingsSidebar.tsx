@@ -1,20 +1,21 @@
 import { UserIcon, MonitorIcon, ShieldIcon, LucideIcon } from 'lucide-react';
+import { SettingsHash } from './settingsHash';
 
 interface SettingsSidebarProps {
-  activeHash: string;
-  onNavigate: (hash: string) => void;
+  activeHash: SettingsHash;
+  onNavigate: (hash: SettingsHash) => void;
 }
 
 interface SidebarItem {
-  hash: string;
+  hash: SettingsHash;
   label: string;
   icon: LucideIcon;
 }
 
 const items: SidebarItem[] = [
-  { hash: 'profile', label: 'Profile', icon: UserIcon },
-  { hash: 'active-sessions', label: 'Active Sessions', icon: MonitorIcon },
-  { hash: 'security', label: 'Security', icon: ShieldIcon },
+  { hash: SettingsHash.Profile, label: 'Profile', icon: UserIcon },
+  { hash: SettingsHash.ActiveSessions, label: 'Active Sessions', icon: MonitorIcon },
+  { hash: SettingsHash.Security, label: 'Security', icon: ShieldIcon },
 ];
 
 export const SettingsSidebar = ({ activeHash, onNavigate }: SettingsSidebarProps) => {
@@ -34,8 +35,8 @@ export const SettingsSidebar = ({ activeHash, onNavigate }: SettingsSidebarProps
               onClick={() => onNavigate(item.hash)}
               className={`flex items-center gap-2 w-full text-left px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
                 isActive
-                  ? 'bg-white/[0.06] text-slate-100'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
+                  ? 'bg-white/6 text-slate-100'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/3'
               }`}
             >
               <Icon size={14} />

@@ -7,17 +7,18 @@ import { SettingsSidebar } from './SettingsSidebar';
 import { ProfileSection } from './sections/ProfileSection';
 import { ActiveSessionsSection } from './sections/ActiveSessionsSection';
 import { SecuritySection } from './sections/SecuritySection';
+import { SettingsHash } from './settingsHash';
 
 interface SettingsPageProps {
-  activeHash: string;
-  onNavigate: (hash: string) => void;
+  activeHash: SettingsHash;
+  onNavigate: (hash: SettingsHash) => void;
 }
 
-const renderSection = (hash: string) => {
+const renderSection = (hash: SettingsHash) => {
   switch (hash) {
-    case 'active-sessions':
+    case SettingsHash.ActiveSessions:
       return <ActiveSessionsSection />;
-    case 'security':
+    case SettingsHash.Security:
       return <SecuritySection />;
     default:
       return <ProfileSection />;

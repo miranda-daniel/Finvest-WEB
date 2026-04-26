@@ -9,7 +9,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         // White background — main CTA
-        primary: 'bg-white text-slate-950 hover:bg-slate-200',
+        primary: 'bg-slate-300 text-slate-950 hover:bg-slate-200',
         // Subtle border + background — secondary/cancel actions
         secondary: 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10',
         // Transparent — icon buttons and dialog close
@@ -19,9 +19,9 @@ const buttonVariants = cva(
       },
       size: {
         default: 'h-9 gap-1.5 px-4',
-        sm:      'h-8 gap-1 px-3 text-[0.8rem]',
-        lg:      'h-10 gap-2 px-5',
-        icon:    'size-9 rounded-xl',
+        sm: 'h-8 gap-1 px-3 text-[0.8rem]',
+        lg: 'h-10 gap-2 px-5',
+        icon: 'size-9 rounded-xl',
         'icon-sm': 'size-7 rounded-xl',
       },
     },

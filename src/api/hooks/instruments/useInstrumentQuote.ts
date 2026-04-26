@@ -17,6 +17,7 @@ export const useInstrumentQuote = () => {
           apiClient.get<QuoteResponse>(`/instruments/quote/${symbol}`).then((r) => r.data),
         staleTime: 30_000,
       });
+
       return data.price;
     } catch (err) {
       console.error('Failed to fetch quote:', getApiError(err));
