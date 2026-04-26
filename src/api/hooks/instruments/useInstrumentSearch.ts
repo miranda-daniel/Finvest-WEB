@@ -6,6 +6,7 @@ export interface InstrumentSearchResult {
   name: string;
   type: string;
   exchange: string;
+  country: string;
 }
 
 export const useInstrumentSearch = (query: string) => {

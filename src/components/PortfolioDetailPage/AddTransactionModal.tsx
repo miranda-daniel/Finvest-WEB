@@ -6,11 +6,13 @@ import { XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { OperationSide } from '@/api/generated/graphql';
 import { useAddTransaction } from '@/api/hooks/portfolios/useAddTransaction';
 import { useInstrumentQuote } from '@/api/hooks/instruments/useInstrumentQuote';
 import { SymbolSearchModal } from './SymbolSearchModal';
 import { InstrumentSearchResult } from '@/api/hooks/instruments/useInstrumentSearch';
+import { DatePicker } from '@/components/ui/date-picker';
 
 const schema = z.object({
   side: z.enum(['BUY', 'SELL']),
@@ -35,27 +37,39 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
   const [showSymbolSearch, setShowSymbolSearch] = useState(false);
   const { submit, loading, error } = useAddTransaction(onClose);
 
-  const { register, handleSubmit, control, watch, setValue, formState: { errors } } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { side: 'BUY', symbol: '', name: '', instrumentClass: '', date: today(), price: 0, quantity: 1 },
+    defaultValues: {
+      side: 'BUY',
+      symbol: '',
+      name: '',
+      instrumentClass: '',
+      date: today(),
+      price: 0,
+      quantity: 1,
+    },
   });
 
   const price = watch('price');
   const quantity = watch('quantity');
-  const symbol = watch('symbol');
-  const total = (price > 0 && quantity > 0) ? (price * quantity).toFixed(2) : '0.00';
+  const total = price > 0 && quantity > 0 ? (price * quantity).toFixed(2) : '0.00';
 
-  const { fetchQuote } = useInstrumentQuote(symbol);
+  const { fetchQuote } = useInstrumentQuote();
 
   const handleSymbolSelect = async (result: InstrumentSearchResult) => {
     setValue('symbol', result.symbol);
     setValue('name', result.name);
     setValue('instrumentClass', result.type);
 
-    const quoteResult = await fetchQuote();
-    if (quoteResult.data?.price) {
-      setValue('price', quoteResult.data.price);
-    }
+    const fetchedPrice = await fetchQuote(result.symbol);
+    if (fetchedPrice !== null) setValue('price', fetchedPrice);
   };
 
   const onSubmit = (values: FormValues) => {
@@ -73,22 +87,27 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
 
   return (
     <>
-      <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-surface-overlay p-7 shadow-2xl shadow-black/40">
-
+      <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+        <DialogContent
+          showCloseButton={false}
+          className="max-w-sm rounded-2xl border border-white/10 bg-surface-overlay p-7 shadow-2xl shadow-black/40 ring-0 gap-0"
+        >
           {/* Header */}
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-heading-2">Add Transaction</h2>
-            <button onClick={onClose} className="text-slate-500 hover:text-slate-300 transition-colors">
+            <button
+              onClick={onClose}
+              className="text-slate-500 hover:text-slate-300 transition-colors"
+            >
               <XIcon className="size-5" />
             </button>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-
             {/* Side toggle */}
             <div>
               <Label>Side</Label>
+
               <Controller
                 name="side"
                 control={control}
@@ -105,8 +124,8 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
                               ? 'bg-blue-500 text-white'
                               : 'bg-rose-500/80 text-white'
                             : side === 'BUY'
-                            ? 'text-slate-400 hover:text-blue-400'
-                            : 'text-slate-400 hover:text-rose-400'
+                              ? 'text-slate-400 hover:text-blue-400'
+                              : 'text-slate-400 hover:text-rose-400'
                         }`}
                       >
                         {side}
@@ -127,23 +146,29 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
               >
                 {watch('symbol') || 'Choose symbol...'}
               </button>
-              {errors.symbol && <p className="mt-1 text-xs text-rose-400">{errors.symbol.message}</p>}
+              {errors.symbol && (
+                <p className="mt-1 text-xs text-rose-400">{errors.symbol.message}</p>
+              )}
             </div>
 
             {/* Date */}
             <div>
               <Label>Date</Label>
-              <Input
-                type="date"
-                className="mt-1.5"
-                {...register('date')}
+              <Controller
+                name="date"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker className="mt-1.5" value={field.value} onChange={field.onChange} />
+                )}
               />
               {errors.date && <p className="mt-1 text-xs text-rose-400">{errors.date.message}</p>}
             </div>
 
             {/* Price */}
             <div>
-              <Label>Price <span className="text-slate-500">(USD)</span></Label>
+              <Label>
+                Price <span className="text-slate-500">(USD)</span>
+              </Label>
               <Input
                 type="number"
                 step="0.01"
@@ -164,7 +189,9 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
                 className="mt-1.5"
                 {...register('quantity', { valueAsNumber: true })}
               />
-              {errors.quantity && <p className="mt-1 text-xs text-rose-400">{errors.quantity.message}</p>}
+              {errors.quantity && (
+                <p className="mt-1 text-xs text-rose-400">{errors.quantity.message}</p>
+              )}
             </div>
 
             {/* Total */}
@@ -178,15 +205,16 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
 
             {/* Actions */}
             <div className="flex justify-end gap-2.5">
-              <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+              <Button type="button" variant="secondary" onClick={onClose}>
+                Cancel
+              </Button>
               <Button type="submit" disabled={loading}>
                 {loading ? 'Saving...' : 'Save'}
               </Button>
             </div>
-
           </form>
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
 
       {showSymbolSearch && (
         <SymbolSearchModal

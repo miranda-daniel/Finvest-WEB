@@ -199,6 +199,15 @@ Only build a custom component when:
 - No shadcn equivalent exists, or
 - The use case is so specific that adapting a shadcn component would require more complexity than writing from scratch.
 
+### Modals
+
+Always use `Dialog` + `DialogContent` from `src/components/ui/dialog.tsx` for any modal. Never build a custom overlay with `fixed inset-0`. Key usage notes:
+
+- Pass `showCloseButton={false}` if the modal has its own close button.
+- Override the default shadcn width with both `max-w-{size}` **and** `sm:max-w-{size}` — the component default `sm:max-w-sm` will win at `sm+` breakpoints unless overridden at the same breakpoint.
+- Override `ring-0 gap-0` to remove the default ring and grid gap when not needed.
+- Control open state via `open` + `onOpenChange`: `<Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>`.
+
 ### Buttons
 
 Always use the `<Button>` component from `src/components/ui/button.tsx` for interactive buttons. Native `<button>` elements are only acceptable when the button has highly custom styling that maps to none of the available variants (e.g. the star toggle in `PortfolioCard`, avatar circles, menu items with fully custom layout).

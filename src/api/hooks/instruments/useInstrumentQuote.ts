@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { apiClient, getApiError } from '@/api/client';
 
 interface QuoteResponse {
@@ -6,21 +6,23 @@ interface QuoteResponse {
   price: number;
 }
 
-export const useInstrumentQuote = (symbol: string) => {
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['instrument-quote', symbol],
-    queryFn: () =>
-      apiClient
-        .get<QuoteResponse>(`/instruments/quote/${symbol}`)
-        .then((r) => r.data),
-    enabled: false,
-    staleTime: 30_000,
-  });
+export const useInstrumentQuote = () => {
+  const queryClient = useQueryClient();
 
-  return {
-    price: data?.price ?? null,
-    loading: isLoading,
-    error: getApiError(error),
-    fetchQuote: refetch,
+  const fetchQuote = async (symbol: string): Promise<number | null> => {
+    try {
+      const data = await queryClient.fetchQuery<QuoteResponse>({
+        queryKey: ['instrument-quote', symbol],
+        queryFn: () =>
+          apiClient.get<QuoteResponse>(`/instruments/quote/${symbol}`).then((r) => r.data),
+        staleTime: 30_000,
+      });
+      return data.price;
+    } catch (err) {
+      console.error('Failed to fetch quote:', getApiError(err));
+      return null;
+    }
   };
+
+  return { fetchQuote };
 };

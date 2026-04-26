@@ -15,7 +15,6 @@ export const DashboardPage = () => {
   const { portfolios, loading: portfoliosLoading, error: portfoliosError } = usePortfolios();
 
   const selectedPortfolioId = useDashboardStore((s) => s.selectedPortfolioId);
-  const setSelectedPortfolio = useDashboardStore((s) => s.setSelectedPortfolio);
 
   const [openCreatePortfolioModal, setOpenCreatePortfolioModal] = useState(false);
 
