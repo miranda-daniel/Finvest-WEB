@@ -67,12 +67,12 @@ Branch naming follows the same types as commit messages: `feat/`, `fix/`, `refac
 
 ### Naming conventions
 
-| File type | Convention | Example |
-|---|---|---|
-| React components | `PascalCase` | `SignInForm.tsx` |
-| Hooks, stores, utils | `camelCase` | `useLogin.ts`, `auth.store.ts` |
-| Route files | `kebab-case` | `sign-up.tsx` → `/sign-up` |
-| Style files | `kebab-case` | `text-styles.scss` |
+| File type            | Convention   | Example                        |
+| -------------------- | ------------ | ------------------------------ |
+| React components     | `PascalCase` | `SignInForm.tsx`               |
+| Hooks, stores, utils | `camelCase`  | `useLogin.ts`, `auth.store.ts` |
+| Route files          | `kebab-case` | `sign-up.tsx` → `/sign-up`     |
+| Style files          | `kebab-case` | `text-styles.scss`             |
 
 Route files use kebab-case because the filename becomes the URL segment. Component files use PascalCase so the filename matches the exported component name.
 
@@ -102,12 +102,12 @@ The library to use depends on the transport. Never use `fetch` directly, never f
 
 ```ts
 // src/api/hooks/portfolios/usePortfolios.ts
-import { useQuery } from '@apollo/client/react'
-import { GetPortfoliosDocument } from '@/api/generated/graphql'
+import { useQuery } from '@apollo/client/react';
+import { GetPortfoliosDocument } from '@/api/generated/graphql';
 
 export function usePortfolios() {
-  const { data, loading, error } = useQuery(GetPortfoliosDocument)
-  return { portfolios: data?.portfolios ?? [], loading, error }
+  const { data, loading, error } = useQuery(GetPortfoliosDocument);
+  return { portfolios: data?.portfolios ?? [], loading, error };
 }
 ```
 
@@ -120,15 +120,17 @@ export function usePortfolios() {
 
 ```ts
 // src/api/hooks/auth/useLogin.ts
-import { useMutation } from '@tanstack/react-query'
-import { apiClient, getApiError } from '@/api/client'
+import { useMutation } from '@tanstack/react-query';
+import { apiClient, getApiError } from '@/api/client';
 
 export function useLogin() {
   const { mutate, isPending, error } = useMutation({
     mutationFn: (credentials) => apiClient.post('/session/login', credentials),
-    onSuccess: ({ data }) => { /* store in Zustand, navigate */ },
-  })
-  return { submit: mutate, loading: isPending, error: error ? getApiError(error) : null }
+    onSuccess: ({ data }) => {
+      /* store in Zustand, navigate */
+    },
+  });
+  return { submit: mutate, loading: isPending, error: error ? getApiError(error) : null };
 }
 ```
 
@@ -151,15 +153,15 @@ The font is **Geist Variable** (configured in `@theme` in `index.css`). shadcn C
 
 Never use raw hex codes for surfaces or semantic colors. Use the Tailwind tokens defined in `@theme` in `index.css`:
 
-| Token | Usage |
-|---|---|
-| `bg-surface-base` | App background (`#0a0b10`) |
-| `bg-surface-raised` | Chart / table inner panels (`#0d1017`) |
-| `bg-surface-overlay` | Tooltips, popovers (`#0f131b`) |
-| `text-gain` / `bg-gain` | Positive P&L, gains |
-| `text-loss` / `bg-loss` | Negative P&L, losses |
-| `text-dividend` | Dividend operations |
-| `text-fee` | Fee operations |
+| Token                   | Usage                                  |
+| ----------------------- | -------------------------------------- |
+| `bg-surface-base`       | App background (`#0a0b10`)             |
+| `bg-surface-raised`     | Chart / table inner panels (`#0d1017`) |
+| `bg-surface-overlay`    | Tooltips, popovers (`#0f131b`)         |
+| `text-gain` / `bg-gain` | Positive P&L, gains                    |
+| `text-loss` / `bg-loss` | Negative P&L, losses                   |
+| `text-dividend`         | Dividend operations                    |
+| `text-fee`              | Fee operations                         |
 
 ### Card pattern
 
@@ -178,27 +180,27 @@ rounded-3xl border border-white/10 bg-white/5 backdrop-blur shadow-2xl shadow-bl
 
 Use the utility classes defined in `src/index.css` — never write raw Tailwind typography classes directly:
 
-| Class | Role |
-|---|---|
+| Class             | Role                                                                |
+| ----------------- | ------------------------------------------------------------------- |
 | `.text-heading-1` | Page title (`text-3xl font-semibold tracking-tight text-slate-100`) |
-| `.text-heading-2` | Section title (`text-lg font-semibold text-slate-100`) |
-| `.text-heading-3` | Sub-section title (`text-base font-semibold text-slate-100`) |
-| `.text-body` | Body / value text (`text-sm text-slate-300`) |
-| `.text-subtle` | Secondary / muted text (`text-sm text-slate-400`) |
-| `.text-label` | Field labels, tiny meta (`text-xs font-medium text-slate-400`) |
+| `.text-heading-2` | Section title (`text-lg font-semibold text-slate-100`)              |
+| `.text-heading-3` | Sub-section title (`text-base font-semibold text-slate-100`)        |
+| `.text-body`      | Body / value text (`text-sm text-slate-300`)                        |
+| `.text-subtle`    | Secondary / muted text (`text-sm text-slate-400`)                   |
+| `.text-label`     | Field labels, tiny meta (`text-xs font-medium text-slate-400`)      |
 
 ### Semantic colors
 
 These colors carry fixed meaning across the app — always use them consistently:
 
-| Meaning | Color |
-|---|---|
+| Meaning             | Color                                                     |
+| ------------------- | --------------------------------------------------------- |
 | Gain / positive P&L | `text-emerald-400` / `bg-emerald-400/15 text-emerald-300` |
-| Loss / negative P&L | `text-rose-400` / `bg-rose-400/15 text-rose-300` |
-| Dividend | `bg-sky-400/15 text-sky-300` |
-| Fee | `bg-amber-400/15 text-amber-300` |
-| Daily gainers bar | `#14b8a6` (teal-500) |
-| Daily losers bar | `#f43f5e` (rose-500) |
+| Loss / negative P&L | `text-rose-400` / `bg-rose-400/15 text-rose-300`          |
+| Dividend            | `bg-sky-400/15 text-sky-300`                              |
+| Fee                 | `bg-amber-400/15 text-amber-300`                          |
+| Daily gainers bar   | `#14b8a6` (teal-500)                                      |
+| Daily losers bar    | `#f43f5e` (rose-500)                                      |
 
 ### Icons
 
@@ -209,8 +211,18 @@ Always use **Lucide React** (`lucide-react`) for icons. Never use emojis as icon
 For common UI primitives (buttons, inputs, checkboxes, selects, switches, dialogs, badges, tabs, tooltips, etc.), always use the shadcn/ui component from `src/components/ui/` if one exists. If the component doesn't exist yet, add it via `npx shadcn@latest add <component>` before building a custom one.
 
 Only build a custom component when:
+
 - No shadcn equivalent exists, or
 - The use case is so specific that adapting a shadcn component would require more complexity than writing from scratch.
+
+### Modals
+
+Always use `Dialog` + `DialogContent` from `src/components/ui/dialog.tsx` for any modal. Never build a custom overlay with `fixed inset-0`. Key usage notes:
+
+- Pass `showCloseButton={false}` if the modal has its own close button.
+- Override the default shadcn width with both `max-w-{size}` **and** `sm:max-w-{size}` — the component default `sm:max-w-sm` will win at `sm+` breakpoints unless overridden at the same breakpoint.
+- Override `ring-0 gap-0` to remove the default ring and grid gap when not needed.
+- Control open state via `open` + `onOpenChange`: `<Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>`.
 
 ### Buttons
 
@@ -218,12 +230,12 @@ Always use the `<Button>` component from `src/components/ui/button.tsx` for inte
 
 Available variants:
 
-| Variant | Usage |
-|---|---|
-| `primary` (default) | Main CTA — white background, dark text |
-| `secondary` | Secondary action — subtle border and tinted background |
-| `ghost` | Tertiary / inline action — no background until hover |
-| `danger` | Destructive action — rose tint |
+| Variant             | Usage                                                  |
+| ------------------- | ------------------------------------------------------ |
+| `primary` (default) | Main CTA — white background, dark text                 |
+| `secondary`         | Secondary action — subtle border and tinted background |
+| `ghost`             | Tertiary / inline action — no background until hover   |
+| `danger`            | Destructive action — rose tint                         |
 
 Available sizes: `default`, `sm`, `lg`, `icon`, `icon-sm`.
 

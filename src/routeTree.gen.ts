@@ -18,6 +18,7 @@ import { Route as GuestSignUpRouteImport } from './routes/_guest/sign-up'
 import { Route as GuestLoginRouteImport } from './routes/_guest/login'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedPortfoliosPortfolioIdRouteImport } from './routes/_authenticated/portfolios/$portfolioId'
 
 const MockupRoute = MockupRouteImport.update({
   id: '/mockup',
@@ -62,6 +63,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPortfoliosPortfolioIdRoute =
+  AuthenticatedPortfoliosPortfolioIdRouteImport.update({
+    id: '/portfolios/$portfolioId',
+    path: '/portfolios/$portfolioId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/login': typeof GuestLoginRoute
   '/sign-up': typeof GuestSignUpRoute
+  '/portfolios/$portfolioId': typeof AuthenticatedPortfoliosPortfolioIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -80,6 +88,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/login': typeof GuestLoginRoute
   '/sign-up': typeof GuestSignUpRoute
+  '/portfolios/$portfolioId': typeof AuthenticatedPortfoliosPortfolioIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -92,6 +101,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_guest/login': typeof GuestLoginRoute
   '/_guest/sign-up': typeof GuestSignUpRoute
+  '/_authenticated/portfolios/$portfolioId': typeof AuthenticatedPortfoliosPortfolioIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/sign-up'
+    | '/portfolios/$portfolioId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/sign-up'
+    | '/portfolios/$portfolioId'
   id:
     | '__root__'
     | '/'
@@ -123,6 +135,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_guest/login'
     | '/_guest/sign-up'
+    | '/_authenticated/portfolios/$portfolioId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -198,17 +211,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/portfolios/$portfolioId': {
+      id: '/_authenticated/portfolios/$portfolioId'
+      path: '/portfolios/$portfolioId'
+      fullPath: '/portfolios/$portfolioId'
+      preLoaderRoute: typeof AuthenticatedPortfoliosPortfolioIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedPortfoliosPortfolioIdRoute: typeof AuthenticatedPortfoliosPortfolioIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedPortfoliosPortfolioIdRoute:
+    AuthenticatedPortfoliosPortfolioIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

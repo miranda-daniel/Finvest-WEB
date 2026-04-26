@@ -1,0 +1,17 @@
+query GetPortfolioDetail($id: Int!) {
+  portfolioDetail(id: $id) {
+    id
+    name
+    description
+    holdings {
+      id
+      quantity
+      avgCost
+      instrument {
+        symbol
+        name
+        instrumentClass
+      }
+    }
+  }
+}

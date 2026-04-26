@@ -103,6 +103,29 @@ body {
   color: var(--foreground);
 }
 
+/* Custom scrollbar — webkit browsers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.15); /* slate-400/15 */
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.3);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /* Typography scale — use these classes on the appropriate semantic element (h1, h2, etc.).
  * Color defaults to slate-100. Override with a text-* class when needed. */
 @layer components {
