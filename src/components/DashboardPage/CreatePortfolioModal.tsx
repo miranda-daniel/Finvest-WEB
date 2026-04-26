@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { StarIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useCreatePortfolio } from '@/api/hooks/portfolios/useCreatePortfolio';
@@ -56,7 +57,7 @@ export const CreatePortfolioModal = ({ open, onClose }: CreatePortfolioModalProp
 
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="mt-4 flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="portfolio-name" className="text-label">Name</label>
+            <Label htmlFor="portfolio-name">Name</Label>
             <Input
               id="portfolio-name"
               {...register('name')}
@@ -68,7 +69,7 @@ export const CreatePortfolioModal = ({ open, onClose }: CreatePortfolioModalProp
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="portfolio-description" className="text-label">Description <span className="normal-case">(optional)</span></label>
+            <Label htmlFor="portfolio-description">Description <span className="normal-case font-normal">(optional)</span></Label>
             <Input
               id="portfolio-description"
               {...register('description')}
@@ -93,9 +94,7 @@ export const CreatePortfolioModal = ({ open, onClose }: CreatePortfolioModalProp
           </div>
 
           {error && (
-            <p className="text-xs text-rose-400">
-              {error.message ?? 'Something went wrong. Please try again.'}
-            </p>
+            <p className="text-xs text-rose-400">{error}</p>
           )}
 
           <div className="flex justify-end gap-2">

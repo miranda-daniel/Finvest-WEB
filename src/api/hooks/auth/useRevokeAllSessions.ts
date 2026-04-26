@@ -1,25 +1,31 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from '@tanstack/react-router';
+import { useAuthStore } from '@/stores/auth.store';
+import { apolloClient } from '@/graphql/client';
 import { apiClient, getApiError } from '@/api/client';
 
 // useRevokeAllSessions — revokes all active sessions for the current user.
 //
-// Calls POST /session/revoke-all (requires valid JWT — injected by the Axios interceptor).
-// On success, invalidates the active-sessions cache so the list refreshes.
+// Calls POST /auth/sessions/revoke-all (requires valid JWT).
 //
-// Note: revoking all sessions also invalidates the current session, so the caller
-// should trigger logout after a successful revocation.
+// On success, clears auth state and navigates to /login directly — bypassing
+// useLogout's HTTP call intentionally. The revoke-all endpoint kills the refresh
+// cookie server-side, so calling POST /session/logout afterwards would fail with
+// an expired cookie, triggering a silent refresh loop before landing on /login.
 export const useRevokeAllSessions = () => {
-  const queryClient = useQueryClient();
+  const clearAuth = useAuthStore((s) => s.clearAuth);
+  const router = useRouter();
 
   const {
     mutate: revokeAll,
     isPending: loading,
     error,
   } = useMutation({
-    mutationFn: () => apiClient.post('/session/revoke-all'),
-    onSuccess: () => {
-      // Invalidate sessions cache so the list refreshes if the user stays on the page.
-      queryClient.invalidateQueries({ queryKey: ['active-sessions'] });
+    mutationFn: () => apiClient.post('/auth/sessions/revoke-all'),
+    onSuccess: async () => {
+      clearAuth();
+      await apolloClient.clearStore();
+      router.navigate({ to: '/login' });
     },
   });
 

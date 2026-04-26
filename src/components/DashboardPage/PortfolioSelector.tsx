@@ -25,14 +25,15 @@ export const PortfolioSelector = ({ portfolios, loading, activePortfolioId }: Po
     return null;
   }
 
-  const selectedIndex = portfolios.findIndex((p) => p.id === activePortfolioId);
-  const selectedPortfolio = selectedIndex !== -1 ? portfolios[selectedIndex] : null;
+  const selectedPortfolio = portfolios.find((p) => p.id === activePortfolioId) ?? null;
 
   const selectedName = selectedPortfolio?.name ?? 'All Portfolios';
 
-  const selectedColor = selectedPortfolio
-    ? PORTFOLIO_DOT_COLORS[selectedIndex % PORTFOLIO_DOT_COLORS.length]
-    : ALL_PORTFOLIOS_COLOR;
+  const selectedIndex = portfolios.findIndex((p) => p.id === activePortfolioId);
+  const selectedColor =
+    selectedPortfolio && selectedIndex !== -1
+      ? PORTFOLIO_DOT_COLORS[selectedIndex % PORTFOLIO_DOT_COLORS.length]
+      : ALL_PORTFOLIOS_COLOR;
 
   return (
     <Menu.Root>

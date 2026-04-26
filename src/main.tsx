@@ -2,20 +2,14 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ApolloProvider } from '@apollo/client/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { RouterProvider } from '@tanstack/react-router';
 import { Toaster } from 'sonner';
-import { routeTree } from './routeTree.gen';
+import { router } from './router';
 import { apolloClient } from '@/graphql/client';
 import '@/index.css';
 
-const router = createRouter({ routeTree });
 const queryClient = new QueryClient();
-
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router;
-  }
-}
 
 createRoot(document.getElementById('app')!).render(
   <StrictMode>
@@ -26,6 +20,7 @@ createRoot(document.getElementById('app')!).render(
         <RouterProvider router={router} />
         {/* Toaster — renders toast notifications app-wide, use toast() from 'sonner' anywhere */}
         <Toaster theme="dark" position="bottom-right" richColors />
+        <ReactQueryDevtools initialIsOpen={false} />
       </ApolloProvider>
     </QueryClientProvider>
   </StrictMode>,

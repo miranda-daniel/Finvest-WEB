@@ -14,11 +14,7 @@ interface PortfolioCardProps {
   activePortfolioId: number | null;
 }
 
-export const PortfolioCard = ({
-  portfolio,
-  color,
-  activePortfolioId,
-}: PortfolioCardProps) => {
+export const PortfolioCard = ({ portfolio, color, activePortfolioId }: PortfolioCardProps) => {
   const navigate = useNavigate();
   const { setFavorite, loading } = useSetFavoritePortfolio();
 
@@ -32,7 +28,9 @@ export const PortfolioCard = ({
 
   return (
     <div
-      onClick={() => void navigate({ to: '/portfolios/$portfolioId', params: { portfolioId: String(portfolio.id) } })}
+      onClick={() =>
+        void navigate({ to: '/portfolios/$portfolioId', params: { portfolioId: String(portfolio.id) } })
+      }
       className={`relative cursor-pointer rounded-2xl border p-5 transition-colors ${
         isSelected
           ? 'border-blue-400/40 bg-blue-400/6'
