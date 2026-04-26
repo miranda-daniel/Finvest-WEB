@@ -52,7 +52,8 @@ Branch naming follows the same types as commit messages: `feat/`, `fix/`, `refac
 - Use functional components with hooks
 - Keep components focused and single-purpose
 - Props interfaces should be defined above the component
-- When subscribing to React Hook Form field values inside a component, always use `useWatch({ control, name })` instead of `watch()`. The `watch()` function cannot be memoized safely and causes the React Compiler to skip optimization of the entire component.
+- When subscribing to React Hook Form field values inside a component, always use `useWatch({ control, name })` instead of `watch()`.
+- Never use `console.error`, `console.warn`, or `console.log` directly. Always use the logger from `src/lib/logger.ts` (`logger.error`, `logger.warn`, `logger.info`, `logger.debug`). It is the single integration point for external monitoring tools. The `watch()` function cannot be memoized safely and causes the React Compiler to skip optimization of the entire component.
 - Break down complex `return` blocks into small `render*` helper functions defined inside the component (e.g. `renderHeader()`, `renderSkeletonRows()`, `renderActions()`). The top-level `return` should read like a table of contents, not a wall of JSX. When a section grows large or needs to be reused elsewhere, extract it into its own React component instead.
 
 ### Async Operations
@@ -258,7 +259,7 @@ These are intentionally not implemented yet. Add them when the trigger condition
 
 | What | When to add | Notes |
 |---|---|---|
-| Sentry | Before going to production | Frontend error monitoring — catches React render failures, unhandled promise rejections, and errors in hooks that never reach the API. Free tier is enough for personal use. Integration is `@sentry/react` with an `ErrorBoundary` wrapper in `main.tsx`. |
+| Sentry / PostHog / Datadog | Before going to production | Frontend error monitoring and analytics. The logger at `src/lib/logger.ts` is already the single integration point — add the SDK call inside `logger.error()` (and optionally `logger.warn()`). For Sentry: `@sentry/react` with an `ErrorBoundary` wrapper in `main.tsx`. |
 
 ## Dependencies — Known Constraints
 

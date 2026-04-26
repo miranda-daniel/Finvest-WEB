@@ -71,7 +71,7 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
 
     const fetchedPrice = await fetchQuote(result.symbol);
 
-    if (fetchedPrice !== null) setValue('price', fetchedPrice);
+    if (fetchedPrice !== null) setValue('price', parseFloat(fetchedPrice.toFixed(2)));
   };
 
   const onSubmit = (values: FormValues) => {
