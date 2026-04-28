@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client/react';
 import { AddTransactionDocument, GetPortfolioDetailDocument, OperationSide } from '@/api/generated/graphql';
 import { getGraphQLError } from '@/api/client';
 
-interface AddTransactionInput {
+interface AddTransactionRequest {
   portfolioId: number;
   side: OperationSide;
   symbol: string;
@@ -19,7 +19,7 @@ export const useAddTransaction = (onSuccess?: () => void) => {
     onCompleted: () => onSuccess?.(),
   });
 
-  const submit = (input: AddTransactionInput) => mutate({ variables: input });
+  const submit = (input: AddTransactionRequest) => mutate({ variables: input });
 
   return { submit, loading, error: getGraphQLError(error) };
 };
