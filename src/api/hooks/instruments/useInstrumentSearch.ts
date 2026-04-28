@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient, getApiError } from '@/api/client';
 
-export interface InstrumentSearchResult {
+export interface InstrumentSearchResponse {
   symbol: string;
   name: string;
   type: string;
@@ -14,7 +14,7 @@ export const useInstrumentSearch = (query: string) => {
     queryKey: ['instrument-search', query],
     queryFn: () =>
       apiClient
-        .get<InstrumentSearchResult[]>('/instruments/search', { params: { q: query } })
+        .get<InstrumentSearchResponse[]>('/instruments/search', { params: { q: query } })
         .then((r) => r.data),
     enabled: query.trim().length >= 1,
     staleTime: 60_000,

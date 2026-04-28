@@ -3,7 +3,7 @@ import { SearchIcon, XIcon } from 'lucide-react';
 import 'flag-icons/css/flag-icons.min.css';
 import {
   useInstrumentSearch,
-  InstrumentSearchResult,
+  InstrumentSearchResponse,
 } from '@/api/hooks/instruments/useInstrumentSearch';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -11,7 +11,7 @@ import { useDebounce } from '@/lib/useDebounce';
 import { THIRD_PARTY } from '@/config';
 
 interface SymbolSearchModalProps {
-  onSelect: (result: InstrumentSearchResult) => void;
+  onSelect: (result: InstrumentSearchResponse) => void;
   onClose: () => void;
 }
 
@@ -67,7 +67,7 @@ enum FilterTab {
 
 const STOCK_TYPES = new Set<string>([INSTRUMENT_TYPE.CommonStock, INSTRUMENT_TYPE.ADR]);
 
-const applyFilter = (results: InstrumentSearchResult[], tab: FilterTab) => {
+const applyFilter = (results: InstrumentSearchResponse[], tab: FilterTab) => {
   if (tab === FilterTab.Stocks)
     return results.filter((r) => STOCK_TYPES.has(r.type) && r.exchange !== 'OTC');
 
@@ -77,8 +77,8 @@ const applyFilter = (results: InstrumentSearchResult[], tab: FilterTab) => {
 };
 
 interface ResultRowProps {
-  result: InstrumentSearchResult;
-  onSelect: (result: InstrumentSearchResult) => void;
+  result: InstrumentSearchResponse;
+  onSelect: (result: InstrumentSearchResponse) => void;
   onClose: () => void;
 }
 

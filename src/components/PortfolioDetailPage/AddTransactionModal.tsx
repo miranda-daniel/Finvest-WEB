@@ -11,7 +11,7 @@ import { OperationSide } from '@/api/generated/graphql';
 import { useAddTransaction } from '@/api/hooks/portfolios/useAddTransaction';
 import { useInstrumentQuote } from '@/api/hooks/instruments/useInstrumentQuote';
 import { SymbolSearchModal } from './SymbolSearchModal';
-import { InstrumentSearchResult } from '@/api/hooks/instruments/useInstrumentSearch';
+import { InstrumentSearchResponse } from '@/api/hooks/instruments/useInstrumentSearch';
 import { DatePicker } from '@/components/ui/date-picker';
 
 const schema = z.object({
@@ -64,7 +64,7 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
 
   const { fetchQuote } = useInstrumentQuote();
 
-  const handleSymbolSelect = async (result: InstrumentSearchResult) => {
+  const handleSymbolSelect = async (result: InstrumentSearchResponse) => {
     setValue('symbol', result.symbol);
     setValue('name', result.name);
     setValue('instrumentClass', result.type);

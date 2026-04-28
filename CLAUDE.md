@@ -37,6 +37,39 @@ Always work on a feature branch — never commit directly to `main`.
 
 Branch naming follows the same types as commit messages: `feat/`, `fix/`, `refactor/`, `chore/`, etc.
 
+## Commit messages
+
+Follow the **Conventional Commits** spec. Format:
+
+```
+<type>(<optional scope>): <short description>
+```
+
+**Types:**
+
+| Type | When to use |
+|---|---|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `refactor` | Code change that neither adds nor fixes anything |
+| `chore` | Maintenance (deps, config, build tooling) |
+| `docs` | Documentation only |
+| `test` | Tests only |
+| `perf` | Performance improvement |
+
+**Rules:**
+- Description in English, imperative mood ("add", not "added")
+- Max ~72 characters on the first line
+- No trailing period
+
+**Examples:**
+```
+feat(portfolio): add create portfolio modal
+fix(auth): redirect to sign-in on token expiry
+refactor(dashboard): extract holding row into separate component
+chore: upgrade Vite to v6
+```
+
 ## Code Style
 
 ### TypeScript
@@ -90,6 +123,13 @@ Route files use kebab-case because the filename becomes the URL segment. Compone
 ### API layer
 
 - Location: `src/api/` — see `src/api/CLAUDE.md` for full conventions
+
+#### REST type naming (mirrors Finvest-API convention)
+
+- `*Request` — body/input shapes sent to the API (e.g. `LoginRequest`, `ChangePasswordRequest`)
+- `*Response` — shapes received from the API that have no domain equivalent (e.g. `QuoteResponse`, `InstrumentSearchResponse`)
+- No suffix — domain entities used as-is (e.g. `ActiveSession`, `User`)
+- Never use `*Payload`, `*Credentials`, `*Input`, or `*Result` for REST types
 
 ## Patterns
 
