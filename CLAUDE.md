@@ -91,6 +91,13 @@ Route files use kebab-case because the filename becomes the URL segment. Compone
 
 - Location: `src/api/` — see `src/api/CLAUDE.md` for full conventions
 
+#### REST type naming (mirrors Finvest-API convention)
+
+- `*Request` — body/input shapes sent to the API (e.g. `LoginRequest`, `ChangePasswordRequest`)
+- `*Response` — shapes received from the API that have no domain equivalent (e.g. `QuoteResponse`, `InstrumentSearchResponse`)
+- No suffix — domain entities used as-is (e.g. `ActiveSession`, `User`)
+- Never use `*Payload`, `*Credentials`, `*Input`, or `*Result` for REST types
+
 ## Patterns
 
 ### Data fetching

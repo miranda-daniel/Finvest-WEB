@@ -2,14 +2,14 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { apiClient, getApiError } from '@/api/client';
 
-interface ChangePasswordPayload {
+interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
 }
 
 export const useChangePassword = (onSuccess?: () => void) => {
   const { mutate, isPending, error } = useMutation({
-    mutationFn: (payload: ChangePasswordPayload) =>
+    mutationFn: (payload: ChangePasswordRequest) =>
       apiClient.post('/users/change-password', payload),
     onSuccess: () => {
       toast.success('Password changed successfully.');

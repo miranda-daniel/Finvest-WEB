@@ -4,8 +4,8 @@ import { useAuthStore } from '@/stores/auth.store';
 import { apolloClient } from '@/graphql/client';
 import { apiClient, getApiError } from '@/api/client';
 
-// Shape of the credentials the user submits on the Sign In form.
-interface LoginCredentials {
+// Shape of the request body sent to POST /session/login.
+interface LoginRequest {
   email: string;
   password: string;
 }
@@ -47,7 +47,7 @@ export const useLogin = () => {
     isPending: loading,
     error,
   } = useMutation({
-    mutationFn: (credentials: LoginCredentials) =>
+    mutationFn: (credentials: LoginRequest) =>
       apiClient.post<LoginResponse>('/session/login', credentials),
     onSuccess: async ({ data }) => {
       login(data.jwtToken, data.user);
