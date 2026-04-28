@@ -37,6 +37,39 @@ Always work on a feature branch — never commit directly to `main`.
 
 Branch naming follows the same types as commit messages: `feat/`, `fix/`, `refactor/`, `chore/`, etc.
 
+## Commit messages
+
+Follow the **Conventional Commits** spec. Format:
+
+```
+<type>(<optional scope>): <short description>
+```
+
+**Types:**
+
+| Type | When to use |
+|---|---|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `refactor` | Code change that neither adds nor fixes anything |
+| `chore` | Maintenance (deps, config, build tooling) |
+| `docs` | Documentation only |
+| `test` | Tests only |
+| `perf` | Performance improvement |
+
+**Rules:**
+- Description in English, imperative mood ("add", not "added")
+- Max ~72 characters on the first line
+- No trailing period
+
+**Examples:**
+```
+feat(portfolio): add create portfolio modal
+fix(auth): redirect to sign-in on token expiry
+refactor(dashboard): extract holding row into separate component
+chore: upgrade Vite to v6
+```
+
 ## Code Style
 
 ### TypeScript
