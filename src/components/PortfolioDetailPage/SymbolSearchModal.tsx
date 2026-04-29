@@ -8,7 +8,6 @@ import {
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useDebounce } from '@/lib/useDebounce';
-import { THIRD_PARTY } from '@/config';
 
 interface SymbolSearchModalProps {
   onSelect: (result: InstrumentSearchResponse) => void;
@@ -51,7 +50,7 @@ const SymbolLogo = ({ symbol }: SymbolLogoProps) => {
 
   return (
     <img
-      src={`${THIRD_PARTY.stockLogoBaseUrl}/${symbol}.png`}
+      src={`/logos/${symbol}.png`}
       alt={symbol}
       className="size-8 shrink-0 rounded-full object-contain"
       onError={() => setFailed(true)}
