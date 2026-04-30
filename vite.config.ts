@@ -35,6 +35,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/logos/, ''),
       },
+      '/posthog': {
+        target: 'https://app.posthog.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/posthog/, ''),
+      },
+      '/sentry': {
+        target: 'https://o<id>.ingest.sentry.io',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/sentry/, ''),
+      },
     },
   },
   resolve: {
