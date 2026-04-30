@@ -24,6 +24,8 @@ Never access, clone, or interact with any other GitHub repository.
 
 All code comments (inline comments, block comments, JSDoc) must be written in **English**.
 
+Never delete existing comments unless the code they describe is also being removed. If the surrounding code changes, update the comment to match — but preserve it. Only add new comments when the WHY is non-obvious.
+
 ## Git
 
 Never commit automatically. Leave all changes in the working area and let the user decide when to commit.
