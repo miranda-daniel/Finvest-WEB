@@ -5,6 +5,7 @@ export const initSentry = () => {
   if (!env.sentryDsn) return;
   Sentry.init({
     dsn: env.sentryDsn,
+    tunnel: '/sentry',
     environment: env.sentryEnv,
     integrations: [Sentry.browserTracingIntegration()],
     tracesSampleRate: 1.0,
