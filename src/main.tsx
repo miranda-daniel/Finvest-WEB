@@ -4,14 +4,21 @@ import { ApolloProvider } from '@apollo/client/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RouterProvider } from '@tanstack/react-router';
+import { PostHogProvider } from 'posthog-js/react';
 import { Toaster } from 'sonner';
 import { router } from './router';
 import { apolloClient } from '@/graphql/client';
+import { initSentry } from '@/lib/sentry';
+import { initPostHog, posthog } from '@/lib/posthog';
+import { env } from '@/config/environment';
 import '@/index.css';
+
+initSentry();
+initPostHog();
 
 const queryClient = new QueryClient();
 
-createRoot(document.getElementById('app')!).render(
+const appTree = (
   <StrictMode>
     {/* QueryClientProvider — enables TanStack Query hooks (useQuery, useMutation) for REST requests */}
     <QueryClientProvider client={queryClient}>
@@ -23,5 +30,13 @@ createRoot(document.getElementById('app')!).render(
         <ReactQueryDevtools initialIsOpen={false} />
       </ApolloProvider>
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
+);
+
+createRoot(document.getElementById('app')!).render(
+  env.posthogKey ? (
+    <PostHogProvider client={posthog}>{appTree}</PostHogProvider>
+  ) : (
+    appTree
+  ),
 );

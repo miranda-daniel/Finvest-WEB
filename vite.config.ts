@@ -30,6 +30,21 @@ export default defineConfig({
         target: process.env.VITE_API_URL ?? 'http://localhost:3001',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/logos': {
+        target: 'https://financialmodelingprep.com/image-stock',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/logos/, ''),
+      },
+      '/posthog': {
+        target: 'https://app.posthog.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/posthog/, ''),
+      },
+      '/sentry': {
+        target: 'https://o<id>.ingest.sentry.io',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/sentry/, ''),
+      },
     },
   },
   resolve: {
