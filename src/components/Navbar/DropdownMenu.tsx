@@ -1,7 +1,7 @@
 import { Menu } from '@base-ui/react/menu';
 import { useNavigate } from '@tanstack/react-router';
 import { useLogout } from '@/api/hooks/auth/useLogout';
-import { IconSettings, IconLogout } from '@/components/ui/icons';
+import { Settings as IconSettings, LogOut as IconLogout } from 'lucide-react';
 
 interface DropdownMenuProps {
   firstName: string;

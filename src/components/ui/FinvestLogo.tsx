@@ -61,8 +61,8 @@ export const FinvestLogo = ({ size = 28 }: FinvestLogoProps) => {
       </svg>
 
       <span
-        className="font-semibold tracking-tight text-slate-100"
-        style={{ fontSize: textSize, lineHeight: 1 }}
+        className="font-semibold leading-none tracking-tight text-slate-100"
+        style={{ fontSize: textSize }}
       >
         Finvest
       </span>

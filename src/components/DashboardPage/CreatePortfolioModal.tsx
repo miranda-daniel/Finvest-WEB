@@ -50,9 +50,9 @@ export const CreatePortfolioModal = ({ open, onClose }: CreatePortfolioModalProp
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="modal-content">
+      <DialogContent className="max-w-md sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="modal-title">New Portfolio</DialogTitle>
+          <DialogTitle>New Portfolio</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="mt-4 flex flex-col gap-4">

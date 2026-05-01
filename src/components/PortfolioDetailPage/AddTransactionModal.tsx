@@ -15,13 +15,15 @@ import { InstrumentSearchResponse } from '@/api/hooks/instruments/useInstrumentS
 import { DatePicker } from '@/components/ui/date-picker';
 
 const schema = z.object({
-  side: z.nativeEnum(OperationSide),
-  symbol: z.string().min(1, 'Select a symbol'),
+  side: z.enum(OperationSide),
+  symbol: z.string().min(1, { error: 'Select a symbol' }),
   name: z.string().min(1),
   instrumentClass: z.string().min(1),
-  date: z.string().min(1, 'Date is required'),
+  date: z.string().min(1, { error: 'Date is required' }),
   price: z.number({ error: 'Enter a valid price' }).positive({ error: 'Price must be > 0' }),
-  quantity: z.number({ error: 'Enter a valid quantity' }).positive({ error: 'Quantity must be > 0' }),
+  quantity: z
+    .number({ error: 'Enter a valid quantity' })
+    .positive({ error: 'Quantity must be > 0' }),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -35,7 +37,7 @@ const today = () => new Date().toISOString().split('T')[0];
 
 export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModalProps) => {
   const [showSymbolSearchModal, setShowSymbolSearchModal] = useState(false);
-  const { submit, loading, error } = useAddTransaction(onClose);
+  const { submit, loading, error } = useAddTransaction(portfolioId, onClose);
 
   const {
     register,
@@ -96,7 +98,7 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
         control={control}
         render={({ field }) => (
           <div className="mt-1.5 flex overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            {[OperationSide.Sell, OperationSide.Buy].map((side) => (
+            {[OperationSide.Buy, OperationSide.Sell].map((side) => (
               <button
                 key={side}
                 type="button"

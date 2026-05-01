@@ -59,6 +59,8 @@ export const DashboardPage = () => {
   const renderPortfolioArea = () => {
     if (portfoliosLoading) return renderSkeletonCards();
 
+    if (portfoliosError) return null;
+
     if (portfolios.length === 0) return renderEmptyState();
 
     return renderPortfolioCards();
@@ -94,9 +96,7 @@ export const DashboardPage = () => {
 
       {/* Portfolio fetch error */}
       {portfoliosError && (
-        <p className="mb-6 text-body text-rose-400">
-          Could not load portfolios: {portfoliosError.message}
-        </p>
+        <p className="mb-6 text-body text-rose-400">{portfoliosError}</p>
       )}
 
       {renderPortfolioArea()}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { IconEye, IconEyeOff } from '@/components/ui/icons';
+import { Eye as IconEye, EyeOff as IconEyeOff } from 'lucide-react';
 
 type PasswordInputProps = Omit<React.ComponentProps<'input'>, 'type'>;
 

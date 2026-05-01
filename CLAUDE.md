@@ -250,7 +250,7 @@ These colors carry fixed meaning across the app — always use them consistently
 
 ### Icons
 
-Always use **Lucide React** (`lucide-react`) for icons. Never use emojis as icons. Never use other icon libraries.
+Always use **Lucide React** (`lucide-react`) for icons. Import directly from `lucide-react` — there is no intermediate `icons.tsx` wrapper. Never use emojis as icons. Never use other icon libraries.
 
 ### UI Components
 

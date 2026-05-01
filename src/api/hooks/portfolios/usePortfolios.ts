@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client/react';
 import { GetPortfoliosDocument } from '@/api/generated/graphql';
+import { getGraphQLError } from '@/api/client';
 
 // usePortfolios — fetches the authenticated user's portfolios via GraphQL.
 //
@@ -22,6 +23,6 @@ export const usePortfolios = () => {
   return {
     portfolios: data?.portfolios ?? [],
     loading,
-    error,
+    error: getGraphQLError(error),
   };
 };

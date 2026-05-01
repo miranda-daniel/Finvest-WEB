@@ -13,9 +13,9 @@ interface AddTransactionRequest {
   quantity: number;
 }
 
-export const useAddTransaction = (onSuccess?: () => void) => {
+export const useAddTransaction = (portfolioId: number, onSuccess?: () => void) => {
   const [mutate, { loading, error }] = useMutation(AddTransactionDocument, {
-    refetchQueries: [GetPortfolioDetailDocument],
+    refetchQueries: [{ query: GetPortfolioDetailDocument, variables: { id: portfolioId } }],
     onCompleted: () => onSuccess?.(),
   });
 

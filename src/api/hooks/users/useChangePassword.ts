@@ -20,6 +20,6 @@ export const useChangePassword = (onSuccess?: () => void) => {
   return {
     submit: mutate,
     loading: isPending,
-    error: error ? getApiError(error, 'Failed to change password.') : null,
+    error: getApiError(error, 'Failed to change password.'),
   };
 };
