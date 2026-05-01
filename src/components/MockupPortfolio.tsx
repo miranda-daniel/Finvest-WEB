@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { Bar, BarChart } from 'recharts'
+import { useMemo, useState } from 'react';
+import { Bar, BarChart } from 'recharts';
 import {
   ColumnDef,
   flexRender,
@@ -7,12 +7,12 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
-} from '@tanstack/react-table'
-import { ArrowUpDown, ChevronDown, Search } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+} from '@tanstack/react-table';
+import { ArrowUpDown, ChevronDown, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Table,
   TableBody,
@@ -20,7 +20,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/components/ui/table';
 import {
   Area,
   AreaChart,
@@ -35,42 +35,80 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts'
+} from 'recharts';
 
 type HoldingRow = {
-  symbol: string
-  name: string
-  qty: number
-  avg: number
-  price: number
-  pnl: number
-  alloc: number
-}
+  symbol: string;
+  name: string;
+  qty: number;
+  avg: number;
+  price: number;
+  pnl: number;
+  alloc: number;
+};
 
 const holdings: HoldingRow[] = [
-  { symbol: 'AAPL', name: 'Apple Inc.', qty: 24, avg: 182.4, price: 198.12, pnl: 377.28, alloc: 18.4 },
-  { symbol: 'MSFT', name: 'Microsoft', qty: 12, avg: 401.25, price: 428.91, pnl: 331.92, alloc: 16.1 },
+  {
+    symbol: 'AAPL',
+    name: 'Apple Inc.',
+    qty: 24,
+    avg: 182.4,
+    price: 198.12,
+    pnl: 377.28,
+    alloc: 18.4,
+  },
+  {
+    symbol: 'MSFT',
+    name: 'Microsoft',
+    qty: 12,
+    avg: 401.25,
+    price: 428.91,
+    pnl: 331.92,
+    alloc: 16.1,
+  },
   { symbol: 'NVDA', name: 'NVIDIA', qty: 18, avg: 102.1, price: 118.84, pnl: 301.32, alloc: 14.9 },
-  { symbol: 'SPY', name: 'SPDR S&P 500 ETF', qty: 10, avg: 504, price: 526.45, pnl: 224.5, alloc: 13.2 },
+  {
+    symbol: 'SPY',
+    name: 'SPDR S&P 500 ETF',
+    qty: 10,
+    avg: 504,
+    price: 526.45,
+    pnl: 224.5,
+    alloc: 13.2,
+  },
   { symbol: 'BTC', name: 'Bitcoin', qty: 0.18, avg: 61200, price: 68950, pnl: 1395, alloc: 12.6 },
-]
+];
 
 type TransactionRow = {
-  date: string
-  type: 'BUY' | 'SELL' | 'DIVIDEND' | 'FEE'
-  symbol: string
-  qty: string
-  price: string
-  platform: string
-}
+  date: string;
+  type: 'BUY' | 'SELL' | 'DIVIDEND' | 'FEE';
+  symbol: string;
+  qty: string;
+  price: string;
+  platform: string;
+};
 
 const transactions: TransactionRow[] = [
   { date: '2026-03-28', type: 'BUY', symbol: 'NVDA', qty: '4', price: '$116.20', platform: 'IBKR' },
-  { date: '2026-03-20', type: 'DIVIDEND', symbol: 'AAPL', qty: '-', price: '$18.72', platform: 'IBKR' },
-  { date: '2026-03-15', type: 'BUY', symbol: 'BTC', qty: '0.03', price: '$66,100', platform: 'Binance' },
+  {
+    date: '2026-03-20',
+    type: 'DIVIDEND',
+    symbol: 'AAPL',
+    qty: '-',
+    price: '$18.72',
+    platform: 'IBKR',
+  },
+  {
+    date: '2026-03-15',
+    type: 'BUY',
+    symbol: 'BTC',
+    qty: '0.03',
+    price: '$66,100',
+    platform: 'Binance',
+  },
   { date: '2026-03-11', type: 'SELL', symbol: 'SPY', qty: '2', price: '$522.15', platform: 'IBKR' },
   { date: '2026-03-04', type: 'FEE', symbol: 'IBKR', qty: '-', price: '$4.00', platform: 'IBKR' },
-]
+];
 
 const allocation = [
   { label: 'Stocks', value: '56%' },
@@ -78,7 +116,7 @@ const allocation = [
   { label: 'Crypto', value: '13%' },
   { label: 'Cash', value: '8%' },
   { label: 'Bonds', value: '5%' },
-]
+];
 
 const instrumentAllocation = [
   { symbol: 'AAPL', value: 18.4 },
@@ -90,9 +128,24 @@ const instrumentAllocation = [
   { symbol: 'GOOGL', value: 7.4 },
   { symbol: 'CASH', value: 4.7 },
   { symbol: 'BND', value: 4.0 },
-]
+];
 
-const pieColors = ['#60a5fa', '#67e8f9', '#fb923c', '#a78bfa', '#fbbf24', '#60a5fa', '#e879f9', '#38bdf8', '#34d399', '#fb7185', '#93c5fd', '#fdba74', '#4ade80', '#f43f5e']
+const pieColors = [
+  '#60a5fa',
+  '#67e8f9',
+  '#fb923c',
+  '#a78bfa',
+  '#fbbf24',
+  '#60a5fa',
+  '#e879f9',
+  '#38bdf8',
+  '#34d399',
+  '#fb7185',
+  '#93c5fd',
+  '#fdba74',
+  '#4ade80',
+  '#f43f5e',
+];
 
 const dailyGainers = [
   { symbol: 'NICE', change: 2.81, color: '#14b8a6' },
@@ -100,7 +153,7 @@ const dailyGainers = [
   { symbol: 'ACN', change: 2.17, color: '#14b8a6' },
   { symbol: 'MRSH', change: 1.59, color: '#14b8a6' },
   { symbol: 'PYPL', change: 1.59, color: '#14b8a6' },
-]
+];
 
 const dailyLosers = [
   { symbol: 'DECK', change: -2.58, color: '#f43f5e' },
@@ -108,7 +161,7 @@ const dailyLosers = [
   { symbol: 'DEO', change: -1.76, color: '#f43f5e' },
   { symbol: 'JD', change: -1.42, color: '#f43f5e' },
   { symbol: 'BABA', change: -1.36, color: '#f43f5e' },
-]
+];
 
 const chartData = {
   '1D': [
@@ -154,13 +207,13 @@ const chartData = {
     { label: '2025', value: 38140, portfolioPct: 106.16, spxPct: 31.45, ndxPct: 44.73 },
     { label: 'Now', value: 42184, portfolioPct: 127.99, spxPct: 38.62, ndxPct: 53.11 },
   ],
-}
+};
 
-const ranges = ['1D', '1W', '1M', '3M', '1Y', 'ALL']
-const chartTabs = ['Value', 'Performance']
+const ranges = ['1D', '1W', '1M', '3M', '1Y', 'ALL'];
+const chartTabs = ['Value', 'Performance'];
 
-const formatCurrency = (value) => `$${Number(value).toLocaleString()}`
-const formatPercent = (value) => `${Number(value).toFixed(2)}%`
+const formatCurrency = (value) => `$${Number(value).toLocaleString()}`;
+const formatPercent = (value) => `${Number(value).toFixed(2)}%`;
 
 const holdingsColumns: ColumnDef<HoldingRow>[] = [
   {
@@ -175,7 +228,9 @@ const holdingsColumns: ColumnDef<HoldingRow>[] = [
         <ArrowUpDown className="ml-2 h-3.5 w-3.5" />
       </Button>
     ),
-    cell: ({ row }) => <div className="font-semibold tracking-wide text-white">{row.original.symbol}</div>,
+    cell: ({ row }) => (
+      <div className="font-semibold tracking-wide text-white">{row.original.symbol}</div>
+    ),
   },
   {
     accessorKey: 'name',
@@ -218,7 +273,11 @@ const holdingsColumns: ColumnDef<HoldingRow>[] = [
         <ArrowUpDown className="ml-2 h-3.5 w-3.5" />
       </Button>
     ),
-    cell: ({ row }) => <span className="font-medium text-emerald-400">+{formatCurrency(row.original.pnl).replace('$', '$')}</span>,
+    cell: ({ row }) => (
+      <span className="font-medium text-emerald-400">
+        +{formatCurrency(row.original.pnl).replace('$', '$')}
+      </span>
+    ),
   },
   {
     accessorKey: 'alloc',
@@ -232,10 +291,10 @@ const holdingsColumns: ColumnDef<HoldingRow>[] = [
       </div>
     ),
   },
-]
+];
 
 function ChartTooltip({ active, payload, label, mode }) {
-  if (!active || !payload?.length) return null
+  if (!active || !payload?.length) return null;
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0f131b]/95 px-4 py-3 text-xs shadow-2xl backdrop-blur">
@@ -251,37 +310,56 @@ function ChartTooltip({ active, payload, label, mode }) {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function AllocationTooltip({ active, payload }) {
-  if (!active || !payload?.length) return null
+  if (!active || !payload?.length) return null;
 
-  const item = payload[0].payload
+  const item = payload[0].payload;
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0f131b]/95 px-4 py-3 text-xs shadow-2xl backdrop-blur">
       <div className="font-medium text-slate-200">{item.symbol}</div>
-      <div className="mt-1 text-slate-300">Allocation: <span className="font-medium text-white">{item.value}%</span></div>
+      <div className="mt-1 text-slate-300">
+        Allocation: <span className="font-medium text-white">{item.value}%</span>
+      </div>
     </div>
-  )
+  );
 }
 
-function renderCustomizedPieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, value }) {
-  const RADIAN = Math.PI / 180
-  const insideRadius = innerRadius + (outerRadius - innerRadius) * 0.52
-  const outsideRadius = outerRadius + 18
-  const xInside = cx + insideRadius * Math.cos(-midAngle * RADIAN)
-  const yInside = cy + insideRadius * Math.sin(-midAngle * RADIAN)
-  const xOutside = cx + outsideRadius * Math.cos(-midAngle * RADIAN)
-  const yOutside = cy + outsideRadius * Math.sin(-midAngle * RADIAN)
-  const showOutsideLabel = percent > 0.045
-  const showInsidePercent = percent > 0.04
+function renderCustomizedPieLabel({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+  name,
+  value,
+}) {
+  const RADIAN = Math.PI / 180;
+  const insideRadius = innerRadius + (outerRadius - innerRadius) * 0.52;
+  const outsideRadius = outerRadius + 18;
+  const xInside = cx + insideRadius * Math.cos(-midAngle * RADIAN);
+  const yInside = cy + insideRadius * Math.sin(-midAngle * RADIAN);
+  const xOutside = cx + outsideRadius * Math.cos(-midAngle * RADIAN);
+  const yOutside = cy + outsideRadius * Math.sin(-midAngle * RADIAN);
+  const showOutsideLabel = percent > 0.045;
+  const showInsidePercent = percent > 0.04;
 
   return (
     <>
       {showInsidePercent && (
-        <text x={xInside} y={yInside} fill="#f8fafc" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={600}>
+        <text
+          x={xInside}
+          y={yInside}
+          fill="#f8fafc"
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize={12}
+          fontWeight={600}
+        >
           {`${value}%`}
         </text>
       )}
@@ -299,7 +377,7 @@ function renderCustomizedPieLabel({ cx, cy, midAngle, innerRadius, outerRadius, 
         </text>
       )}
     </>
-  )
+  );
 }
 
 function MoversList({ title, items, negative = false }) {
@@ -310,46 +388,51 @@ function MoversList({ title, items, negative = false }) {
       </CardHeader>
       <CardContent className="space-y-4">
         {items.map((item) => {
-          const width = `${Math.min(Math.abs(item.change) * 28, 100)}%`
+          const width = `${Math.min(Math.abs(item.change) * 28, 100)}%`;
           return (
             <div key={item.symbol} className="grid grid-cols-[74px_1fr_56px] items-center gap-4">
               <div className="rounded-xl bg-white/10 px-3 py-1.5 text-center text-sm font-medium text-white">
                 {item.symbol}
               </div>
               <div className="h-2.5 rounded-full bg-white/10">
-                <div className="h-2.5 rounded-full" style={{ width, backgroundColor: item.color }} />
+                <div
+                  className="h-2.5 rounded-full"
+                  style={{ width, backgroundColor: item.color }}
+                />
               </div>
-              <div className={`text-right text-sm font-medium ${negative ? 'text-rose-400' : 'text-teal-400'}`}>
-                {item.change > 0 ? '+' : ''}{item.change.toFixed(2)}%
+              <div
+                className={`text-right text-sm font-medium ${negative ? 'text-rose-400' : 'text-teal-400'}`}
+              >
+                {item.change > 0 ? '+' : ''}
+                {item.change.toFixed(2)}%
               </div>
             </div>
-          )
+          );
         })}
       </CardContent>
     </Card>
-  )
+  );
 }
 
 export default function FinvestPortfolioDarkUIMockup() {
-  const [selectedRange, setSelectedRange] = useState('1M')
-  const [selectedChartTab, setSelectedChartTab] = useState('Value')
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [transactionSorting, setTransactionSorting] = useState<SortingState>([])
-  const [holdingsSearch, setHoldingsSearch] = useState('')
-  const [transactionsSearch, setTransactionsSearch] = useState('')
+  const [selectedRange, setSelectedRange] = useState('1M');
+  const [selectedChartTab, setSelectedChartTab] = useState('Value');
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [transactionSorting, setTransactionSorting] = useState<SortingState>([]);
+  const [holdingsSearch, setHoldingsSearch] = useState('');
+  const [transactionsSearch, setTransactionsSearch] = useState('');
 
-  const currentSeries = useMemo(() => chartData[selectedRange], [selectedRange])
-  const latestPoint = currentSeries[currentSeries.length - 1]
+  const currentSeries = useMemo(() => chartData[selectedRange], [selectedRange]);
+  const latestPoint = currentSeries[currentSeries.length - 1];
 
   const filteredHoldings = useMemo(() => {
-    const query = holdingsSearch.trim().toLowerCase()
-    if (!query) return holdings
+    const query = holdingsSearch.trim().toLowerCase();
+    if (!query) return holdings;
     return holdings.filter(
       (holding) =>
-        holding.symbol.toLowerCase().includes(query) ||
-        holding.name.toLowerCase().includes(query)
-    )
-  }, [holdingsSearch])
+        holding.symbol.toLowerCase().includes(query) || holding.name.toLowerCase().includes(query),
+    );
+  }, [holdingsSearch]);
 
   const holdingsTable = useReactTable({
     data: filteredHoldings,
@@ -358,7 +441,7 @@ export default function FinvestPortfolioDarkUIMockup() {
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-  })
+  });
 
   const transactionColumns: ColumnDef<TransactionRow>[] = [
     {
@@ -378,7 +461,7 @@ export default function FinvestPortfolioDarkUIMockup() {
       accessorKey: 'type',
       header: 'Type',
       cell: ({ row }) => {
-        const type = row.original.type
+        const type = row.original.type;
         const classes =
           type === 'BUY'
             ? 'bg-emerald-400/15 text-emerald-300'
@@ -386,9 +469,13 @@ export default function FinvestPortfolioDarkUIMockup() {
               ? 'bg-rose-400/15 text-rose-300'
               : type === 'DIVIDEND'
                 ? 'bg-sky-400/15 text-sky-300'
-                : 'bg-amber-400/15 text-amber-300'
+                : 'bg-amber-400/15 text-amber-300';
 
-        return <span className={`inline-flex rounded-xl px-2.5 py-1 text-xs font-medium ${classes}`}>{type}</span>
+        return (
+          <span className={`inline-flex rounded-xl px-2.5 py-1 text-xs font-medium ${classes}`}>
+            {type}
+          </span>
+        );
       },
     },
     {
@@ -409,18 +496,18 @@ export default function FinvestPortfolioDarkUIMockup() {
       header: 'Platform',
       cell: ({ row }) => <span className="text-slate-300">{row.original.platform}</span>,
     },
-  ]
+  ];
 
   const filteredTransactions = useMemo(() => {
-    const query = transactionsSearch.trim().toLowerCase()
-    if (!query) return transactions
+    const query = transactionsSearch.trim().toLowerCase();
+    if (!query) return transactions;
     return transactions.filter(
       (tx) =>
         tx.symbol.toLowerCase().includes(query) ||
         tx.type.toLowerCase().includes(query) ||
-        tx.platform.toLowerCase().includes(query)
-    )
-  }, [transactionsSearch])
+        tx.platform.toLowerCase().includes(query),
+    );
+  }, [transactionsSearch]);
 
   const transactionsTable = useReactTable({
     data: filteredTransactions,
@@ -429,7 +516,7 @@ export default function FinvestPortfolioDarkUIMockup() {
     onSortingChange: setTransactionSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-  })
+  });
 
   return (
     <div className="min-h-screen bg-[#0a0b10] text-slate-100">
@@ -439,14 +526,20 @@ export default function FinvestPortfolioDarkUIMockup() {
             <div className="mb-2 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300 backdrop-blur">
               Finvest · Portfolio Overview
             </div>
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Long Term Portfolio</h1>
+            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+              Long Term Portfolio
+            </h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-400 md:text-base">
-              TradingView-inspired portfolio experience with a modern dark theme, cleaner hierarchy, and a fintech-style dashboard layout.
+              TradingView-inspired portfolio experience with a modern dark theme, cleaner hierarchy,
+              and a fintech-style dashboard layout.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button variant="outline" className="rounded-2xl border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white">
+            <Button
+              variant="outline"
+              className="rounded-2xl border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white"
+            >
               Add transaction
             </Button>
             <Button className="rounded-2xl bg-white text-slate-950 hover:bg-slate-200">
@@ -462,7 +555,10 @@ export default function FinvestPortfolioDarkUIMockup() {
             { label: 'Realized P&L', value: '+$842.15', delta: 'YTD' },
             { label: 'Cash Available', value: '$2,184.00', delta: '5.2% allocation' },
           ].map((item) => (
-            <div key={item.label} className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-5 shadow-2xl shadow-black/20 backdrop-blur">
+            <div
+              key={item.label}
+              className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-5 shadow-2xl shadow-black/20 backdrop-blur"
+            >
               <div className="text-sm text-slate-400">{item.label}</div>
               <div className="mt-3 text-2xl font-semibold tracking-tight">{item.value}</div>
               <div className="mt-2 text-sm text-emerald-400">{item.delta}</div>
@@ -475,7 +571,9 @@ export default function FinvestPortfolioDarkUIMockup() {
             <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div>
                 <h2 className="text-lg font-semibold">Portfolio performance</h2>
-                <p className="mt-1 text-sm text-slate-400">Track total equity or compare your portfolio return against SPX and NDX.</p>
+                <p className="mt-1 text-sm text-slate-400">
+                  Track total equity or compare your portfolio return against SPX and NDX.
+                </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Tabs value={selectedChartTab} className="w-auto">
@@ -498,7 +596,11 @@ export default function FinvestPortfolioDarkUIMockup() {
                       key={range}
                       variant={range === selectedRange ? 'default' : 'outline'}
                       onClick={() => setSelectedRange(range)}
-                      className={range === selectedRange ? 'h-8 rounded-xl bg-white px-3 text-slate-950 hover:bg-slate-200' : 'h-8 rounded-xl border-white/10 bg-white/5 px-3 text-slate-300 hover:bg-white/10 hover:text-white'}
+                      className={
+                        range === selectedRange
+                          ? 'h-8 rounded-xl bg-white px-3 text-slate-950 hover:bg-slate-200'
+                          : 'h-8 rounded-xl border-white/10 bg-white/5 px-3 text-slate-300 hover:bg-white/10 hover:text-white'
+                      }
                     >
                       {range}
                     </Button>
@@ -516,15 +618,27 @@ export default function FinvestPortfolioDarkUIMockup() {
                     {formatCurrency(latestPoint.value)} current value
                   </div>
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={currentSeries} margin={{ top: 28, right: 14, left: 8, bottom: 8 }}>
+                    <AreaChart
+                      data={currentSeries}
+                      margin={{ top: 28, right: 14, left: 8, bottom: 8 }}
+                    >
                       <defs>
                         <linearGradient id="portfolioValueFill" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="0%" stopColor="rgba(255,255,255,0.26)" />
                           <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="4 6" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <CartesianGrid
+                        stroke="rgba(255,255,255,0.08)"
+                        strokeDasharray="4 6"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="label"
+                        tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
                       <YAxis
                         tickFormatter={formatCurrency}
                         tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }}
@@ -532,7 +646,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                         tickLine={false}
                         width={72}
                       />
-                      <Tooltip content={<ChartTooltip mode="Value" />} cursor={{ stroke: 'rgba(255,255,255,0.12)' }} />
+                      <Tooltip
+                        content={<ChartTooltip mode="Value" />}
+                        cursor={{ stroke: 'rgba(255,255,255,0.12)' }}
+                      />
                       <Area
                         type="monotone"
                         dataKey="value"
@@ -549,14 +666,32 @@ export default function FinvestPortfolioDarkUIMockup() {
               ) : (
                 <>
                   <div className="absolute left-4 top-4 z-10 flex flex-wrap gap-2 text-xs">
-                    <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-1 text-slate-200">Portfolio · {formatPercent(latestPoint.portfolioPct)}</div>
-                    <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-1 text-slate-300">SPX · {formatPercent(latestPoint.spxPct)}</div>
-                    <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-1 text-slate-400">NDX · {formatPercent(latestPoint.ndxPct)}</div>
+                    <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-1 text-slate-200">
+                      Portfolio · {formatPercent(latestPoint.portfolioPct)}
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-1 text-slate-300">
+                      SPX · {formatPercent(latestPoint.spxPct)}
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-1 text-slate-400">
+                      NDX · {formatPercent(latestPoint.ndxPct)}
+                    </div>
                   </div>
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={currentSeries} margin={{ top: 28, right: 14, left: 8, bottom: 8 }}>
-                      <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="4 6" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <LineChart
+                      data={currentSeries}
+                      margin={{ top: 28, right: 14, left: 8, bottom: 8 }}
+                    >
+                      <CartesianGrid
+                        stroke="rgba(255,255,255,0.08)"
+                        strokeDasharray="4 6"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="label"
+                        tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
                       <YAxis
                         tickFormatter={formatPercent}
                         tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }}
@@ -564,11 +699,39 @@ export default function FinvestPortfolioDarkUIMockup() {
                         tickLine={false}
                         width={64}
                       />
-                      <Tooltip content={<ChartTooltip mode="Performance" />} cursor={{ stroke: 'rgba(255,255,255,0.12)' }} />
+                      <Tooltip
+                        content={<ChartTooltip mode="Performance" />}
+                        cursor={{ stroke: 'rgba(255,255,255,0.12)' }}
+                      />
                       <Legend wrapperStyle={{ paddingTop: 10, fontSize: '12px' }} />
-                      <Line type="monotone" dataKey="portfolioPct" name="Portfolio" stroke="rgba(255,255,255,0.98)" strokeWidth={3} dot={false} activeDot={{ r: 4 }} />
-                      <Line type="monotone" dataKey="spxPct" name="SPX" stroke="rgba(148,163,184,0.95)" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
-                      <Line type="monotone" dataKey="ndxPct" name="NDX" stroke="rgba(71,85,105,0.95)" strokeWidth={2.5} strokeDasharray="7 7" dot={false} activeDot={{ r: 4 }} />
+                      <Line
+                        type="monotone"
+                        dataKey="portfolioPct"
+                        name="Portfolio"
+                        stroke="rgba(255,255,255,0.98)"
+                        strokeWidth={3}
+                        dot={false}
+                        activeDot={{ r: 4 }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="spxPct"
+                        name="SPX"
+                        stroke="rgba(148,163,184,0.95)"
+                        strokeWidth={2.5}
+                        dot={false}
+                        activeDot={{ r: 4 }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="ndxPct"
+                        name="NDX"
+                        stroke="rgba(71,85,105,0.95)"
+                        strokeWidth={2.5}
+                        strokeDasharray="7 7"
+                        dot={false}
+                        activeDot={{ r: 4 }}
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 </>
@@ -576,59 +739,68 @@ export default function FinvestPortfolioDarkUIMockup() {
             </div>
 
             {/* Monthly profitability */}
-<div className="mt-6 rounded-2xl border border-white/5 bg-[#0d1017] p-4">
-  <div className="mb-3 text-sm text-slate-400">
-    Portfolio profitability (monthly)
-  </div>
+            <div className="mt-6 rounded-2xl border border-white/5 bg-[#0d1017] p-4">
+              <div className="mb-3 text-sm text-slate-400">Portfolio profitability (monthly)</div>
 
-  <ResponsiveContainer width="100%" height={260}>
-    <BarChart
-      data={[
-        { label: 'Aug', portfolio: 0.1, spx: 0.05, ndx: 0.08 },
-        { label: 'Sep', portfolio: 6.8, spx: 4.2, ndx: 5.6 },
-        { label: 'Oct', portfolio: 3.9, spx: 2.1, ndx: 2.9 },
-        { label: 'Nov', portfolio: -2.1, spx: 0.2, ndx: -0.4 },
-        { label: 'Dec', portfolio: 1.2, spx: 0.4, ndx: 0.9 },
-        { label: 'Jan', portfolio: 1.4, spx: 1.7, ndx: 2.3 },
-        { label: 'Feb', portfolio: -6.5, spx: -0.9, ndx: -1.8 },
-        { label: 'Mar', portfolio: -5.2, spx: -4.1, ndx: -4.8 },
-        { label: 'Apr', portfolio: 0.6, spx: 1.1, ndx: 1.5 },
-      ]}
-      margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-    >
-      <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="4 6" vertical={false} />
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart
+                  data={[
+                    { label: 'Aug', portfolio: 0.1, spx: 0.05, ndx: 0.08 },
+                    { label: 'Sep', portfolio: 6.8, spx: 4.2, ndx: 5.6 },
+                    { label: 'Oct', portfolio: 3.9, spx: 2.1, ndx: 2.9 },
+                    { label: 'Nov', portfolio: -2.1, spx: 0.2, ndx: -0.4 },
+                    { label: 'Dec', portfolio: 1.2, spx: 0.4, ndx: 0.9 },
+                    { label: 'Jan', portfolio: 1.4, spx: 1.7, ndx: 2.3 },
+                    { label: 'Feb', portfolio: -6.5, spx: -0.9, ndx: -1.8 },
+                    { label: 'Mar', portfolio: -5.2, spx: -4.1, ndx: -4.8 },
+                    { label: 'Apr', portfolio: 0.6, spx: 1.1, ndx: 1.5 },
+                  ]}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <CartesianGrid
+                    stroke="rgba(255,255,255,0.08)"
+                    strokeDasharray="4 6"
+                    vertical={false}
+                  />
 
-      <XAxis
-        dataKey="label"
-        tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }}
-        axisLine={false}
-        tickLine={false}
-      />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
 
-      <YAxis
-        tickFormatter={(v) => `${v}%`}
-        tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }}
-        axisLine={false}
-        tickLine={false}
-        width={48}
-      />
+                  <YAxis
+                    tickFormatter={(v) => `${v}%`}
+                    tick={{ fill: 'rgba(148,163,184,0.95)', fontSize: 11 }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={48}
+                  />
 
-      <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} />
-      <Legend />
+                  <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} />
+                  <Legend />
 
-      <Bar dataKey="portfolio" name="Portfolio %" fill="#60a5fa" radius={[4,4,0,0]} />
-      <Bar dataKey="spx" name="SPX %" fill="#22d3ee" radius={[4,4,0,0]} />
-      <Bar dataKey="ndx" name="NDX %" fill="#a78bfa" radius={[4,4,0,0]} />
-    </BarChart>
-  </ResponsiveContainer>
-</div>
+                  <Bar
+                    dataKey="portfolio"
+                    name="Portfolio %"
+                    fill="#60a5fa"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar dataKey="spx" name="SPX %" fill="#22d3ee" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="ndx" name="NDX %" fill="#a78bfa" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
           <div className="space-y-6">
             <Card className="rounded-3xl border-white/10 bg-white/5 shadow-2xl shadow-black/20 backdrop-blur">
               <CardHeader>
                 <CardTitle className="text-lg text-white">Allocation</CardTitle>
-                <CardDescription className="text-slate-400">Asset class distribution</CardDescription>
+                <CardDescription className="text-slate-400">
+                  Asset class distribution
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="mt-1 flex items-center justify-center">
@@ -644,7 +816,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                 </div>
                 <div className="mt-5 space-y-3">
                   {allocation.map((item) => (
-                    <div key={item.label} className="flex items-center justify-between rounded-2xl border border-white/5 bg-black/20 px-3 py-2 text-sm">
+                    <div
+                      key={item.label}
+                      className="flex items-center justify-between rounded-2xl border border-white/5 bg-black/20 px-3 py-2 text-sm"
+                    >
                       <div className="flex items-center gap-2">
                         <span className="h-2.5 w-2.5 rounded-full bg-white/80" />
                         <span className="text-slate-300">{item.label}</span>
@@ -659,7 +834,9 @@ export default function FinvestPortfolioDarkUIMockup() {
             <Card className="rounded-3xl border-white/10 bg-white/5 shadow-2xl shadow-black/20 backdrop-blur">
               <CardHeader>
                 <CardTitle className="text-lg text-white">Portfolio distribution</CardTitle>
-                <CardDescription className="text-slate-400">Allocation by instrument</CardDescription>
+                <CardDescription className="text-slate-400">
+                  Allocation by instrument
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[380px] w-full">
@@ -713,7 +890,9 @@ export default function FinvestPortfolioDarkUIMockup() {
             <CardHeader className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <CardTitle className="text-lg text-white">Holdings</CardTitle>
-                <CardDescription className="mt-1 text-slate-400">Core positions across your portfolio</CardDescription>
+                <CardDescription className="mt-1 text-slate-400">
+                  Core positions across your portfolio
+                </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2">
                 <div className="relative">
@@ -725,7 +904,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                     className="w-[250px] rounded-2xl border-white/10 bg-black/20 pl-9 text-slate-100 placeholder:text-slate-500"
                   />
                 </div>
-                <Button variant="outline" className="rounded-2xl border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white">
+                <Button
+                  variant="outline"
+                  className="rounded-2xl border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white"
+                >
                   Filters
                   <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
@@ -736,10 +918,15 @@ export default function FinvestPortfolioDarkUIMockup() {
                 <Table>
                   <TableHeader className="bg-white/5">
                     {holdingsTable.getHeaderGroups().map((headerGroup) => (
-                      <TableRow key={headerGroup.id} className="border-white/5 hover:bg-transparent">
+                      <TableRow
+                        key={headerGroup.id}
+                        className="border-white/5 hover:bg-transparent"
+                      >
                         {headerGroup.headers.map((header) => (
                           <TableHead key={header.id} className="h-12 text-slate-400">
-                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableHead>
                         ))}
                       </TableRow>
@@ -748,7 +935,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                   <TableBody>
                     {holdingsTable.getRowModel().rows.length ? (
                       holdingsTable.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id} className="border-white/5 bg-black/10 hover:bg-white/[0.03]">
+                        <TableRow
+                          key={row.id}
+                          className="border-white/5 bg-black/10 hover:bg-white/[0.03]"
+                        >
                           {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id} className="py-3 text-slate-100">
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -758,7 +948,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                       ))
                     ) : (
                       <TableRow className="border-white/5 bg-black/10 hover:bg-black/10">
-                        <TableCell colSpan={holdingsColumns.length} className="h-24 text-center text-slate-400">
+                        <TableCell
+                          colSpan={holdingsColumns.length}
+                          className="h-24 text-center text-slate-400"
+                        >
                           No holdings found.
                         </TableCell>
                       </TableRow>
@@ -780,7 +973,9 @@ export default function FinvestPortfolioDarkUIMockup() {
             <CardHeader className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <CardTitle className="text-lg text-white">Transactions</CardTitle>
-                <CardDescription className="mt-1 text-slate-400">Recent operations across brokers and exchanges</CardDescription>
+                <CardDescription className="mt-1 text-slate-400">
+                  Recent operations across brokers and exchanges
+                </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2">
                 <div className="relative">
@@ -792,7 +987,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                     className="w-[260px] rounded-2xl border-white/10 bg-black/20 pl-9 text-slate-100 placeholder:text-slate-500"
                   />
                 </div>
-                <Button variant="outline" className="rounded-2xl border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white">
+                <Button
+                  variant="outline"
+                  className="rounded-2xl border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white"
+                >
                   View all
                 </Button>
               </div>
@@ -802,10 +1000,15 @@ export default function FinvestPortfolioDarkUIMockup() {
                 <Table>
                   <TableHeader className="bg-white/5">
                     {transactionsTable.getHeaderGroups().map((headerGroup) => (
-                      <TableRow key={headerGroup.id} className="border-white/5 hover:bg-transparent">
+                      <TableRow
+                        key={headerGroup.id}
+                        className="border-white/5 hover:bg-transparent"
+                      >
                         {headerGroup.headers.map((header) => (
                           <TableHead key={header.id} className="h-12 text-slate-400">
-                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableHead>
                         ))}
                       </TableRow>
@@ -814,7 +1017,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                   <TableBody>
                     {transactionsTable.getRowModel().rows.length ? (
                       transactionsTable.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id} className="border-white/5 bg-black/10 hover:bg-white/[0.03]">
+                        <TableRow
+                          key={row.id}
+                          className="border-white/5 bg-black/10 hover:bg-white/[0.03]"
+                        >
                           {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id} className="py-3 text-slate-100">
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -824,7 +1030,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                       ))
                     ) : (
                       <TableRow className="border-white/5 bg-black/10 hover:bg-black/10">
-                        <TableCell colSpan={transactionColumns.length} className="h-24 text-center text-slate-400">
+                        <TableCell
+                          colSpan={transactionColumns.length}
+                          className="h-24 text-center text-slate-400"
+                        >
                           No transactions found.
                         </TableCell>
                       </TableRow>
@@ -852,7 +1061,10 @@ export default function FinvestPortfolioDarkUIMockup() {
                     <span className="text-slate-400">{item.value}%</span>
                   </div>
                   <div className="h-2.5 rounded-full bg-white/10">
-                    <div className="h-2.5 rounded-full bg-white" style={{ width: `${item.value}%` }} />
+                    <div
+                      className="h-2.5 rounded-full bg-white"
+                      style={{ width: `${item.value}%` }}
+                    />
                   </div>
                 </div>
               ))}
@@ -861,5 +1073,5 @@ export default function FinvestPortfolioDarkUIMockup() {
         </section>
       </div>
     </div>
-  )
+  );
 }
