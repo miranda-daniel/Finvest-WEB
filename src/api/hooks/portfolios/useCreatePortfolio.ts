@@ -11,7 +11,5 @@ export const useCreatePortfolio = (onSuccess?: () => void) => {
   const submit = (name: string, description: string | undefined, isFavorite: boolean) =>
     mutate({ variables: { name, description, isFavorite } });
 
-  const errorMessage = getGraphQLError(error);
-
-  return { submit, loading, error: errorMessage };
+  return { submit, loading, error: getGraphQLError(error) };
 };

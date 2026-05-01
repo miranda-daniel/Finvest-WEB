@@ -9,7 +9,5 @@ export const useSetFavoritePortfolio = () => {
 
   const setFavorite = (portfolioId: number | null) => mutate({ variables: { portfolioId } });
 
-  const errorMessage = getGraphQLError(error);
-
-  return { setFavorite, loading, error: errorMessage };
+  return { setFavorite, loading, error: getGraphQLError(error) };
 };

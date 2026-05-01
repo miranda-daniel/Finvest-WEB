@@ -82,8 +82,8 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
   const renderSkeletonRows = () =>
     [...Array(3)].map((_, i) => (
       <tr key={i} className="border-b border-white/5">
-        {columns.map((col) => (
-          <td key={col.id} className="px-5 py-4">
+        {columns.map((_, colIdx) => (
+          <td key={colIdx} className="px-5 py-4">
             <div className="h-4 animate-pulse rounded bg-white/10" />
           </td>
         ))}
