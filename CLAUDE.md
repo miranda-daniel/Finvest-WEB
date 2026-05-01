@@ -301,7 +301,8 @@ These are intentionally not implemented yet. Add them when the trigger condition
 
 | What | When to add | Notes |
 |---|---|---|
-| Sentry / PostHog / Datadog | Before going to production | Frontend error monitoring and analytics. The logger at `src/lib/logger.ts` is already the single integration point — add the SDK call inside `logger.error()` (and optionally `logger.warn()`). For Sentry: `@sentry/react` with an `ErrorBoundary` wrapper in `main.tsx`. |
+| Sentry `ErrorBoundary` | Before going to production | Wrap the app tree in `main.tsx` with `<Sentry.ErrorBoundary>` from `@sentry/react` to catch unhandled React render errors. Sentry and PostHog are already installed and initialized via `src/lib/sentry.ts` and `src/lib/posthog.ts`. |
+| Logger → Sentry/PostHog integration | Before going to production | Add `Sentry.captureException(error)` inside `logger.error()` in `src/lib/logger.ts`. That file is the single integration point — one call there covers all error logging in the app. |
 
 ## Dependencies — Known Constraints
 
