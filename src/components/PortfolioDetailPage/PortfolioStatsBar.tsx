@@ -74,6 +74,13 @@ export const PortfolioStatsBar = ({
   const unrealizedPnl = totalValue - costBasis;
   const unrealizedPct = costBasis > 0 ? (unrealizedPnl / costBasis) * 100 : 0;
 
+  const totalValueDelta = todayChangePct != null
+    ? `${formatPercent(todayChangePct)} today`
+    : totalValue > 0
+      ? 'Live prices'
+      : 'No positions';
+  const totalValueDeltaPositive = todayChangePct != null ? todayChangePct > 0 : undefined;
+
   if (loading) {
     return (
       <div className="mb-8 grid gap-4 md:grid-cols-3">
@@ -96,14 +103,8 @@ export const PortfolioStatsBar = ({
       <StatCard
         label="Total Value"
         value={`$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-        delta={
-          todayChangePct != null
-            ? `${formatPercent(todayChangePct)} today`
-            : totalValue > 0
-              ? 'Live prices'
-              : 'No positions'
-        }
-        deltaPositive={todayChangePct != null ? todayChangePct > 0 : undefined}
+        delta={totalValueDelta}
+        deltaPositive={totalValueDeltaPositive}
       />
       <StatCard
         label="Unrealized P&L"
