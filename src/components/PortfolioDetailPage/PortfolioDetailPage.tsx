@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { usePortfolioDetail } from '@/api/hooks/portfolios/usePortfolioDetail';
 import { useInstrumentBatchQuotes } from '@/api/hooks/instruments/useInstrumentBatchQuotes';
+import { useInstrumentBatchEod } from '@/api/hooks/instruments/useInstrumentBatchEod';
 import { Holding } from '@/api/generated/graphql';
 import { AddTransactionModal } from './AddTransactionModal';
 import { PortfolioStatsBar } from './PortfolioStatsBar';
@@ -54,6 +55,7 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
 
   const symbols = (portfolio?.holdings ?? []).map((h) => h.instrument.symbol);
   const { quotes, loading: quotesLoading } = useInstrumentBatchQuotes(symbols);
+  const { eodPrices, loading: eodLoading } = useInstrumentBatchEod(symbols);
 
   const table = useReactTable({
     data: portfolio?.holdings ?? [],
@@ -148,8 +150,9 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
     <PortfolioStatsBar
       holdings={portfolio?.holdings ?? []}
       quotes={quotes}
+      eodPrices={eodPrices}
       realizedPnl={portfolio?.realizedPnl ?? 0}
-      loading={loading || quotesLoading}
+      loading={loading || quotesLoading || eodLoading}
     />
   );
 

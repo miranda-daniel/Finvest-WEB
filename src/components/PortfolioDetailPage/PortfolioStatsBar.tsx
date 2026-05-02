@@ -43,6 +43,7 @@ const formatPercent = (value: number): string => {
 interface PortfolioStatsBarProps {
   holdings: Holding[];
   quotes: Record<string, number>;
+  eodPrices: Record<string, number>;
   realizedPnl: number;
   loading: boolean;
 }
@@ -50,6 +51,7 @@ interface PortfolioStatsBarProps {
 export const PortfolioStatsBar = ({
   holdings,
   quotes,
+  eodPrices,
   realizedPnl,
   loading,
 }: PortfolioStatsBarProps) => {
@@ -57,6 +59,16 @@ export const PortfolioStatsBar = ({
     const price = quotes[h.instrument.symbol];
     return price != null ? sum + h.quantity * price : sum;
   }, 0);
+
+  const totalValueYesterday = holdings.reduce((sum, h) => {
+    const eod = eodPrices[h.instrument.symbol];
+    return eod != null ? sum + h.quantity * eod : sum;
+  }, 0);
+
+  const todayChange = totalValueYesterday > 0 ? totalValue - totalValueYesterday : null;
+  const todayChangePct = todayChange != null && totalValueYesterday > 0
+    ? (todayChange / totalValueYesterday) * 100
+    : null;
 
   const costBasis = holdings.reduce((sum, h) => sum + h.quantity * h.avgCost, 0);
   const unrealizedPnl = totalValue - costBasis;
@@ -84,8 +96,14 @@ export const PortfolioStatsBar = ({
       <StatCard
         label="Total Value"
         value={`$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-        delta={totalValue > 0 ? 'Live prices' : 'No positions'}
-        deltaPositive={undefined}
+        delta={
+          todayChangePct != null
+            ? `${formatPercent(todayChangePct)} today`
+            : totalValue > 0
+              ? 'Live prices'
+              : 'No positions'
+        }
+        deltaPositive={todayChangePct != null ? todayChangePct > 0 : undefined}
       />
       <StatCard
         label="Unrealized P&L"
