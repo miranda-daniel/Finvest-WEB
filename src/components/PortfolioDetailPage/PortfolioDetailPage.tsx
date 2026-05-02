@@ -9,8 +9,11 @@ import {
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { usePortfolioDetail } from '@/api/hooks/portfolios/usePortfolioDetail';
+import { useInstrumentBatchQuotes } from '@/api/hooks/instruments/useInstrumentBatchQuotes';
+import { useInstrumentBatchEod } from '@/api/hooks/instruments/useInstrumentBatchEod';
 import { Holding } from '@/api/generated/graphql';
 import { AddTransactionModal } from './AddTransactionModal';
+import { PortfolioStatsBar } from './PortfolioStatsBar';
 
 const columnHelper = createColumnHelper<Holding>();
 
@@ -49,6 +52,10 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
   const navigate = useNavigate();
   const { portfolio, loading, error } = usePortfolioDetail(portfolioId);
   const [showAddTransaction, setShowAddTransaction] = useState(false);
+
+  const symbols = (portfolio?.holdings ?? []).map((h) => h.instrument.symbol);
+  const { quotes, loading: quotesLoading } = useInstrumentBatchQuotes(symbols);
+  const { eodPrices, loading: eodLoading } = useInstrumentBatchEod(symbols);
 
   const table = useReactTable({
     data: portfolio?.holdings ?? [],
@@ -139,12 +146,23 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
     </div>
   );
 
+  const renderStatsBar = () => (
+    <PortfolioStatsBar
+      holdings={portfolio?.holdings ?? []}
+      quotes={quotes}
+      eodPrices={eodPrices}
+      realizedPnl={portfolio?.realizedPnl ?? 0}
+      loading={loading || quotesLoading || eodLoading}
+    />
+  );
+
   return (
     <div className="px-8 pb-8 pt-20">
       {renderHeader()}
 
       {error && <p className="mb-6 text-body text-rose-400">{error}</p>}
 
+      {renderStatsBar()}
       {renderHoldingsTable()}
 
       {showAddTransaction && (
