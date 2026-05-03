@@ -8,12 +8,14 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { usePortfolioDetail } from '@/api/hooks/portfolios/usePortfolioDetail';
 import { useInstrumentBatchQuotes } from '@/api/hooks/instruments/useInstrumentBatchQuotes';
 import { useInstrumentBatchEod } from '@/api/hooks/instruments/useInstrumentBatchEod';
 import { Holding } from '@/api/generated/graphql';
 import { AddTransactionModal } from './AddTransactionModal';
 import { PortfolioStatsBar } from './PortfolioStatsBar';
+import { PortfolioPerformanceChart } from './PortfolioPerformanceChart';
 
 const columnHelper = createColumnHelper<Holding>();
 
@@ -156,6 +158,12 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
     />
   );
 
+  const renderComingSoon = () => (
+    <div className="flex h-48 items-center justify-center rounded-3xl border border-white/10 bg-white/5">
+      <p className="text-subtle">Coming soon</p>
+    </div>
+  );
+
   return (
     <div className="px-8 pb-8 pt-20">
       {renderHeader()}
@@ -163,7 +171,31 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
       {error && <p className="mb-6 text-body text-rose-400">{error}</p>}
 
       {renderStatsBar()}
-      {renderHoldingsTable()}
+
+      <Tabs defaultValue="overview">
+        <TabsList variant="line" className="mb-6 w-full justify-start border-b border-white/8 pb-0">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="holdings">Holdings</TabsTrigger>
+          <TabsTrigger value="transactions">Transactions</TabsTrigger>
+          <TabsTrigger value="analysis">Analysis</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview">
+          <PortfolioPerformanceChart portfolioId={portfolioId} />
+        </TabsContent>
+
+        <TabsContent value="holdings">
+          {renderHoldingsTable()}
+        </TabsContent>
+
+        <TabsContent value="transactions">
+          {renderComingSoon()}
+        </TabsContent>
+
+        <TabsContent value="analysis">
+          {renderComingSoon()}
+        </TabsContent>
+      </Tabs>
 
       {showAddTransaction && (
         <AddTransactionModal
