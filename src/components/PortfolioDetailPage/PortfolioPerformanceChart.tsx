@@ -11,7 +11,10 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { usePortfolioPerformance, PortfolioRange } from '@/api/hooks/portfolios/usePortfolioPerformance';
+import {
+  usePortfolioPerformance,
+  PortfolioRange,
+} from '@/api/hooks/portfolios/usePortfolioPerformance';
 
 interface PortfolioPerformanceChartProps {
   portfolioId: number;
@@ -20,21 +23,20 @@ interface PortfolioPerformanceChartProps {
 type ChartTab = 'value' | 'performance';
 
 const RANGES: Array<{ value: PortfolioRange; label: string }> = [
-  { value: PortfolioRange.OneMonth,    label: '1M'  },
-  { value: PortfolioRange.ThreeMonths, label: '3M'  },
-  { value: PortfolioRange.YearToDate,  label: 'YTD' },
-  { value: PortfolioRange.OneYear,     label: '1Y'  },
-  { value: PortfolioRange.All,         label: 'ALL' },
+  { value: PortfolioRange.OneMonth, label: '1M' },
+  { value: PortfolioRange.ThreeMonths, label: '3M' },
+  { value: PortfolioRange.YearToDate, label: 'YTD' },
+  { value: PortfolioRange.OneYear, label: '1Y' },
+  { value: PortfolioRange.All, label: 'ALL' },
 ];
 
 const formatCurrency = (value: number): string => {
   if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
-  if (value >= 1_000)     return `$${(value / 1_000).toFixed(1)}k`;
+  if (value >= 1_000) return `$${(value / 1_000).toFixed(1)}k`;
   return `$${value.toFixed(0)}`;
 };
 
-const formatPct = (value: number): string =>
-  `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+const formatPct = (value: number): string => `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
 
 const formatDate = (dateStr: string): string => {
   const d = new Date(`${dateStr}T00:00:00Z`);
@@ -42,7 +44,7 @@ const formatDate = (dateStr: string): string => {
 };
 
 const renderSkeleton = () => (
-  <div className="flex h-52 items-end gap-2 px-4">
+  <div className="flex h-75 items-end gap-2 px-4">
     {[40, 60, 45, 70, 55, 80, 65, 50, 75, 60, 85, 70].map((h, i) => (
       <div
         key={i}
@@ -54,8 +56,16 @@ const renderSkeleton = () => (
 );
 
 const renderEmpty = () => (
-  <div className="flex h-52 items-center justify-center">
-    <p className="text-subtle">No historical data yet. The first snapshot will be captured tonight.</p>
+  <div className="flex h-75 items-center justify-center">
+    <p className="text-subtle">
+      No historical data yet. The first snapshot will be captured tonight.
+    </p>
+  </div>
+);
+
+const renderError = () => (
+  <div className="flex h-75 items-center justify-center">
+    <p className="text-subtle">Failed to load performance data. Please try again later.</p>
   </div>
 );
 
@@ -63,7 +73,7 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
   const [chartTab, setChartTab] = useState<ChartTab>('value');
   const [range, setRange] = useState<PortfolioRange>(PortfolioRange.OneMonth);
 
-  const { points, loading } = usePortfolioPerformance(portfolioId, range);
+  const { points, loading, error } = usePortfolioPerformance(portfolioId, range);
 
   const renderSubTabs = () => (
     <div className="flex gap-1">
@@ -72,9 +82,7 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
           key={tab}
           onClick={() => setChartTab(tab)}
           className={`rounded-lg px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
-            chartTab === tab
-              ? 'bg-white/10 text-slate-100'
-              : 'text-slate-500 hover:text-slate-300'
+            chartTab === tab ? 'bg-white/10 text-slate-100' : 'text-slate-500 hover:text-slate-300'
           }`}
         >
           {tab}
@@ -90,9 +98,7 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
           key={r.value}
           onClick={() => setRange(r.value)}
           className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-            range === r.value
-              ? 'bg-white/10 text-slate-100'
-              : 'text-slate-500 hover:text-slate-300'
+            range === r.value ? 'bg-white/10 text-slate-100' : 'text-slate-500 hover:text-slate-300'
           }`}
         >
           {r.label}
@@ -102,12 +108,12 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
   );
 
   const renderValueChart = () => (
-    <ResponsiveContainer width="100%" height={200}>
+    <ResponsiveContainer width="100%" height={400}>
       <AreaChart data={points} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         <defs>
-          <linearGradient id="portfolioGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%"  stopColor="rgba(99,102,241,0.3)" stopOpacity={1} />
-            <stop offset="95%" stopColor="rgba(99,102,241,0)"   stopOpacity={0} />
+          <linearGradient id={`portfolioGradient-${portfolioId}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="rgba(99,102,241,0.3)" stopOpacity={1} />
+            <stop offset="95%" stopColor="rgba(99,102,241,0)" stopOpacity={0} />
           </linearGradient>
         </defs>
         <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="4 6" vertical={false} />
@@ -134,15 +140,15 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
             backdropFilter: 'blur(8px)',
             fontSize: '12px',
           }}
-          labelFormatter={formatDate}
-          formatter={(value: number) => [formatCurrency(value), 'Value']}
+          labelFormatter={(label: unknown) => formatDate(label as string)}
+          formatter={(value: unknown) => [formatCurrency(value as number), 'Value']}
         />
         <Area
           type="monotone"
           dataKey="portfolioValue"
           stroke="#6366f1"
           strokeWidth={2}
-          fill="url(#portfolioGradient)"
+          fill={`url(#portfolioGradient-${portfolioId})`}
           dot={false}
         />
       </AreaChart>
@@ -150,7 +156,7 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
   );
 
   const renderPerformanceChart = () => (
-    <ResponsiveContainer width="100%" height={200}>
+    <ResponsiveContainer width="100%" height={400}>
       <LineChart data={points} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="4 6" vertical={false} />
         <XAxis
@@ -176,8 +182,11 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
             backdropFilter: 'blur(8px)',
             fontSize: '12px',
           }}
-          labelFormatter={formatDate}
-          formatter={(value: number, name: string) => [formatPct(value), name]}
+          labelFormatter={(label: unknown) => formatDate(label as string)}
+          formatter={(value: unknown, name: unknown) => [
+            formatPct(value as number),
+            name as string,
+          ]}
         />
         <Legend
           wrapperStyle={{ fontSize: '11px', color: 'rgba(148,163,184,0.95)', paddingTop: '12px' }}
@@ -193,7 +202,7 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
         <Line
           type="monotone"
           dataKey="spxReturnPct"
-          name="SPX"
+          name="SPY"
           stroke="#10b981"
           strokeWidth={2}
           dot={false}
@@ -201,7 +210,7 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
         <Line
           type="monotone"
           dataKey="ndxReturnPct"
-          name="NDX"
+          name="QQQ"
           stroke="#f59e0b"
           strokeWidth={2}
           dot={false}
@@ -212,7 +221,11 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
 
   const renderChart = () => {
     if (loading) return renderSkeleton();
+
+    if (error) return renderError();
+
     if (points.length === 0) return renderEmpty();
+
     return chartTab === 'value' ? renderValueChart() : renderPerformanceChart();
   };
 
@@ -222,9 +235,7 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
         {renderSubTabs()}
         {renderRangeSelector()}
       </div>
-      <div className="px-2 py-4">
-        {renderChart()}
-      </div>
+      <div className="px-2 py-4">{renderChart()}</div>
     </div>
   );
 };

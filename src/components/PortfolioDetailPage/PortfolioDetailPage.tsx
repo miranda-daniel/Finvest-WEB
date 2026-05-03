@@ -172,27 +172,27 @@ export const PortfolioDetailPage = ({ portfolioId }: PortfolioDetailPageProps) =
 
       {renderStatsBar()}
 
-      <Tabs defaultValue="overview">
+      <Tabs defaultValue="overview" className="flex-col">
         <TabsList variant="line" className="mb-6 w-full justify-start border-b border-white/8 pb-0">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="holdings">Holdings</TabsTrigger>
-          <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="analysis">Analysis</TabsTrigger>
+          <TabsTrigger value="overview" className="px-3 py-1 text-xs">Overview</TabsTrigger>
+          <TabsTrigger value="holdings" className="px-3 py-1 text-xs">Holdings</TabsTrigger>
+          <TabsTrigger value="transactions" className="px-3 py-1 text-xs">Transactions</TabsTrigger>
+          <TabsTrigger value="analysis" className="px-3 py-1 text-xs">Analysis</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview">
+        <TabsContent value="overview" className="w-full">
           <PortfolioPerformanceChart portfolioId={portfolioId} />
         </TabsContent>
 
-        <TabsContent value="holdings">
+        <TabsContent value="holdings" className="w-full">
           {renderHoldingsTable()}
         </TabsContent>
 
-        <TabsContent value="transactions">
+        <TabsContent value="transactions" className="w-full">
           {renderComingSoon()}
         </TabsContent>
 
-        <TabsContent value="analysis">
+        <TabsContent value="analysis" className="w-full">
           {renderComingSoon()}
         </TabsContent>
       </Tabs>
