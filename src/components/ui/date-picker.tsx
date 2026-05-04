@@ -50,10 +50,10 @@ export const DatePicker = ({ value, onChange, className }: DatePickerProps) => {
           {/* Backdrop */}
           <div className="fixed inset-0 z-60" onClick={() => setOpen(false)} />
 
-          {/* Calendar popup */}
+          {/* Calendar popup — fixed positioning so scroll after open doesn't misplace it */}
           <div
-            className="absolute z-61 rounded-2xl border border-white/10 bg-surface-overlay p-3 shadow-2xl shadow-black/60"
-            style={{ top: rect.bottom + window.scrollY + 8, left: rect.left + window.scrollX }}
+            className="fixed z-61 rounded-2xl border border-white/10 bg-surface-overlay p-3 shadow-2xl shadow-black/60"
+            style={{ top: rect.bottom + 8, left: rect.left }}
           >
             <DayPicker
               mode="single"

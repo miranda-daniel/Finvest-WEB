@@ -42,7 +42,7 @@ const columns = [
   }),
   columnHelper.accessor('avgCost', {
     header: 'Avg Cost',
-    cell: (info) => <span className="text-body">${info.getValue().toFixed(2)}</span>,
+    cell: (info) => <span className="text-body">${(info.getValue() ?? 0).toFixed(2)}</span>,
   }),
 ];
 

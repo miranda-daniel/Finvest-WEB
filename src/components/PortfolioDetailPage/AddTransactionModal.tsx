@@ -3,6 +3,7 @@ import { useForm, useWatch, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { XIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -73,7 +74,11 @@ export const AddTransactionModal = ({ portfolioId, onClose }: AddTransactionModa
 
     const fetchedPrice = await fetchQuote(result.symbol);
 
-    if (fetchedPrice !== null) setValue('price', parseFloat(fetchedPrice.toFixed(2)));
+    if (fetchedPrice !== null) {
+      setValue('price', parseFloat(fetchedPrice.toFixed(2)));
+    } else {
+      toast.warning('Could not fetch current price. Please enter it manually.');
+    }
   };
 
   const onSubmit = (values: FormValues) => {

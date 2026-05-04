@@ -10,13 +10,14 @@ export interface InstrumentSearchResponse {
 }
 
 export const useInstrumentSearch = (query: string) => {
+  const trimmed = query.trim();
   const { data, isLoading, error } = useQuery({
-    queryKey: ['instrument-search', query],
+    queryKey: ['instrument-search', trimmed],
     queryFn: () =>
       apiClient
-        .get<InstrumentSearchResponse[]>('/instruments/search', { params: { q: query } })
+        .get<InstrumentSearchResponse[]>('/instruments/search', { params: { q: trimmed } })
         .then((r) => r.data),
-    enabled: query.trim().length >= 1,
+    enabled: trimmed.length >= 1,
     staleTime: 60_000,
   });
 

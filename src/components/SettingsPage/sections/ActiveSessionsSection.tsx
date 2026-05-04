@@ -41,8 +41,6 @@ export const ActiveSessionsSection = () => {
   const { sessions, loading: sessionsLoading, error: sessionsError } = useActiveSessions();
   const { revokeAll, loading: revoking } = useRevokeAllSessions();
 
-  const now = new Date();
-
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
@@ -69,6 +67,7 @@ export const ActiveSessionsSection = () => {
         <ul className="flex flex-col gap-2 max-w-lg">
           {sessions.map((session) => {
             const { browser, os, deviceType } = parseUserAgent(session.userAgent);
+            const now = new Date();
             const expires = new Date(session.expires);
             const daysLeft = Math.max(
               0,

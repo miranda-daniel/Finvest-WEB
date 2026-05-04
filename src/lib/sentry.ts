@@ -8,7 +8,7 @@ export const initSentry = () => {
     tunnel: '/sentry',
     environment: env.sentryEnv,
     integrations: [Sentry.browserTracingIntegration()],
-    tracesSampleRate: 1.0,
+    tracesSampleRate: env.sentryEnv === 'production' ? 0.1 : 1.0,
   });
 };
 

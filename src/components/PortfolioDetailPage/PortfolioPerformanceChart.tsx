@@ -20,7 +20,10 @@ interface PortfolioPerformanceChartProps {
   portfolioId: number;
 }
 
-type ChartTab = 'value' | 'performance';
+enum ChartTab {
+  Value = 'value',
+  Performance = 'performance',
+}
 
 const RANGES: Array<{ value: PortfolioRange; label: string }> = [
   { value: PortfolioRange.OneMonth, label: '1M' },
@@ -70,14 +73,14 @@ const renderError = () => (
 );
 
 export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceChartProps) => {
-  const [chartTab, setChartTab] = useState<ChartTab>('value');
+  const [chartTab, setChartTab] = useState<ChartTab>(ChartTab.Value);
   const [range, setRange] = useState<PortfolioRange>(PortfolioRange.OneMonth);
 
   const { points, loading, error } = usePortfolioPerformance(portfolioId, range);
 
   const renderSubTabs = () => (
     <div className="flex gap-1">
-      {(['value', 'performance'] as ChartTab[]).map((tab) => (
+      {[ChartTab.Value, ChartTab.Performance].map((tab) => (
         <button
           key={tab}
           onClick={() => setChartTab(tab)}
@@ -226,7 +229,7 @@ export const PortfolioPerformanceChart = ({ portfolioId }: PortfolioPerformanceC
 
     if (points.length === 0) return renderEmpty();
 
-    return chartTab === 'value' ? renderValueChart() : renderPerformanceChart();
+    return chartTab === ChartTab.Value ? renderValueChart() : renderPerformanceChart();
   };
 
   return (
