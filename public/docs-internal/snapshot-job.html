@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finvest — Snapshot Job</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0b10;
+      color: #cbd5e1;
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .page { max-width: 900px; margin: 0 auto; }
+
+    h1 { font-size: 2rem; font-weight: 600; color: #f1f5f9; letter-spacing: -0.02em; margin-bottom: 8px; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #f1f5f9; margin: 44px 0 16px; }
+    h3 { font-size: 0.9rem; font-weight: 600; color: #cbd5e1; margin: 24px 0 10px; }
+
+    p { margin-bottom: 14px; font-size: 0.9rem; color: #94a3b8; }
+    p strong { color: #cbd5e1; }
+
+    .subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 48px; }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8em;
+      background: rgba(255,255,255,0.06);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #a5b4fc;
+    }
+
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 48px 0; }
+
+    /* ── Flow diagram ── */
+    .flow-wrap {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: #0d1017;
+      padding: 36px 40px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+
+    .flow { display: flex; flex-direction: column; gap: 0; min-width: 520px; }
+
+    .row { display: flex; align-items: center; gap: 0; }
+
+    .node {
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .node-cron    { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.35); color: #a5b4fc; }
+    .node-job     { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);  color: #6ee7b7; }
+    .node-db      { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.2); color: #94a3b8; }
+    .node-twelve  { background: rgba(245,158,11,0.1);  border: 1px solid rgba(245,158,11,0.25); color: #fcd34d; }
+    .node-skip    { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2);  color: #a5b4fc; font-style: italic; }
+    .node-ok      { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);  color: #6ee7b7; font-style: italic; }
+    .node-err     { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);   color: #fca5a5; font-style: italic; }
+
+    .arrow-v {
+      display: flex;
+      align-items: center;
+      padding-left: 24px;
+      height: 36px;
+      position: relative;
+      color: #475569;
+      font-size: 0.72rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .arrow-v::before {
+      content: '';
+      position: absolute;
+      left: 32px; top: 0; bottom: 0;
+      width: 1px;
+      background: #1e293b;
+    }
+    .arrow-v span { margin-left: 20px; }
+
+    .diamond-wrap { display: flex; align-items: center; gap: 12px; padding-left: 12px; margin: 4px 0; }
+    .diamond {
+      width: 40px; height: 40px;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.3);
+      transform: rotate(45deg);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .diamond-label {
+      transform: rotate(-45deg);
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      text-align: center;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .branches {
+      margin-left: 52px;
+      padding-left: 20px;
+      border-left: 1px solid #1e293b;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    .branch { display: flex; align-items: center; gap: 10px; }
+    .branch-tag {
+      font-size: 0.7rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #475569;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+    .branch-arrow { color: #334155; font-size: 0.85rem; }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+    }
+    thead th {
+      text-align: left;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.04);
+      color: #64748b;
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #94a3b8;
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody td:first-child { color: #cbd5e1; font-weight: 500; }
+
+    /* ── Cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .card {
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      padding: 20px;
+    }
+    .card-title { font-size: 0.82rem; font-weight: 600; color: #f1f5f9; margin-bottom: 6px; }
+    .card-body  { font-size: 0.8rem; color: #64748b; line-height: 1.6; }
+    .card-body strong { color: #94a3b8; }
+
+    /* ── Date logic box ── */
+    .logic-box {
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: #0d1017;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      font-size: 0.83rem;
+    }
+    .logic-box .rule { display: flex; gap: 16px; align-items: baseline; margin-bottom: 10px; }
+    .logic-box .rule:last-child { margin-bottom: 0; }
+    .logic-box .cond {
+      min-width: 220px;
+      color: #64748b;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.78rem;
+    }
+    .logic-box .result { color: #94a3b8; }
+    .logic-box .result strong { color: #cbd5e1; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Snapshot Job</h1>
+  <p class="subtitle">Daily closing price ingestion for portfolio instruments and benchmarks — Finvest API</p>
+
+  <!-- ─── WHY ─── -->
+  <p>
+    The portfolio performance chart (<strong>Value</strong> and <strong>Performance</strong> tabs)
+    needs historical daily closing prices for every held instrument. Fetching these from TwelveData
+    on every page load would be slow, expensive, and would quickly exhaust the free-tier API quota.
+  </p>
+  <p>
+    The snapshot job solves this by running <strong>once per day</strong> and persisting the prices
+    in the <code>PriceSnapshot</code> table. The GraphQL resolver for
+    <code>portfolioPerformance</code> then reads purely from the DB — no live API calls needed at
+    query time.
+  </p>
+
+  <hr />
+
+  <!-- ─── TRIGGERS ─── -->
+  <h2>When it runs</h2>
+
+  <table>
+    <thead><tr><th>Trigger</th><th>Schedule</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Cron</td>
+        <td><code>0 23 * * *</code> — 23:00 UTC daily</td>
+        <td>20:00 Argentina time. US markets close at 16:00 ET (21:00 UTC) so all closing prices are available by then.</td>
+      </tr>
+      <tr>
+        <td>On startup</td>
+        <td>Immediate, production only</td>
+        <td>Catches up any gap if the server was down. Disabled in development to avoid burning API quota on every restart.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <!-- ─── WHAT GETS FETCHED ─── -->
+  <h2>What gets fetched</h2>
+
+  <p>
+    The job processes <strong>all instruments currently held in any portfolio</strong>, plus the two
+    benchmark ETFs. Each instrument is handled independently — one instrument's failure does not
+    stop the rest.
+  </p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">📊 Portfolio instruments</div>
+      <div class="card-body">
+        All distinct instruments that appear in at least one <code>Holding</code> record,
+        across all users. Fetched via <code>HoldingRepository.findDistinctInstrumentIds()</code>.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 SPY (S&amp;P 500 proxy)</div>
+      <div class="card-body">
+        SPDR S&amp;P 500 ETF. Used as a benchmark instead of the <code>SPX</code> index symbol
+        because TwelveData only exposes index symbols on paid plans.
+        Flagged as <code>isBenchmark = true</code> in the <code>Instrument</code> table.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 QQQ (Nasdaq 100 proxy)</div>
+      <div class="card-body">
+        Invesco QQQ ETF. Same rationale as SPY — proxy for <code>NDX</code>.
+        Both ETFs track their respective indices very closely and are available on the free tier.
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- ─── DATE RANGE LOGIC ─── -->
+  <h2>Date range logic — per instrument</h2>
+
+  <p>
+    For each instrument the job computes the <strong>missing date range</strong> independently,
+    so only truly absent data is fetched.
+  </p>
+
+  <h3>Start date</h3>
+  <div class="logic-box">
+    <div class="rule">
+      <span class="cond">latest snapshot exists</span>
+      <span class="result">→ <strong>latest snapshot date + 1 day</strong></span>
+    </div>
+    <div class="rule">
+      <span class="cond">no snapshots, isBenchmark</span>
+      <span class="result">→ <strong>1 year ago</strong> (bootstrap full history for the chart)</span>
+    </div>
+    <div class="rule">
+      <span class="cond">no snapshots, portfolio instrument</span>
+      <span class="result">→ <strong>earliest BUY date</strong> for that instrument (or 1 year ago if no operations found)</span>
+    </div>
+  </div>
+
+  <h3>End date</h3>
+  <p>
+    Always the <strong>last trading day</strong> (Mon–Fri). If the job runs on a Sunday,
+    end date is the previous Friday. This prevents calling TwelveData for a weekend date
+    that has no market data, which would return an error.
+  </p>
+
+  <div class="logic-box">
+    <div class="rule">
+      <span class="cond">today = Sunday</span>
+      <span class="result">→ <strong>Friday</strong> (2 days back)</span>
+    </div>
+    <div class="rule">
+      <span class="cond">today = Monday</span>
+      <span class="result">→ <strong>Friday</strong> (3 days back)</span>
+    </div>
+    <div class="rule">
+      <span class="cond">today = Tue–Sat</span>
+      <span class="result">→ <strong>yesterday</strong> (1 day back)</span>
+    </div>
+  </div>
+
+  <p>
+    If <code>startDate &gt; endDate</code>, the instrument is already up to date and the
+    API call is skipped entirely.
+  </p>
+
+  <hr />
+
+  <!-- ─── FLOW ─── -->
+  <h2>Execution flow</h2>
+
+  <div class="flow-wrap">
+    <div class="flow">
+
+      <div class="row">
+        <div class="node node-cron">🕙 Cron trigger (23:00 UTC) or server startup</div>
+      </div>
+
+      <div class="arrow-v"><span>runSnapshotJob()</span></div>
+
+      <div class="row">
+        <div class="node node-db">🗄️ findOrCreateClass('Index') + ensureBenchmarks(SPY, QQQ)</div>
+      </div>
+
+      <div class="arrow-v"><span>findDistinctInstrumentIds() → merge with benchmark IDs</span></div>
+
+      <div class="row">
+        <div class="node node-job">🔁 for each instrument (sequential)</div>
+      </div>
+
+      <div class="arrow-v"><span>findLatestDateByInstrumentId() → resolve startDate / endDate</span></div>
+
+      <div class="diamond-wrap">
+        <div class="diamond"><div class="diamond-label">start &gt;<br>end?</div></div>
+      </div>
+
+      <div class="branches">
+        <div class="branch">
+          <span class="branch-tag">YES → skip</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-skip">already up to date, next instrument</div>
+        </div>
+        <div class="branch">
+          <span class="branch-tag">NO → fetch</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-twelve">🌍 TwelveData /time_series (start→end)</div>
+        </div>
+      </div>
+
+      <div class="diamond-wrap">
+        <div class="diamond"><div class="diamond-label">API<br>ok?</div></div>
+      </div>
+
+      <div class="branches">
+        <div class="branch">
+          <span class="branch-tag">ERROR</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-err">log error, continue to next instrument</div>
+        </div>
+        <div class="branch">
+          <span class="branch-tag">SUCCESS</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-db">🗄️ PriceSnapshot upsertMany (INSERT … ON CONFLICT)</div>
+        </div>
+      </div>
+
+      <div class="arrow-v"><span>sleep 200ms (rate-limit guard)</span></div>
+
+      <div class="row">
+        <div class="node node-ok">✅ [snapshot-job] complete</div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- ─── RATE LIMITING ─── -->
+  <h2>Rate limiting</h2>
+
+  <p>
+    TwelveData's free plan limits API usage. A <strong>200 ms delay</strong> is inserted between
+    each instrument that actually made an API call. Instruments that were skipped (already up to
+    date) do not count — the sleep is only applied when a real request was made or attempted
+    (including errors, to avoid hammering a rate-limited endpoint on retries).
+  </p>
+  <p>
+    The last instrument in the list does not get a trailing sleep.
+  </p>
+
+  <hr />
+
+  <!-- ─── MANUAL RUN ─── -->
+  <h2>Running manually</h2>
+
+  <p>
+    The job can be triggered on demand without waiting for the 23:00 UTC cron, using the
+    <code>npm run snapshot</code> script defined in <code>package.json</code>:
+  </p>
+
+  <div class="flow-wrap" style="padding: 24px 28px;">
+    <code style="font-size: 0.9rem; color: #6ee7b7;">npm run snapshot</code>
+  </div>
+
+  <p>
+    This invokes <code>scripts/run-snapshot-job.ts</code> via <code>ts-node</code> with path
+    aliases resolved, using the environment variables from <code>.env</code>. The process exits
+    cleanly when the job finishes.
+  </p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">🔁 Missed nightly run</div>
+      <div class="card-body">
+        If the server was down when the cron fired, run the script manually to catch up.
+        It will fetch all missing dates since the last stored snapshot.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">➕ New holdings added</div>
+      <div class="card-body">
+        After adding instruments that have no snapshot history yet, run the script to populate
+        the performance chart immediately rather than waiting until tonight.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔍 Verification</div>
+      <div class="card-body">
+        Useful to confirm the job works end-to-end after a configuration change or deployment.
+        Safe to run multiple times — existing rows are updated, not duplicated.
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- ─── STORAGE ─── -->
+  <h2>How prices are stored</h2>
+
+  <p>
+    Prices are written to the <code>PriceSnapshot</code> table via a single
+    <code>INSERT … ON CONFLICT DO UPDATE</code> statement (bulk upsert using
+    <code>Prisma.$executeRaw</code>). The unique constraint is on
+    <code>(instrumentId, date)</code> — re-running the job for the same date is safe and simply
+    overwrites the existing price.
+  </p>
+
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>instrumentId</code></td><td>Int</td><td>FK to <code>Instrument</code></td></tr>
+      <tr><td><code>date</code></td><td>Date</td><td>Trading day (no time component)</td></tr>
+      <tr><td><code>closePrice</code></td><td>Decimal</td><td>Adjusted closing price in USD</td></tr>
+      <tr><td><code>createdAt</code></td><td>DateTime</td><td>Row creation timestamp</td></tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <!-- ─── CONSUMER ─── -->
+  <h2>Who reads these snapshots</h2>
+
+  <p>
+    <code>PortfolioPerformanceService.getPerformance()</code> is the sole consumer. It queries
+    <code>PriceSnapshot</code> for the requested date range, computes the portfolio value per day
+    by multiplying each holding's quantity (derived from BUY/SELL operations up to that day) by
+    the closing price, then normalises all three series (portfolio, SPY, QQQ) to a common base
+    of <code>0%</code> on the first day with a non-zero portfolio value.
+  </p>
+
+  <hr />
+
+  <!-- ─── FILES ─── -->
+  <h2>Related files</h2>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">📂 src/jobs/snapshot-job.ts</div>
+      <div class="card-body">
+        Job entry point. Contains <code>runSnapshotJob()</code>, <code>processInstrument()</code>,
+        <code>ensureBenchmarks()</code>, and the cron setup via <code>startSnapshotCron()</code>.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📂 src/clients/twelve-data-client.ts</div>
+      <div class="card-body">
+        <code>getHistoricalClosePrices(symbol, start, end)</code> — calls
+        <code>/time_series</code>, reverses the response (TwelveData returns newest-first),
+        and returns an array of <code>{ date, close }</code> objects oldest-first.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📂 src/repositories/price-snapshot-repository.ts</div>
+      <div class="card-body">
+        <code>upsertMany(rows)</code> — bulk insert via raw SQL.<br>
+        <code>findLatestDateByInstrumentId(id)</code> — determines where to resume.<br>
+        <code>findByInstrumentIdsAndDateRange(ids, start, end)</code> — read path for the chart.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📂 src/services/portfolio-performance-service.ts</div>
+      <div class="card-body">
+        Reads <code>PriceSnapshot</code> and computes per-day portfolio value and return
+        percentages for the performance chart.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📂 prisma/schema.prisma</div>
+      <div class="card-body">
+        <code>PriceSnapshot</code> model with <code>@@unique([instrumentId, date])</code>
+        — guarantees idempotent upserts and is the ON CONFLICT target in the bulk insert.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📂 src/repositories/holding-repository.ts</div>
+      <div class="card-body">
+        <code>findEarliestOperationDateByInstrumentId(id)</code> — used to set the start date
+        for new instruments so history only goes back to the first BUY, not an arbitrary date.
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

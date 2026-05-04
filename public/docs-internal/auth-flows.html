@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finvest — Authentication Flows</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0b10;
+      color: #cbd5e1;
+      padding: 40px 24px 80px;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 960px; margin: 0 auto; }
+
+    /* Header */
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #f1f5f9;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .page-subtitle {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 40px;
+    }
+
+    /* Token table */
+    .token-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 48px;
+      font-size: 13px;
+    }
+    .token-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.04);
+      color: #94a3b8;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .token-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #cbd5e1;
+    }
+    .token-table tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge-blue { background: rgba(96,165,250,0.15); color: #60a5fa; }
+    .badge-purple { background: rgba(167,139,250,0.15); color: #a78bfa; }
+
+    /* Section */
+    .section {
+      margin-bottom: 56px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .section-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .section-desc {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 20px;
+      padding-left: 40px;
+    }
+
+    /* Diagram */
+    .diagram {
+      background: #0d1017;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 28px;
+      overflow-x: auto;
+    }
+
+    /* Participants row */
+    .participants {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+    .participant {
+      flex: 1;
+      text-align: center;
+    }
+    .participant-label {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .p-browser  { background: rgba(251,191,36,0.12);  color: #fbbf24; }
+    .p-router   { background: rgba(96,165,250,0.12);  color: #60a5fa; }
+    .p-hook     { background: rgba(52,211,153,0.12);  color: #34d399; }
+    .p-refresh  { background: rgba(167,139,250,0.12); color: #a78bfa; }
+    .p-api      { background: rgba(251,113,133,0.12); color: #fb7185; }
+    .p-db       { background: rgba(251,146,60,0.12);  color: #fb923c; }
+    .p-zustand  { background: rgba(34,211,238,0.12);  color: #22d3ee; }
+    .p-apollo   { background: rgba(244,114,182,0.12); color: #f472b6; }
+    .p-axios    { background: rgba(163,230,53,0.12);  color: #a3e635; }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+
+    .step {
+      display: grid;
+      align-items: center;
+      min-height: 32px;
+      position: relative;
+    }
+
+    /* Lifelines */
+    .lifeline {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(255,255,255,0.07);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    /* Arrow rows */
+    .arrow-row {
+      display: flex;
+      align-items: center;
+      min-height: 36px;
+      position: relative;
+      padding: 2px 0;
+    }
+    .arrow-label {
+      font-size: 11.5px;
+      color: #94a3b8;
+      white-space: nowrap;
+      padding: 0 6px;
+      background: #0d1017;
+      position: relative;
+      z-index: 1;
+    }
+    .arrow-line {
+      flex: 1;
+      height: 1px;
+      position: relative;
+    }
+    .arrow-line.solid   { background: rgba(255,255,255,0.2); }
+    .arrow-line.dashed  { background: repeating-linear-gradient(90deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 4px, transparent 4px, transparent 8px); }
+    .arrow-line.success { background: rgba(52,211,153,0.4); }
+    .arrow-line.error   { background: rgba(251,113,133,0.4); }
+
+    .arrow-head-r::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-left: 7px solid rgba(255,255,255,0.35);
+    }
+    .arrow-head-l::after {
+      content: '';
+      position: absolute;
+      left: -1px; top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-right: 7px solid rgba(255,255,255,0.35);
+    }
+    .arrow-head-r.success::after { border-left-color: rgba(52,211,153,0.6); }
+    .arrow-head-l.success::after { border-right-color: rgba(52,211,153,0.6); }
+    .arrow-head-r.error::after   { border-left-color: rgba(251,113,133,0.6); }
+    .arrow-head-l.error::after   { border-right-color: rgba(251,113,133,0.6); }
+
+    /* Action note */
+    .action {
+      font-size: 11.5px;
+      color: #64748b;
+      padding: 4px 0 4px 12px;
+      border-left: 2px solid rgba(255,255,255,0.06);
+      margin: 2px 0 2px 0;
+      font-style: italic;
+    }
+
+    /* Condition */
+    .condition {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin: 3px 0;
+    }
+    .cond-yes { background: rgba(52,211,153,0.1); color: #34d399; }
+    .cond-no  { background: rgba(251,113,133,0.1); color: #fb7185; }
+    .cond-warn{ background: rgba(251,191,36,0.1);  color: #fbbf24; }
+
+    /* DB operation */
+    .db-op {
+      font-size: 11px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #fb923c;
+      padding: 2px 8px;
+      background: rgba(251,146,60,0.08);
+      border-radius: 4px;
+      margin: 2px 0;
+      display: inline-block;
+    }
+
+    /* Spacer */
+    .gap { height: 10px; }
+    .gap-sm { height: 5px; }
+
+    /* Info box */
+    .info-box {
+      background: rgba(96,165,250,0.07);
+      border: 1px solid rgba(96,165,250,0.15);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 12.5px;
+      color: #93c5fd;
+      margin-top: 14px;
+    }
+    .warn-box {
+      background: rgba(251,191,36,0.07);
+      border: 1px solid rgba(251,191,36,0.15);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 12.5px;
+      color: #fcd34d;
+      margin-top: 14px;
+    }
+
+    /* Cookie table */
+    .cookie-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .cookie-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.03);
+      color: #64748b;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .cookie-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    .cookie-table tr:last-child td { border-bottom: none; }
+    .cookie-table td:first-child { font-family: monospace; color: #a78bfa; }
+    .cookie-table td:nth-child(2) { color: #f1f5f9; }
+    .cookie-table td:nth-child(3) { color: #64748b; font-size: 12px; }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11.5px;
+      background: rgba(255,255,255,0.06);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: #e2e8f0;
+    }
+
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 48px 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <p class="page-title">Finvest — Authentication Flows</p>
+  <p class="page-subtitle">How login, logout, token rotation, and silent refresh work end-to-end.</p>
+
+  <!-- Token overview -->
+  <table class="token-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Storage</th>
+        <th>Lifetime</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-blue">JWT</span></td>
+        <td>Zustand (memory only — lost on F5)</td>
+        <td>5 minutes</td>
+        <td>Authorizes every REST and GraphQL request via <code>Authorization: Bearer &lt;token&gt;</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-purple">Refresh Token</span></td>
+        <td>HTTP-only cookie (<code>Path=/</code>) — survives F5</td>
+        <td>7 days</td>
+        <td>Exchanges for a new JWT without asking for credentials again</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ─────────────────────────────── 1. Login ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">Login</div>
+    </div>
+    <p class="section-desc">
+      Before showing the login form, <code>_guest.tsx</code> checks whether the user is already authenticated.
+      If a valid refresh cookie exists, they are redirected to <code>/dashboard</code> silently.
+    </p>
+
+    <div class="diagram">
+      <!-- Participants -->
+      <div class="participants">
+        <div class="participant"><div class="participant-label p-browser">Browser</div></div>
+        <div class="participant"><div class="participant-label p-router">_guest.tsx</div></div>
+        <div class="participant"><div class="participant-label p-refresh">silentRefresh</div></div>
+        <div class="participant"><div class="participant-label p-api">API</div></div>
+        <div class="participant"><div class="participant-label p-zustand">Zustand</div></div>
+      </div>
+
+      <div class="steps">
+
+        <div class="arrow-row">
+          <div class="arrow-label">Navigate to /login</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+          <div style="flex:3"></div>
+        </div>
+
+        <div class="action" style="margin-left:20%">beforeLoad() runs</div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div class="arrow-label">token in memory?</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+          <div style="flex:2"></div>
+        </div>
+
+        <div style="padding-left:22%">
+          <span class="condition cond-yes">✓ YES → redirect /dashboard immediately</span>
+        </div>
+        <div style="padding-left:22%">
+          <span class="condition cond-no">✗ NO → call silentRefresh()</span>
+        </div>
+
+        <div class="gap"></div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">POST /api/session/refresh-token</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <div style="padding-left:60%">
+          <span class="condition cond-no">Cookie missing or expired → 401</span>
+        </div>
+        <div style="padding-left:60%">
+          <span class="condition cond-yes">Cookie valid → { jwtToken } + new cookie</span>
+        </div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">refresh failed</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line error arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <div class="action" style="margin-left:20%">Show login form</div>
+
+        <div class="gap"></div>
+        <hr style="margin: 12px 0; border-color: rgba(255,255,255,0.04)">
+        <div class="gap"></div>
+
+        <div class="arrow-row">
+          <div class="arrow-label">Submit credentials</div>
+          <div style="flex:4; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action" style="margin-left:75%">Verify email + password</div>
+        <div class="action" style="margin-left:75%"><span class="db-op">INSERT RefreshToken</span></div>
+        <div class="action" style="margin-left:75%">Sign JWT (5 min)</div>
+
+        <div class="arrow-row">
+          <div style="flex:3"></div>
+          <div class="arrow-label">{ jwtToken, user } + Set-Cookie: refreshToken</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line success arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action" style="margin-left:80%">JWT → Zustand memory</div>
+        <div class="action" style="margin-left:80%">user → Zustand + localStorage</div>
+        <div class="action" style="margin-left:80%">navigate /dashboard</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── 2. F5 / Reload ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">Page Reload (F5)</div>
+    </div>
+    <p class="section-desc">
+      Zustand memory is wiped on reload — the JWT is gone. The refresh cookie survives because it lives in the browser's cookie store.
+      <code>_authenticated.tsx</code> detects the missing JWT and calls <code>silentRefresh()</code> before rendering anything.
+    </p>
+
+    <div class="diagram">
+      <div class="participants">
+        <div class="participant"><div class="participant-label p-browser">Browser</div></div>
+        <div class="participant"><div class="participant-label p-router">_authenticated.tsx</div></div>
+        <div class="participant"><div class="participant-label p-refresh">silentRefresh</div></div>
+        <div class="participant"><div class="participant-label p-api">API</div></div>
+        <div class="participant"><div class="participant-label p-db">Database</div></div>
+      </div>
+
+      <div class="steps">
+
+        <div class="arrow-row">
+          <div class="arrow-label">F5 — reload /dashboard</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+          <div style="flex:3"></div>
+        </div>
+
+        <div class="action" style="margin-left:20%">beforeLoad() runs — token = null (memory wiped)</div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">silentRefresh()</div>
+          <div style="flex:2"></div>
+        </div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">POST /api/session/refresh-token (+ cookie)</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <div class="action" style="margin-left:60%">hash cookie token</div>
+        <div class="action" style="margin-left:60%"><span class="db-op">SELECT RefreshToken WHERE token = hash</span></div>
+
+        <div style="padding-left:60%">
+          <span class="condition cond-no">already revoked → revokeAllForUser → 401 → redirect /login</span>
+        </div>
+        <div style="padding-left:60%">
+          <span class="condition cond-no">expired → 401 → redirect /login</span>
+        </div>
+        <div style="padding-left:60%">
+          <span class="condition cond-yes">valid → rotate (atomic transaction)</span>
+        </div>
+
+        <div class="action" style="margin-left:60%">
+          <span class="db-op">INSERT new RefreshToken</span>
+          &nbsp;+&nbsp;
+          <span class="db-op">UPDATE old → revoked = now()</span>
+          &nbsp;(single tx)
+        </div>
+        <div class="action" style="margin-left:60%">Sign new JWT (5 min)</div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div style="flex:2"></div>
+          <div class="arrow-label">{ jwtToken } + Set-Cookie: refreshToken=&lt;new&gt;</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line success arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action" style="margin-left:20%">JWT stored in Zustand memory</div>
+        <div class="action" style="margin-left:20%">Page renders normally</div>
+
+      </div>
+    </div>
+
+    <div class="info-box">
+      Each F5 rotates the refresh token — the old one is revoked and a new one is issued. Active Sessions always shows at most one entry per device.
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── 3. Logout ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">Logout</div>
+    </div>
+    <p class="section-desc">
+      The backend revokes the refresh token and clears the cookie. The frontend clears Zustand and the Apollo cache.
+      <code>onSettled</code> is used instead of <code>onSuccess</code> so auth state is always cleaned up even if the request fails.
+    </p>
+
+    <div class="diagram">
+      <div class="participants">
+        <div class="participant"><div class="participant-label p-browser">Browser</div></div>
+        <div class="participant"><div class="participant-label p-hook">useLogout</div></div>
+        <div class="participant"><div class="participant-label p-api">API</div></div>
+        <div class="participant"><div class="participant-label p-db">Database</div></div>
+        <div class="participant"><div class="participant-label p-zustand">Zustand</div></div>
+      </div>
+
+      <div class="steps">
+
+        <div class="arrow-row">
+          <div class="arrow-label">Click "Sign out"</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+          <div style="flex:3"></div>
+        </div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">POST /api/session/logout (+ cookie)</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <div class="action" style="margin-left:40%">read refreshToken cookie</div>
+        <div class="action" style="margin-left:40%"><span class="db-op">UPDATE RefreshToken SET revoked = now()</span></div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div style="flex:2"></div>
+          <div class="arrow-label">200 + Set-Cookie: refreshToken=; Max-Age=0</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line success arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="gap-sm"></div>
+        <div class="action" style="margin-left:20%">onSettled (runs even if request failed)</div>
+
+        <div class="arrow-row" style="padding-left:20%">
+          <div style="flex:3"></div>
+          <div class="arrow-label">clearAuth()</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action" style="margin-left:80%">token = null, user = null</div>
+        <div class="action" style="margin-left:20%">apolloClient.clearStore()</div>
+        <div class="action" style="margin-left:20%">navigate /login</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── 4. JWT expired (REST) ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">JWT Expired — REST request</div>
+    </div>
+    <p class="section-desc">
+      The JWT lasts 5 minutes. When it expires mid-session, the Axios response interceptor catches the 401,
+      silently obtains a new JWT, and retries the original request — transparent to the user.
+    </p>
+
+    <div class="diagram">
+      <div class="participants">
+        <div class="participant"><div class="participant-label p-browser">Component</div></div>
+        <div class="participant"><div class="participant-label p-axios">Axios interceptor</div></div>
+        <div class="participant"><div class="participant-label p-refresh">silentRefresh</div></div>
+        <div class="participant"><div class="participant-label p-api">API</div></div>
+      </div>
+
+      <div class="steps">
+
+        <div class="arrow-row">
+          <div class="arrow-label">GET /api/session (expired JWT)</div>
+          <div style="flex:3; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="arrow-row">
+          <div style="flex:3"></div>
+          <div class="arrow-label">401 Unauthorized</div>
+          <div style="flex:3; position:relative">
+            <div class="arrow-line error arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action" style="margin-left:25%">status 401 + not a retry + not refresh endpoint → intercept</div>
+
+        <div class="arrow-row" style="padding-left:25%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">silentRefresh()</div>
+          <div style="flex:2"></div>
+        </div>
+
+        <div style="padding-left:45%">
+          <span class="condition cond-warn">inFlight promise already exists? → wait for it (no new HTTP call)</span>
+        </div>
+        <div style="padding-left:45%">
+          <span class="condition cond-no">no inFlight → POST /api/session/refresh-token</span>
+        </div>
+
+        <div class="arrow-row" style="padding-left:45%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">POST /api/session/refresh-token</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="arrow-row" style="padding-left:45%">
+          <div style="flex:2"></div>
+          <div class="arrow-label">{ jwtToken } + new cookie</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line success arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action" style="margin-left:45%">store new JWT in Zustand</div>
+
+        <div class="arrow-row" style="padding-left:25%">
+          <div class="arrow-label">retry original request (new JWT)</div>
+          <div style="flex:3; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="arrow-row">
+          <div style="flex:3"></div>
+          <div class="arrow-label">200 OK — data</div>
+          <div style="flex:3; position:relative">
+            <div class="arrow-line success arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action">Component receives data — no error shown to the user</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── 5. JWT expired (GraphQL) ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">JWT Expired — GraphQL request</div>
+    </div>
+    <p class="section-desc">
+      GraphQL always returns HTTP 200 — errors are in the response body. The Apollo error link reads the
+      <code>TOKEN_EXPIRED</code> extension code and triggers the same <code>silentRefresh()</code> singleton,
+      then retries the operation.
+    </p>
+
+    <div class="diagram">
+      <div class="participants">
+        <div class="participant"><div class="participant-label p-browser">Component</div></div>
+        <div class="participant"><div class="participant-label p-apollo">Apollo refreshLink</div></div>
+        <div class="participant"><div class="participant-label p-refresh">silentRefresh</div></div>
+        <div class="participant"><div class="participant-label p-api">API</div></div>
+      </div>
+
+      <div class="steps">
+
+        <div class="arrow-row">
+          <div class="arrow-label">GraphQL query (expired JWT)</div>
+          <div style="flex:3; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="arrow-row">
+          <div style="flex:3"></div>
+          <div class="arrow-label">HTTP 200 { errors: [{ extensions: { code: "TOKEN_EXPIRED" } }] }</div>
+          <div style="flex:3; position:relative">
+            <div class="arrow-line error arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action" style="margin-left:25%">error.extensions.code === TOKEN_EXPIRED → intercept</div>
+
+        <div class="arrow-row" style="padding-left:25%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">silentRefresh() — same singleton as REST</div>
+          <div style="flex:2"></div>
+        </div>
+
+        <div style="padding-left:45%">
+          <span class="condition cond-warn">inFlight? → wait (Axios interceptor may already be refreshing)</span>
+        </div>
+
+        <div class="arrow-row" style="padding-left:45%">
+          <div style="flex:1"></div>
+          <div class="arrow-label">POST /api/session/refresh-token</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="arrow-row" style="padding-left:45%">
+          <div style="flex:2"></div>
+          <div class="arrow-label">{ jwtToken } + new cookie</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line success arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="arrow-row" style="padding-left:25%">
+          <div class="arrow-label">retry GraphQL operation (new JWT in header)</div>
+          <div style="flex:3; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="arrow-row">
+          <div style="flex:3"></div>
+          <div class="arrow-label">HTTP 200 { data: ... }</div>
+          <div style="flex:3; position:relative">
+            <div class="arrow-line success arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action">Component receives data — no error shown to the user</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── 6. Theft detection ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div class="section-title">Refresh Token Theft Detection</div>
+    </div>
+    <p class="section-desc">
+      Each refresh token can only be used once. If a token that was already rotated (and therefore revoked)
+      is used again, the backend assumes it was stolen and wipes all sessions for that user.
+    </p>
+
+    <div class="diagram">
+      <div class="participants">
+        <div class="participant"><div class="participant-label p-browser">Attacker</div></div>
+        <div class="participant"><div class="participant-label p-api">API</div></div>
+        <div class="participant"><div class="participant-label p-db">Database</div></div>
+      </div>
+
+      <div class="steps">
+
+        <div class="arrow-row">
+          <div class="arrow-label">POST /api/session/refresh-token (old, already-rotated cookie)</div>
+          <div style="flex:2; position:relative">
+            <div class="arrow-line solid arrow-head-r" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+        <div class="action" style="margin-left:33%"><span class="db-op">SELECT RefreshToken WHERE token = hash</span></div>
+        <div class="action" style="margin-left:33%">found — but stored.revoked ≠ null → THEFT DETECTED</div>
+        <div class="action" style="margin-left:33%"><span class="db-op">UPDATE all tokens WHERE userId = X SET revoked = now()</span></div>
+
+        <div class="arrow-row">
+          <div style="flex:1"></div>
+          <div class="arrow-label">401 INVALID_REFRESH_TOKEN</div>
+          <div style="flex:1; position:relative">
+            <div class="arrow-line error arrow-head-l" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="warn-box">
+      ⚠ All sessions for that user are now revoked — including legitimate ones. The real user will be forced to log in again on all devices. This is intentional: if a stolen token was used, the account may be compromised.
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── 7. silentRefresh singleton ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div class="section-title">The <code>silentRefresh</code> Singleton</div>
+    </div>
+    <p class="section-desc">
+      Three independent callers can trigger a refresh simultaneously: the route guard, the Axios response interceptor,
+      and the Apollo error link. Without coordination, each would fire its own HTTP request — creating multiple sessions
+      and leaving orphaned (non-revoked) tokens.
+    </p>
+
+    <div class="diagram">
+      <div style="font-size:12.5px; color:#64748b; margin-bottom:16px;">
+        <code>src/api/silentRefresh.ts</code> — shared in-flight promise
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+        <div>
+          <div style="font-size:12px; font-weight:600; color:#fb7185; margin-bottom:10px;">❌ Without singleton</div>
+          <div style="font-size:12px; color:#64748b; line-height:2;">
+            Route guard → POST /refresh-token → new session A<br>
+            Axios interceptor → POST /refresh-token → new session B<br>
+            Apollo error link → POST /refresh-token → new session C<br>
+            <span style="color:#fb7185">Sessions A and B are never revoked → leaked tokens</span>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:12px; font-weight:600; color:#34d399; margin-bottom:10px;">✓ With singleton</div>
+          <div style="font-size:12px; color:#64748b; line-height:2;">
+            Route guard → <code>silentRefresh()</code> → starts POST /refresh-token<br>
+            Axios interceptor → <code>silentRefresh()</code> → <em>inFlight exists → waits</em><br>
+            Apollo error link → <code>silentRefresh()</code> → <em>inFlight exists → waits</em><br>
+            <span style="color:#34d399">All three resolve with the same new JWT. One session created.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── Cookie reference ─────────────────────────────── -->
+  <hr>
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number" style="background:transparent; border: 1px solid rgba(255,255,255,0.08)">🍪</div>
+      <div class="section-title">Refresh Token Cookie Attributes</div>
+    </div>
+
+    <div class="diagram">
+      <table class="cookie-table">
+        <thead>
+          <tr>
+            <th>Attribute</th>
+            <th>Value</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>HttpOnly</td>
+            <td>true</td>
+            <td>JavaScript cannot read it — eliminates XSS-based theft</td>
+          </tr>
+          <tr>
+            <td>SameSite</td>
+            <td>Lax</td>
+            <td>Sent on same-site navigations; blocked on cross-site requests — prevents CSRF</td>
+          </tr>
+          <tr>
+            <td>Path</td>
+            <td>/</td>
+            <td>Sent for all paths. A restrictive path like <code>/session</code> breaks under the Vite <code>/api</code> proxy prefix</td>
+          </tr>
+          <tr>
+            <td>Secure</td>
+            <td>production only</td>
+            <td>Requires HTTPS — omitted in development to allow plain HTTP</td>
+          </tr>
+          <tr>
+            <td>Max-Age</td>
+            <td>604800 (7 days)</td>
+            <td>Persists across browser restarts; cleared immediately on logout via <code>Max-Age=0</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
