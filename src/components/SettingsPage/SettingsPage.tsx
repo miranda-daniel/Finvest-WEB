@@ -7,6 +7,7 @@ import { SettingsSidebar } from './SettingsSidebar';
 import { ProfileSection } from './sections/ProfileSection';
 import { ActiveSessionsSection } from './sections/ActiveSessionsSection';
 import { SecuritySection } from './sections/SecuritySection';
+import { DocumentsSection } from './sections/DocumentsSection';
 import { SettingsHash } from './settingsHash';
 
 interface SettingsPageProps {
@@ -20,6 +21,8 @@ const renderSection = (hash: SettingsHash) => {
       return <ActiveSessionsSection />;
     case SettingsHash.Security:
       return <SecuritySection />;
+    case SettingsHash.Documents:
+      return <DocumentsSection />;
     default:
       return <ProfileSection />;
   }
