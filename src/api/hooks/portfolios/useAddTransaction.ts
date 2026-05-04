@@ -19,7 +19,14 @@ export const useAddTransaction = (portfolioId: number, onSuccess?: () => void) =
     onCompleted: () => onSuccess?.(),
   });
 
-  const submit = (input: AddTransactionRequest) => mutate({ variables: input });
+  const submit = (input: AddTransactionRequest) =>
+    new Promise<void>((resolve, reject) => {
+      mutate({
+        variables: input,
+        onCompleted: () => resolve(),
+        onError: (err) => reject(err),
+      });
+    });
 
   return { submit, loading, error: getGraphQLError(error) };
 };

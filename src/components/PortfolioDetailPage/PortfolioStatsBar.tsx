@@ -55,6 +55,8 @@ export const PortfolioStatsBar = ({
   realizedPnl,
   loading,
 }: PortfolioStatsBarProps) => {
+  const missingQuotes = holdings.filter((h) => quotes[h.instrument.symbol] == null).length;
+
   const totalValue = holdings.reduce((sum, h) => {
     const price = quotes[h.instrument.symbol];
     return price != null ? sum + h.quantity * price : sum;
@@ -99,7 +101,13 @@ export const PortfolioStatsBar = ({
   }
 
   return (
-    <div className="mb-8 grid gap-4 md:grid-cols-3">
+    <div className="mb-8 flex flex-col gap-4">
+      {missingQuotes > 0 && (
+        <div className="rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-2.5 text-xs text-amber-300">
+          Live prices unavailable for {missingQuotes} symbol{missingQuotes > 1 ? 's' : ''}. Total value and P&L may be understated.
+        </div>
+      )}
+      <div className="grid gap-4 md:grid-cols-3">
       <StatCard
         label="Total Value"
         value={`$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
@@ -118,6 +126,7 @@ export const PortfolioStatsBar = ({
         delta="All time"
         deltaPositive={realizedPnl > 0 ? true : realizedPnl < 0 ? false : undefined}
       />
+      </div>
     </div>
   );
 };
