@@ -1,0 +1,9 @@
+query GetPortfolioPerformance($portfolioId: Int!, $range: PortfolioRange!) {
+  portfolioPerformance(portfolioId: $portfolioId, range: $range) {
+    date
+    portfolioValue
+    portfolioReturnPct
+    spxReturnPct
+    ndxReturnPct
+  }
+}
