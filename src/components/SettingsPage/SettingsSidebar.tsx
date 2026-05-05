@@ -1,5 +1,7 @@
-import { UserIcon, MonitorIcon, ShieldIcon, LucideIcon } from 'lucide-react';
+import { UserIcon, MonitorIcon, ShieldIcon, FileTextIcon, LucideIcon } from 'lucide-react';
+import { useAuthStore } from '@/stores/auth.store';
 import { SettingsHash } from './settingsHash';
+import { OWNER_EMAIL } from './ownerConfig';
 
 interface SettingsSidebarProps {
   activeHash: SettingsHash;
@@ -12,13 +14,22 @@ interface SidebarItem {
   icon: LucideIcon;
 }
 
-const items: SidebarItem[] = [
+const BASE_ITEMS: SidebarItem[] = [
   { hash: SettingsHash.Profile, label: 'Profile', icon: UserIcon },
   { hash: SettingsHash.ActiveSessions, label: 'Active Sessions', icon: MonitorIcon },
   { hash: SettingsHash.Security, label: 'Security', icon: ShieldIcon },
 ];
 
+const DOCUMENTS_ITEM: SidebarItem = {
+  hash: SettingsHash.Documents,
+  label: 'Documents',
+  icon: FileTextIcon,
+};
+
 export const SettingsSidebar = ({ activeHash, onNavigate }: SettingsSidebarProps) => {
+  const user = useAuthStore((s) => s.user);
+  const items = user?.email === OWNER_EMAIL ? [...BASE_ITEMS, DOCUMENTS_ITEM] : BASE_ITEMS;
+
   return (
     <aside className="w-48 shrink-0 border-r border-white/6 px-3 py-5">
       <p className="px-2 mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500">

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finvest — Infrastructure Flow</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0b10;
+      color: #cbd5e1;
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .page { max-width: 960px; margin: 0 auto; }
+
+    h1 { font-size: 2rem; font-weight: 600; color: #f1f5f9; letter-spacing: -0.02em; margin-bottom: 8px; }
+    h2 { font-size: 1.25rem; font-weight: 600; color: #f1f5f9; margin: 48px 0 20px; }
+    h3 { font-size: 1rem; font-weight: 600; color: #94a3b8; margin: 28px 0 10px; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.75rem; }
+
+    p { margin-bottom: 14px; font-size: 0.9rem; color: #94a3b8; }
+    p strong { color: #cbd5e1; }
+
+    .subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 48px; }
+
+    /* Diagram */
+    .diagram {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: #0d1017;
+      padding: 28px 32px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-width: 560px;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .node {
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .node-browser   { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.35); color: #a5b4fc; }
+    .node-vite      { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3);  color: #fcd34d; }
+    .node-api       { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);  color: #6ee7b7; }
+    .node-db        { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3);  color: #93c5fd; }
+    .node-fmp       { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.2); color: #94a3b8; }
+    .node-alb       { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);   color: #fca5a5; }
+    .node-nginx     { background: rgba(20,184,166,0.12); border: 1px solid rgba(20,184,166,0.3);  color: #5eead4; }
+    .node-internet  { background: rgba(148,163,184,0.06); border: 1px solid rgba(148,163,184,0.15); color: #64748b; }
+    .node-redis     { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);   color: #fca5a5; }
+
+    .arrow-down {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 20px;
+      height: 32px;
+      color: #334155;
+      font-size: 1.1rem;
+      position: relative;
+    }
+
+    .arrow-down::before {
+      content: '';
+      position: absolute;
+      left: 28px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: #1e293b;
+    }
+
+    .arrow-label {
+      font-size: 0.7rem;
+      color: #475569;
+      margin-left: 16px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .branches {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-left: 48px;
+      padding-left: 20px;
+      border-left: 1px solid #1e293b;
+    }
+
+    .branch-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .branch-label {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .branch-arrow {
+      color: #334155;
+      font-size: 0.8rem;
+    }
+
+    /* Comparison table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.04);
+      color: #64748b;
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #94a3b8;
+      vertical-align: top;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    tbody td:first-child { color: #cbd5e1; font-weight: 500; }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .tag-dev  { background: rgba(245,158,11,0.12); color: #fcd34d; border: 1px solid rgba(245,158,11,0.25); }
+    .tag-prod { background: rgba(239,68,68,0.12);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.25); }
+    .tag-both { background: rgba(99,102,241,0.12); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+
+    /* Component cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      padding: 20px;
+    }
+
+    .card-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-body {
+      font-size: 0.8rem;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .card-body strong { color: #94a3b8; }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8em;
+      background: rgba(255,255,255,0.06);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #a5b4fc;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin: 48px 0;
+    }
+
+    .env-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .env-dev  { background: rgba(245,158,11,0.1);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .env-prod { background: rgba(239,68,68,0.1);   color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Infrastructure Flow</h1>
+  <p class="subtitle">How requests are routed in development vs. production — Finvest</p>
+
+  <!-- ─── DEV ─────────────────────────────────────────────────── -->
+  <h2>Development</h2>
+  <span class="env-badge env-dev">● Dev environment</span>
+
+  <div class="diagram">
+    <div class="flow">
+
+      <div class="flow-row">
+        <div class="node node-browser">🌐 Browser <code>localhost:5100</code></div>
+      </div>
+
+      <div class="arrow-down"><span class="arrow-label">all requests</span></div>
+
+      <div class="flow-row">
+        <div class="node node-vite">⚡ Vite dev server <code>:5100</code></div>
+      </div>
+
+      <div class="arrow-down" style="height:16px"></div>
+
+      <div class="branches">
+        <div class="branch-row">
+          <span class="branch-label">/logos/*&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-fmp">🌍 FMP CDN <code>financialmodelingprep.com</code></div>
+        </div>
+        <div class="branch-row">
+          <span class="branch-label">/api/*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-api">🟢 Finvest-API <code>localhost:3001</code></div>
+        </div>
+        <div class="branch-row">
+          <span class="branch-label">/posthog/*&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-fmp">📊 PostHog <code>app.posthog.com</code></div>
+        </div>
+        <div class="branch-row">
+          <span class="branch-label">/sentry/*&nbsp;&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-fmp">🐛 Sentry <code>o&lt;id&gt;.ingest.sentry.io</code></div>
+        </div>
+        <div class="branch-row">
+          <span class="branch-label">/*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-vite">React app (source, HMR)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">⚡ Vite dev server</div>
+      <div class="card-body">
+        Runs via <code>npm run dev</code> on port 5100. Serves React source files directly
+        with <strong>hot module replacement</strong> — saving a file reflects instantly in
+        the browser without a full reload. Also acts as a reverse proxy for <code>/api/*</code>,
+        <code>/logos/*</code>, <code>/posthog/*</code>, and <code>/sentry/*</code>, so the
+        browser never makes cross-origin requests.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🟢 Finvest-API</div>
+      <div class="card-body">
+        Node.js process on port 3001. Runs on the host machine or via
+        <code>docker-compose.dev.yml</code>. Handles all REST and GraphQL business logic.
+        Not exposed to the browser directly — always reached through the Vite proxy at <code>/api/*</code>.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🗄️ PostgreSQL</div>
+      <div class="card-body">
+        Runs in Docker via <code>docker-compose.dev.yml</code>. Port 5432 exposed to the
+        host so the API can connect. Data is persisted in a Docker volume.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔴 Redis</div>
+      <div class="card-body">
+        Runs in Docker via <code>docker-compose.dev.yml</code>. Port 6379 exposed.
+        Used as an in-memory cache for market data: <strong>live quotes</strong> (60s TTL)
+        and <strong>EOD prices</strong> (keyed by date — fetched once per day per symbol set).
+        Prevents hitting TwelveData's rate limit on repeated page loads.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🌍 FMP CDN (logo images)</div>
+      <div class="card-body">
+        External service at <code>financialmodelingprep.com/image-stock</code>. Provides
+        stock logo images. Requests are proxied through Vite so the browser sees its own
+        origin — avoids <code>ERR_BLOCKED_BY_ORB</code> caused by missing CORS headers on
+        the FMP side.
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ─── PROD ───────────────────────────────────────────────── -->
+  <h2>Production</h2>
+  <span class="env-badge env-prod">● Production environment</span>
+
+  <div class="diagram">
+    <div class="flow">
+
+      <div class="flow-row">
+        <div class="node node-internet">🌐 Internet (public traffic)</div>
+      </div>
+
+      <div class="arrow-down"><span class="arrow-label">HTTPS :443</span></div>
+
+      <div class="flow-row">
+        <div class="node node-alb">☁️ AWS ALB — SSL/TLS termination</div>
+      </div>
+
+      <div class="arrow-down"><span class="arrow-label">plain HTTP :80 (internal)</span></div>
+
+      <div class="flow-row">
+        <div class="node node-nginx">🔷 nginx container <code>:80</code></div>
+      </div>
+
+      <div class="arrow-down" style="height:16px"></div>
+
+      <div class="branches">
+        <div class="branch-row">
+          <span class="branch-label">/logos/*&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-fmp">🌍 FMP CDN</div>
+        </div>
+        <div class="branch-row">
+          <span class="branch-label">/api/*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-api">🟢 Finvest-API container <code>api:3001</code></div>
+        </div>
+        <div class="branch-row">
+          <span class="branch-label">/posthog/*&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-fmp">📊 PostHog <code>app.posthog.com</code></div>
+        </div>
+        <div class="branch-row">
+          <span class="branch-label">/sentry/*&nbsp;&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-fmp">🐛 Sentry <code>o&lt;id&gt;.ingest.sentry.io</code></div>
+        </div>
+        <div class="branch-row">
+          <span class="branch-label">/*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-nginx">React app (<code>dist/</code> static files)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">☁️ AWS ALB</div>
+      <div class="card-body">
+        Application Load Balancer — the public entry point. Handles:
+        <strong>SSL/TLS termination</strong> (so nginx doesn't need certificates),
+        DNS routing, load balancing across multiple instances, and AWS health checks.
+        Forwards decrypted HTTP traffic to nginx on port 80 inside the VPC.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 nginx</div>
+      <div class="card-body">
+        The app-level entry point inside Docker. Five jobs:
+        1) serves the React <code>dist/</code> static build for all <code>/*</code> requests,
+        2) proxies <code>/logos/*</code> to FMP,
+        3) proxies <code>/api/*</code> to the API container via Docker internal DNS
+        (<code>api</code> resolves automatically),
+        4) proxies <code>/posthog/*</code> to PostHog (avoids ad-blocker blocks),
+        5) proxies <code>/sentry/*</code> to Sentry ingest (avoids ad-blocker blocks).
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🟢 Finvest-API container</div>
+      <div class="card-body">
+        Same Node.js app as in dev, containerized. <strong>Not publicly exposed</strong>
+        — only reachable internally via nginx. Docker Compose internal DNS resolves
+        <code>api</code> to this container automatically.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ What happened to Vite?</div>
+      <div class="card-body">
+        <code>npm run build</code> compiles all React/TypeScript into plain
+        HTML + CSS + JS inside <code>dist/</code>. After that, Vite has
+        <strong>zero runtime role</strong>. nginx serves those static files directly —
+        no Node.js process needed for the frontend.
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ─── COMPARISON ─────────────────────────────────────────── -->
+  <h2>Side-by-side comparison</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Concern</th>
+        <th><span class="tag tag-dev">Dev</span></th>
+        <th><span class="tag tag-prod">Prod</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Public entry point</td>
+        <td>Vite dev server <code>:5100</code></td>
+        <td>AWS ALB <code>:443</code></td>
+      </tr>
+      <tr>
+        <td>SSL/TLS</td>
+        <td>None (localhost)</td>
+        <td>AWS ALB</td>
+      </tr>
+      <tr>
+        <td>App-level router</td>
+        <td>Vite proxy</td>
+        <td>nginx</td>
+      </tr>
+      <tr>
+        <td>React app served by</td>
+        <td>Vite (source files + HMR)</td>
+        <td>nginx (<code>dist/</code> static build)</td>
+      </tr>
+      <tr>
+        <td><code>/api/*</code> proxy</td>
+        <td>Vite → <code>localhost:3001</code></td>
+        <td>nginx → <code>api:3001</code> (Docker DNS)</td>
+      </tr>
+      <tr>
+        <td><code>/logos/*</code> proxy</td>
+        <td>Vite → FMP</td>
+        <td>nginx → FMP</td>
+      </tr>
+      <tr>
+        <td><code>/posthog/*</code> proxy</td>
+        <td>Vite → PostHog</td>
+        <td>nginx → PostHog</td>
+      </tr>
+      <tr>
+        <td><code>/sentry/*</code> proxy</td>
+        <td>Vite → Sentry</td>
+        <td>nginx → Sentry</td>
+      </tr>
+      <tr>
+        <td>Hot reload</td>
+        <td>Yes (Vite HMR)</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td>API runs on</td>
+        <td>Host or Docker container</td>
+        <td>Docker container only</td>
+      </tr>
+      <tr>
+        <td>Internal DNS</td>
+        <td>localhost</td>
+        <td>Docker Compose service names</td>
+      </tr>
+      <tr>
+        <td>nginx involved</td>
+        <td>No</td>
+        <td>Yes</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finvest — Market Data Cache Flow</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0b10;
+      color: #cbd5e1;
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .page { max-width: 900px; margin: 0 auto; }
+
+    h1 { font-size: 2rem; font-weight: 600; color: #f1f5f9; letter-spacing: -0.02em; margin-bottom: 8px; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #f1f5f9; margin: 44px 0 16px; }
+
+    p { margin-bottom: 14px; font-size: 0.9rem; color: #94a3b8; }
+    p strong { color: #cbd5e1; }
+
+    .subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 48px; }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8em;
+      background: rgba(255,255,255,0.06);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #a5b4fc;
+    }
+
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 48px 0; }
+
+    /* ── Flow diagram ── */
+    .flow-wrap {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: #0d1017;
+      padding: 36px 40px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+
+    .flow { display: flex; flex-direction: column; gap: 0; min-width: 520px; }
+
+    .row { display: flex; align-items: center; gap: 0; }
+
+    .node {
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .node-browser  { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.35); color: #a5b4fc; }
+    .node-api      { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);  color: #6ee7b7; }
+    .node-service  { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);  color: #6ee7b7; }
+    .node-redis    { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);   color: #fca5a5; }
+    .node-twelve   { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.2); color: #94a3b8; }
+    .node-hit      { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);  color: #6ee7b7; font-style: italic; }
+    .node-miss     { background: rgba(245,158,11,0.1);  border: 1px solid rgba(245,158,11,0.25); color: #fcd34d; font-style: italic; }
+
+    .arrow-v {
+      display: flex;
+      align-items: center;
+      padding-left: 24px;
+      height: 36px;
+      position: relative;
+      color: #475569;
+      font-size: 0.72rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .arrow-v::before {
+      content: '';
+      position: absolute;
+      left: 32px; top: 0; bottom: 0;
+      width: 1px;
+      background: #1e293b;
+    }
+    .arrow-v span { margin-left: 20px; }
+
+    .diamond-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding-left: 12px;
+    }
+
+    .diamond {
+      width: 40px; height: 40px;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.3);
+      transform: rotate(45deg);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .diamond-label {
+      transform: rotate(-45deg);
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      text-align: center;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .branches {
+      margin-left: 52px;
+      padding-left: 20px;
+      border-left: 1px solid #1e293b;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    .branch {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .branch-tag {
+      font-size: 0.7rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #475569;
+      white-space: nowrap;
+      min-width: 60px;
+    }
+    .branch-arrow { color: #334155; font-size: 0.85rem; }
+
+    /* ── Cache key table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+    }
+    thead th {
+      text-align: left;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.04);
+      color: #64748b;
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #94a3b8;
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody td:first-child { color: #cbd5e1; font-weight: 500; }
+
+    /* ── Cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .card {
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      padding: 20px;
+    }
+    .card-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 6px;
+    }
+    .card-body {
+      font-size: 0.8rem;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    .card-body strong { color: #94a3b8; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Market Data Cache Flow</h1>
+  <p class="subtitle">How Redis caches TwelveData API calls for live quotes and EOD prices — Finvest API</p>
+
+  <!-- ─── WHY ─── -->
+  <p>
+    TwelveData's free plan (Basic 8) allows <strong>8 API credits per minute</strong>. Each symbol in a batch
+    request consumes 1 credit, so a portfolio with 10 holdings would spend 10 credits per call — exceeding
+    the limit on a single page load that requests both live quotes and EOD prices. Redis eliminates redundant
+    calls by caching responses close to the API layer.
+  </p>
+
+  <hr />
+
+  <!-- ─── FLOW ─── -->
+  <h2>Request flow</h2>
+
+  <div class="flow-wrap">
+    <div class="flow">
+
+      <div class="row">
+        <div class="node node-browser">🌐 Frontend (React)</div>
+      </div>
+
+      <div class="arrow-v"><span>GET /api/instruments/quotes?symbols=…</span></div>
+
+      <div class="row">
+        <div class="node node-api">🟢 InstrumentController</div>
+      </div>
+
+      <div class="arrow-v"><span>InstrumentService.getBatchQuotes(symbols)</span></div>
+
+      <div class="row">
+        <div class="node node-service">⚙️ InstrumentService</div>
+      </div>
+
+      <div class="arrow-v"><span>redis.get("quotes:ACN,NVO,TSM")</span></div>
+
+      <!-- diamond -->
+      <div style="display:flex; align-items:center; gap:12px; padding-left:12px; margin: 4px 0;">
+        <div class="diamond"><div class="diamond-label">cache<br>hit?</div></div>
+      </div>
+
+      <div class="branches">
+        <div class="branch">
+          <span class="branch-tag">HIT ✓</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-hit">return cached JSON immediately</div>
+        </div>
+        <div class="branch">
+          <span class="branch-tag">MISS ✗</span>
+          <span class="branch-arrow">──→</span>
+          <div class="node node-twelve">🌍 TwelveData /price API</div>
+        </div>
+      </div>
+
+      <div class="arrow-v" style="padding-left:76px;"><span>result → redis.setex(key, ttl, JSON)</span></div>
+
+      <div class="row" style="padding-left: 64px;">
+        <div class="node node-redis">🔴 Redis (store with TTL)</div>
+      </div>
+
+      <div class="arrow-v"><span>return prices to controller → HTTP response</span></div>
+
+      <div class="row">
+        <div class="node node-browser">🌐 Frontend receives prices</div>
+      </div>
+
+    </div>
+  </div>
+
+  <p>The same flow applies to <code>GET /api/instruments/eod</code> — the only difference is the cache key and TTL strategy.</p>
+
+  <hr />
+
+  <!-- ─── KEYS ─── -->
+  <h2>Cache keys &amp; TTL strategy</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Endpoint</th>
+        <th>Redis key pattern</th>
+        <th>TTL</th>
+        <th>Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Live quotes<br><code>/instruments/quotes</code></td>
+        <td><code>quotes:ACN,NVO,TSM</code><br><small>(symbols sorted, comma-joined)</small></td>
+        <td>60 seconds</td>
+        <td>Prices change constantly, but a 60s delay is acceptable for personal portfolio tracking. Short enough to feel live, long enough to absorb repeated reloads.</td>
+      </tr>
+      <tr>
+        <td>EOD prices<br><code>/instruments/eod</code></td>
+        <td><code>eod:ACN,NVO,TSM:2026-05-02</code><br><small>(symbols + ISO date)</small></td>
+        <td>Until midnight + 1h buffer</td>
+        <td>Previous close never changes within a trading day. The date in the key acts as natural invalidation — the next calendar day produces a different key, so TwelveData is called once per day per symbol set regardless of how many requests come in.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <!-- ─── DETAILS ─── -->
+  <h2>Implementation details</h2>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">📂 src/cache/redis.ts</div>
+      <div class="card-body">
+        ioredis client singleton. Created once at startup with <code>lazyConnect: true</code>
+        so it doesn't block startup if Redis is momentarily unavailable.
+        Connection errors are logged but do not crash the process.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚙️ src/services/instrument-service.ts</div>
+      <div class="card-body">
+        Cache logic lives in the service layer — not in the client. The client
+        (<code>twelve-data-client.ts</code>) remains a pure HTTP wrapper.
+        The service checks Redis before calling the client, and writes the result
+        back to Redis after a cache miss.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔴 Redis in Docker</div>
+      <div class="card-body">
+        Defined in <code>docker-compose.dev.yml</code> as <code>redis:7-alpine</code>.
+        Port <code>6379</code> exposed to the host. The API container depends on it
+        (health check via <code>redis-cli ping</code>) and receives <code>REDIS_URL</code>
+        as an env variable.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🚨 TwelveData error detection</div>
+      <div class="card-body">
+        TwelveData returns rate-limit and other errors as <strong>HTTP 200</strong> with a
+        JSON body containing <code>status: "error"</code>. The client detects this and
+        throws, so the error propagates instead of being silently cached as <code>{}</code>.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔮 Future uses of Redis</div>
+      <div class="card-body">
+        Redis is already in the stack — future use cases include:
+        <strong>rate limiting</strong> (express-rate-limit backend for auth endpoints),
+        <strong>refresh token storage</strong> (replace DB rows with Redis keys + TTL),
+        and <strong>job queues</strong> (BullMQ for background processing).
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
