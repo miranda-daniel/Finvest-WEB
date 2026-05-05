@@ -1,8 +1,7 @@
 import { UserIcon, MonitorIcon, ShieldIcon, FileTextIcon, LucideIcon } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth.store';
 import { SettingsHash } from './settingsHash';
-
-const OWNER_EMAIL = 'miranda.daniel.edu@gmail.com';
+import { OWNER_EMAIL } from './ownerConfig';
 
 interface SettingsSidebarProps {
   activeHash: SettingsHash;

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAuthStore } from '@/stores/auth.store';
-
-const OWNER_EMAIL = 'miranda.daniel.edu@gmail.com';
+import { OWNER_EMAIL } from '../ownerConfig';
 
 interface Doc {
   slug: string;
