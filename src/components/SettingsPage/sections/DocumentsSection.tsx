@@ -9,7 +9,6 @@ interface Doc {
 
 const DOCS: Doc[] = [
   { slug: 'auth-flows', label: 'Auth Flows' },
-  { slug: 'csp-flow', label: 'CSP Flow' },
   { slug: 'infrastructure-flow', label: 'Infrastructure Flow' },
   { slug: 'market-data-cache', label: 'Market Data Cache' },
   { slug: 'snapshot-job', label: 'Snapshot Job' },
